@@ -9,25 +9,57 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <!--
-            Document Title and Description
-        -->
-        <title>Dashboard</title>
+        <title>Dashboard - {Farm Name}</title>
         <meta name="description" content="Dashboard of water monitoring system">
         
-
-        <!-- 
-            Libraries
-         -->
-        <link rel="stylesheet" href="lib/bootstrap.min.css">
-        <link rel="stylesheet" href="lib/animate.min.css">
-        <script type="text/javascript" src="lib/bootstrap.bundle.min.js" defer></script>
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js" defer></script>
+        <link rel="stylesheet" href="./resource/style/style.css">
+        <link rel="stylesheet" href="./lib/bootstrap.min.css">
+        <link rel="stylesheet" href="./lib/animate.min.css">
     </head>
     <body>
         <!--[if lt IE 7]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+            <div class="d-flex flex-row justify-content-center align-content-center min-vh-100 min-vw-100">
+                <p class="mt-auto mb-auto text-center">You are using an <strong>outdated</strong> browser.<br>Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+            </div>
         <![endif]-->
-        
+        <div class="d-flex flex-row">
+            <!-- Sidebar -->
+            <section class="custom-sidebar bg-purple-darker text-white">
+                <ol class="list-unstyled">
+                    <li>
+                        {Web App name}
+                    </li>
+                    <hr>
+                    <li>Dashboard</li>
+                    <li>Pond/s</li>
+                    <li>Staff</li>
+                    <hr>
+                    <li>Parameters</li>
+                    <li>Temperature</li>
+                    <li>Salinity</li>
+                    <li>pH</li>
+                    <li>Dissolved Oxygen</li>
+                    <li>Ammonia</li>
+                    <hr>
+                    <li></li>
+                </ol>
+            </section>
+            <!-- Sidebar -->
+            <section>
+                <nav>
+                    <ol class="list-unstyled d-flex flex-row justify-content-between">
+                        <li>
+                            <a>{Farm Name}</a>
+                        </li>
+                        <li>
+                            <a>{Farmer's Name}</a>
+                        </li>
+                    </ol>
+                </nav>
+                <section>
+
+                </section>
+            </section>
+        </div>
     </body>
 </html>

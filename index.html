@@ -17,23 +17,23 @@
         <link rel="stylesheet" href="./lib/bootstrap.min.css">
         <link rel="stylesheet" href="./lib/animate.min.css">
     </head>
-    <body>
+    <body class="bg-black">
         <!--[if lt IE 7]>
             <div class="d-flex flex-row justify-content-center align-content-center min-vh-100 min-vw-100">
                 <p class="mt-auto mb-auto text-center">You are using an <strong>outdated</strong> browser.<br>Please <a href="#">upgrade your browser</a> to improve your experience.</p>
             </div>
         <![endif]-->
         <div class="z-0 position-fixed vh-100">
-            <img src="./assets/background.jpg"/>
+            <img class="opacity-50 animate__animated animate__fadeIn" src="./assets/background.jpg"/>
         </div>
-        <section class="z-1 position-relative min-vh-100 d-flex flex-column justify-content-center overflow-hidden">
-            <div class="row justify-content-center">
+        <section class="z-3 position-relative min-vh-100 d-flex flex-column justify-content-center overflow-hidden">
+            <div class="row justify-content-center animate__animated animate__fadeInUp">
                 <div class="col-xl-4 col-12 mb-xl-0 mb-4 m-0 p-0 d-flex flex-column justify-content-center">
-                    <p class="h1 fw-bold text-center text-light m-0">Shrimp Farm<br>IOT System</p>
+                    <p class="h1 fw-bold text-center text-light m-0">{Web App Name}</p>
                 </div>
                 <!-- LOG IN FORM -->
                 <div class="col-xxl-4 col-xl-5 col-lg-6 col-md-7 col-sm-8 col-11 
-                            bg-light
+                            bg-white
                             p-4 px-3 px-sm-5 rounded-1 
                             border border-1 border-light-subtle
                             shadow-sm">
@@ -56,14 +56,17 @@
                         </div>
                         <input class="mb-3 form-control border border-0 btn-purple" type="submit" value="Log In">
                     </form>
+                    <p class="text-center">Don't have an account? <a class="link link-purple text-decoration-none" href="./register.php">Sign Up</a></p>
                     <div class="mb-3 d-flex flex-row">
                         <div class="w-100 my-3 border-top border-light-subtle"></div>
                         <p class="m-0 px-2 align-self-center">Or</p>
                         <div class="w-100 my-3 border-top border-light-subtle"></div>
                     </div>
-                    <a class="btn btn-light form-control border border-1 border-light-subtle">
+                    <a class="btn btn-outline-dark  form-control border border-1 border-light-subtle">
                         Sign In with Google
-                        <img class="ms-2" width="18" height="18" src="./assets/svgs/brands/google.svg" alt="Google Logo">
+                        <svg class="ms-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="18" viewBox="0 0 488 512">
+                            <path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"/>
+                        </svg>
                     </a>
                 </div>
                 <!-- LOG IN FORM -->

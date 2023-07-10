@@ -8,6 +8,36 @@
 }
 
 .btn-purple {
-    background-color: #6f42c1 !important;
     color: #fff !important;
 }
+
+a.btn-purple:link, .btn-purple {
+    background-color: #6f42c1 !important;
+}
+
+a.btn-purple:hover, .btn-purple:hover {
+    background-color: #2d1a50 !important;
+    transition: all 0.2s ease;
+}
+
+.bg-purple {
+    background-color: #6f42c1 !important;
+}
+
+.bg-purple-darker{
+    background-color: #2d1a50 !important;
+}
+
+.custom-sidebar {
+    width: 16rem;
+}
+
+.link-purple:link {
+    color: #6f42c1 !important;
+}
+
+.link-purple:hover {
+    color: #2d1a50 !important;
+    transition: all 0.2s ease;
+}
+
