@@ -25,11 +25,26 @@ a.btn-purple:hover, .btn-purple:hover {
 }
 
 .bg-purple-darker{
-    background-color: #2d1a50 !important;
+    background-color: #4f2e8b !important;
+}
+
+.click-none {
+    pointer-events: none !important;
+    user-select: none !important;
 }
 
 .custom-sidebar {
     width: 16rem;
+}
+
+.custom-sidebar-selection > a {
+    display: block;
+    width: 100%;
+}
+
+.custom-sidebar-selection:hover:not(.inactive) {
+    background-color: #6f42c1 !important;
+    transition: all 0.2s ease;
 }
 
 .link-purple:link {
@@ -41,3 +56,6 @@ a.btn-purple:hover, .btn-purple:hover {
     transition: all 0.2s ease;
 }
 
+.pointer-none {
+    cursor: default !important;
+}
