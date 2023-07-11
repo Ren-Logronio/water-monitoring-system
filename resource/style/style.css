@@ -8,6 +8,25 @@
     font-family: 'Raleway', sans-serif;
 }
 
+* {
+scrollbar-width: auto;
+scrollbar-color: #6f42c1 #ffffff;
+}
+
+*::-webkit-scrollbar {
+width: 12px;
+}
+
+*::-webkit-scrollbar-track {
+background: #ffffff;
+}
+
+*::-webkit-scrollbar-thumb {
+background-color: #6f42c1;
+border-radius: 10px;
+border: 3px solid #ffffff;
+}
+
 .btn-purple {
     color: #fff !important;
 }
@@ -34,8 +53,12 @@ a.btn-purple:hover, .btn-purple:hover {
     user-select: none !important;
 }
 
+.content {
+    overflow-wrap: normal !important;
+}
+
 .custom-sidebar {
-    position: relative !important;
+    position: sticky !important;
     left: 0px !important;
     transition: all 0.2s ease !important;
 }
@@ -62,6 +85,10 @@ a.btn-purple:hover, .btn-purple:hover {
     transition: all 0.2s ease;
 }
 
+.intersection-navbar {
+    height: 7rem !important;
+}
+
 .link-purple:link {
     color: #6f42c1 !important;
 }
@@ -71,8 +98,46 @@ a.btn-purple:hover, .btn-purple:hover {
     transition: all 0.2s ease;
 }
 
+.profile-circle {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background-color: #6f42c1;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-right: 0.5rem;
+}
+
 .pointer-none {
     cursor: default !important;
+}
+
+.pointer {
+    cursor: pointer !important;
+}
+
+.z-999 {
+    z-index: 999;
+}
+
+.z-998 {
+    z-index: 998;
+}
+
+.z-100 {
+    z-index: 100;
+}
+
+.z-99 {
+    z-index: 99;
+}
+
+.z-98 {
+    z-index: 98;
 }
 
 @media screen and (max-width: 768px) {

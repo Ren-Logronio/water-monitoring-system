@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Dashboard - {Farm Name}</title>
+        <meta name="description" content="Dashboard of water monitoring system">
+        <link rel="icon" href="./assets/logo-orange-cropped.png" type="image/png" sizes="16x16">
+        
+        <link rel="stylesheet" href="./resource/style/style.css">
+        <link rel="stylesheet" href="./lib/bootstrap.min.css">
+        <link rel="stylesheet" href="./lib/animate.min.css">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <div class="d-flex flex-row justify-content-center align-content-center min-vh-100 min-vw-100">
+                <p class="mt-auto mb-auto text-center">You are using an <strong>outdated</strong> browser.<br>Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+            </div>
+        <![endif]-->
+        <div class="d-flex flex-row min-vh-100">
+            <!-- Sidebar -->
+            <section id="sidebar" class="custom-sidebar bg-purple-darker z-999 text-white min-vh-100">
+                <ol class="list-unstyled overflow-hidden">
+                    <li class="mb-3 py-2 d-flex justify-content-center click-none pointer-none shadow-lg">
+                        <a class="pe-4 d-flex flex-row text-white text-decoration-none">
+                            <img class="me-1" height="40" src="./assets/logo-white.webp">
+                            <p class="my-0 align-self-center fw-bolder">{Web App name}</p>
+                        </a>
+                    </li>
+                    <li class="custom-sidebar-selection inactive">
+                        <a class="px-3 py-2 text-white text-decoration-none click-none pointer-none">
+                            <svg class="me-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="1em" viewBox="0 0 512 512">
+                                <path d="M64 64c0-17.7-14.3-32-32-32S0 46.3 0 64V400c0 44.2 35.8 80 80 80H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H80c-8.8 0-16-7.2-16-16V64zm406.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L320 210.7l-57.4-57.4c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L240 221.3l57.4 57.4c12.5 12.5 32.8 12.5 45.3 0l128-128z"/>
+                            </svg>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="custom-sidebar-selection">
+                        <a class="px-3 py-2 text-white text-decoration-none" href="#">
+                            <svg class="me-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="1em" viewBox="0 0 512 512">
+                                <path d="M269.5 69.9c11.1-7.9 25.9-7.9 37 0C329 85.4 356.5 96 384 96c26.9 0 55.4-10.8 77.4-26.1l0 0c11.9-8.5 28.1-7.8 39.2 1.7c14.4 11.9 32.5 21 50.6 25.2c17.2 4 27.9 21.2 23.9 38.4s-21.2 27.9-38.4 23.9c-24.5-5.7-44.9-16.5-58.2-25C449.5 149.7 417 160 384 160c-31.9 0-60.6-9.9-80.4-18.9c-5.8-2.7-11.1-5.3-15.6-7.7c-4.5 2.4-9.7 5.1-15.6 7.7c-19.8 9-48.5 18.9-80.4 18.9c-33 0-65.5-10.3-94.5-25.8c-13.4 8.4-33.7 19.3-58.2 25c-17.2 4-34.4-6.7-38.4-23.9s6.7-34.4 23.9-38.4C42.8 92.6 61 83.5 75.3 71.6c11.1-9.5 27.3-10.1 39.2-1.7l0 0C136.7 85.2 165.1 96 192 96c27.5 0 55-10.6 77.5-26.1zm37 288C329 373.4 356.5 384 384 384c26.9 0 55.4-10.8 77.4-26.1l0 0c11.9-8.5 28.1-7.8 39.2 1.7c14.4 11.9 32.5 21 50.6 25.2c17.2 4 27.9 21.2 23.9 38.4s-21.2 27.9-38.4 23.9c-24.5-5.7-44.9-16.5-58.2-25C449.5 437.7 417 448 384 448c-31.9 0-60.6-9.9-80.4-18.9c-5.8-2.7-11.1-5.3-15.6-7.7c-4.5 2.4-9.7 5.1-15.6 7.7c-19.8 9-48.5 18.9-80.4 18.9c-33 0-65.5-10.3-94.5-25.8c-13.4 8.4-33.7 19.3-58.2 25c-17.2 4-34.4-6.7-38.4-23.9s6.7-34.4 23.9-38.4c18.1-4.2 36.2-13.3 50.6-25.2c11.1-9.4 27.3-10.1 39.2-1.7l0 0C136.7 373.2 165.1 384 192 384c27.5 0 55-10.6 77.5-26.1c11.1-7.9 25.9-7.9 37 0zm0-144C329 229.4 356.5 240 384 240c26.9 0 55.4-10.8 77.4-26.1l0 0c11.9-8.5 28.1-7.8 39.2 1.7c14.4 11.9 32.5 21 50.6 25.2c17.2 4 27.9 21.2 23.9 38.4s-21.2 27.9-38.4 23.9c-24.5-5.7-44.9-16.5-58.2-25C449.5 293.7 417 304 384 304c-31.9 0-60.6-9.9-80.4-18.9c-5.8-2.7-11.1-5.3-15.6-7.7c-4.5 2.4-9.7 5.1-15.6 7.7c-19.8 9-48.5 18.9-80.4 18.9c-33 0-65.5-10.3-94.5-25.8c-13.4 8.4-33.7 19.3-58.2 25c-17.2 4-34.4-6.7-38.4-23.9s6.7-34.4 23.9-38.4c18.1-4.2 36.2-13.3 50.6-25.2c11.1-9.5 27.3-10.1 39.2-1.7l0 0C136.7 229.2 165.1 240 192 240c27.5 0 55-10.6 77.5-26.1c11.1-7.9 25.9-7.9 37 0z"/>
+                            </svg>
+                            Pond
+                        </a>
+                    </li>
+                    <li class="custom-sidebar-selection">
+                        <a class="mb-3 px-3 py-2 text-white text-decoration-none" href="#">
+                            <svg class="me-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="1em" viewBox="0 0 512 512">
+                                <path d="M192 0c-41.8 0-77.4 26.7-90.5 64H64C28.7 64 0 92.7 0 128V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H282.5C269.4 26.7 233.8 0 192 0zm0 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM128 256a64 64 0 1 1 128 0 64 64 0 1 1 -128 0zM80 432c0-44.2 35.8-80 80-80h64c44.2 0 80 35.8 80 80c0 8.8-7.2 16-16 16H96c-8.8 0-16-7.2-16-16z"/>
+                            </svg>
+                            Staff
+                        </a>
+                    </li>
+                    <hr>
+                    <li>
+                        <p class="fw-light m-0">
+                            Parameters
+                        </p>
+                    </li>
+                    <li class="custom-sidebar-selection">Temperature</li>
+                    <li>Salinity</li>
+                    <li>pH</li>
+                    <li>Dissolved Oxygen</li>
+                    <li>Ammonia</li>
+                    <hr>
+                    <li></li>
+                </ol>
+            </section>
+            <div id="sidebar-cover" class="z-998 position-fixed w-100 h-100 bg-black opacity-25 d-none"></div>
+            <!-- Sidebar -->
+            <section class="position-relative z-100 w-100">
+                <nav class="position-absolute z-99 w-100">
+                    <ol class="list-unstyled m-0 mx-0 mx-md-3 me-3 mt-2 d-flex flex-row justify-content-between">
+                        <li class="d-flex flex-row align-content-center">
+                            <a id="sidebar-toggle" class="link link-purple mx-2 p-2 text-decoration-none pointer">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="1em" viewBox="0 0 448 512">
+                                    <path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/>
+                                </svg>
+                            </a>
+                            <img class="me-1 d-md-none align-self-center" height="24" src="./assets/logo-orange-cropped.png">
+                            <p class="mt-auto mb-auto ms-0 fw-semibold">{Farm Name}</p>
+                        </li>
+                        <li class="d-flex flex-row align-content-stretch">
+                            <a class="d-flex flex-row align-content-center text-black text-decoration-none" href="#">
+                                <p class="me-2 pt-1  d-none d-md-block mt-auto mb-auto">{Surname, Firstname}</p>
+                                <div class="profile-circle me-1  bg-dark text-white">
+                                    F
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" height="0.8em" class="mt-auto mb-auto" fill="currentColor" viewBox="0 0 320 512">
+                                    <path d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z"/>
+                                </svg>
+                            </a>
+                        </li> 
+                    </ol>
+                </nav>
+                <div id="intersection" class="position-fixed intersection-navbar w-100">
+                </div>
+                <iframe id="iframe" class="position-absolute w-100 h-100 " src="./dashboard.html" frameborder="0">
+                </iframe>
+            </section>
+        </div>
+        
+        <script src="./resource/script/navbar.intersection.js"></script>
+        <script src="./resource/script/sidebar.js"></script>
+    </body>
+</html>

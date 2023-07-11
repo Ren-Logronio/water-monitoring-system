@@ -42,12 +42,14 @@
 
         updateSidebar() {
             if(this.Display.isSmall()) {
+                this.showSidebarToggle();
                 if(this.sidebarIsOpen) {
                     this.showSidebarCover();
                 } else {
                     this.hideSidebarCover();
                 }
             } else {
+                this.hideSidebarToggle();   
                 this.openSidebar();
                 this.hideSidebarCover();
             }
