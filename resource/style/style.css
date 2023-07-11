@@ -25,7 +25,7 @@ a.btn-purple:hover, .btn-purple:hover {
 }
 
 .bg-purple-darker{
-    background-color: #4f2e8b !important;
+    background-color: #5f38a8 !important;
 }
 
 .click-none {
@@ -33,13 +33,17 @@ a.btn-purple:hover, .btn-purple:hover {
     user-select: none !important;
 }
 
-.custom-sidebar {
+.custom-sidebar > ol {
     width: 16rem;
 }
 
 .custom-sidebar-selection > a {
     display: block;
     width: 100%;
+}
+
+.custom-sidebar-selection.inactive > a {
+    color: #c1c2ca !important;
 }
 
 .custom-sidebar-selection:hover:not(.inactive) {
