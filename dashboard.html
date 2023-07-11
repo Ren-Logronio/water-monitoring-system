@@ -23,10 +23,10 @@
                 <p class="mt-auto mb-auto text-center">You are using an <strong>outdated</strong> browser.<br>Please <a href="#">upgrade your browser</a> to improve your experience.</p>
             </div>
         <![endif]-->
-        <div class="d-flex flex-row">
+        <div class="d-flex flex-row min-vh-100">
             <!-- Sidebar -->
-            <section class="custom-sidebar text-white">
-                <ol class="list-unstyled bg-purple-darker overflow-hidden">
+            <section id="sidebar" class="custom-sidebar bg-purple-darker z-1 text-white min-vh-100">
+                <ol class="list-unstyled overflow-hidden">
                     <li class="mb-3 py-2 d-flex justify-content-center click-none pointer-none shadow-lg">
                         <a class="pe-4 d-flex flex-row text-white text-decoration-none">
                             <img class="me-1" height="40" src="./assets/logo-white.webp">
@@ -58,8 +58,12 @@
                         </a>
                     </li>
                     <hr>
-                    <li>Parameters</li>
-                    <li>Temperature</li>
+                    <li>
+                        <p class="fw-light m-0">
+                            Parameters
+                        </p>
+                    </li>
+                    <li class="custom-sidebar-selection">Temperature</li>
                     <li>Salinity</li>
                     <li>pH</li>
                     <li>Dissolved Oxygen</li>
@@ -68,11 +72,13 @@
                     <li></li>
                 </ol>
             </section>
+            <div id="sidebar-cover" class="z-0 position-fixed w-100 h-100 bg-black opacity-25 d-none"></div>
             <!-- Sidebar -->
-            <section class="">
+            <section class="position-relative z-n1 w-100">
                 <nav>
                     <ol class="list-unstyled d-flex flex-row justify-content-between">
                         <li>
+                            <a id="px"></a>
                             <a>{Farm Name}</a>
                         </li>
                         <li>
@@ -85,5 +91,6 @@
                 </section>
             </section>
         </div>
+        <script src="./resource/script/sidebar.js"></script>
     </body>
 </html>

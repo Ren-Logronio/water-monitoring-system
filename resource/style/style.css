@@ -33,6 +33,10 @@ a.btn-purple:hover, .btn-purple:hover {
     user-select: none !important;
 }
 
+.custom-sidebar {
+    position: relative;
+}
+
 .custom-sidebar > ol {
     width: 16rem;
 }
@@ -62,4 +66,10 @@ a.btn-purple:hover, .btn-purple:hover {
 
 .pointer-none {
     cursor: default !important;
+}
+
+@media screen and (max-width: 768px) {
+    .custom-sidebar {
+        position: fixed !important;
+    }
 }
