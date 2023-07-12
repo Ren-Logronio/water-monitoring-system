@@ -1,8 +1,8 @@
 const navbar = document.getElementById('navbar');
-const navbarLimit = 0.0;
-const scrollbarLimit = 0.0 ;
+const navbarLimit = 0.5;
+const scrollbarLimit = 0.25 ;
 const Scrollbar = {
-    hidden: 'transparent',
+    hidden: '#eee',
     visible: document.documentElement.style.getPropertyValue('--scrollbar-color')
 };
 const options = {

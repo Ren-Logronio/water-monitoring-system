@@ -169,49 +169,37 @@
                             <div class="col-12 p-1">
                                 <div class="p-2 rounded-2 border border-1 border-dark-subtle">
                                     <p class="h6">Summary</p>
-                                    <span class="d-flex flex-column flex-md-row justify-content-evenly my-4 mb-5 mx-1 mx-md-5">
-                                        <span class="d-flex flex-row flex-md-column">
-                                            <p class="h2 m-0 text-center">0</p>
-                                            <p class="h5 m-0 text-center">Pond</p>
-                                        </span>
-                                        <span class="d-flex flex-row flex-md-column">
-                                            <p class="h2 m-0 text-center">0.00</p>
-                                            <p class="h5 m-0 text-center">Averages {parameter}</p>
-                                        </span>
-                                        <span class="d-flex flex-row flex-md-column">
-                                            <p class="h2 m-0 text-center">Optimal</p>
-                                            <p class="h5 m-0 text-center">Farm Health</p>
-                                        </span>
-                                        <span class="d-flex flex-row flex-md-column">
-                                            <p class="h2 m-0 text-center">x</p>
-                                            <p class="h5 m-0 text-center">Pond</p>
-                                        </span>
-                                    </span>
+                                    <canvas id="summary"></canvas>
                                 </div>
                             </div>
-                            <div class="col-12 col-lg-6 col-xl-4 p-1">
+                            <div class="col-12 col-lg-6 col-xxl-4 p-1">
                                 <div class="p-2 rounded-2 border border-1 border-dark-subtle">
                                     <p class="h6">Temperature</p>
+                                    <canvas id="temperature"></canvas>
                                 </div>
                             </div>
-                            <div class="col-12 col-lg-6 col-xl-4 p-1">
+                            <div class="col-12 col-lg-6 col-xxl-4 p-1">
                                 <div class="p-2 rounded-2 border border-1 border-dark-subtle">
                                     <p class="h6">Salinity</p>
+                                    <canvas id="salinity"></canvas>
                                 </div>
                             </div>
-                            <div class="col-12 col-lg-6 col-xl-4 p-1">
+                            <div class="col-12 col-lg-6 col-xxl-4 p-1">
                                 <div class="p-2 rounded-2 border border-1 border-dark-subtle">
                                     <p class="h6">pH</p>
+                                    <canvas id="ph"></canvas>
                                 </div>
                             </div>
-                            <div class="col-12 col-lg-6 col-xl-4 p-1">
+                            <div class="col-12 col-lg-6 col-xxl-4 p-1">
                                 <div class="p-2 rounded-2 border border-1 border-dark-subtle">
                                     <p class="h6">Dissolved Oxygen</p>
+                                    <canvas id="dissolved-oxygen"></canvas>
                                 </div>
                             </div>
-                            <div class="col-12 col-lg-6 col-xl-4 p-1">
+                            <div class="col-12 col-lg-6 col-xxl-4 p-1">
                                 <div class="p-2 rounded-2 border border-1 border-dark-subtle">
                                     <p class="h6">Ammonia</p>
+                                    <canvas id="ammonia"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -219,8 +207,9 @@
                 </section>
             </section>
         </div>
-        <script>
-        </script>
+
+        <script src="./lib/chart.js-4.3.0/package/dist/chart.umd.js"></script>
+        <script src="./resource/script/dashboard.js"></script>
         <script src="./resource/script/navbar.intersection.js"> </script>
         <script src="./resource/script/sidebar.js"></script>
     </body>
