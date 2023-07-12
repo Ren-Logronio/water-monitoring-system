@@ -25,7 +25,7 @@
         <![endif]-->
         <div class="d-flex flex-row min-vh-100">
             <!-- Sidebar -->
-            <section id="sidebar" class="custom-sidebar bg-primary-darker z-999 text-white min-vh-100">
+            <section id="sidebar" class="custom-sidebar d-flex flex-column bg-primary-darker z-999 text-white min-vh-100">
                 <ol class="list-unstyled overflow-hidden">
                     <li class="mb-3 py-2 d-flex justify-content-center click-none pointer-none shadow-lg">
                         <a class="pe-4 d-flex flex-row text-white text-decoration-none">
@@ -58,37 +58,97 @@
                         </a>
                     </li>
                     <hr>
-                    <li>
-                        <p class="fw-light m-0">
+                    <li class="pointer-none click-none">
+                        <p class="fw-light m-0 ms-2 text-light fst-normal small">
                             Parameters
                         </p>
                     </li>
-                    <li class="custom-sidebar-selection">Temperature</li>
-                    <li>Salinity</li>
-                    <li>pH</li>
-                    <li>Dissolved Oxygen</li>
-                    <li>Ammonia</li>
-                    <hr>
-                    <li></li>
+                    <li class="custom-sidebar-selection">
+                        <a class="px-3 py-2 text-white text-decoration-none" href="#">
+                            <svg class="me-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="1em" viewBox="0 0 512 512">
+                                <path d="M160 64c-26.5 0-48 21.5-48 48V276.5c0 17.3-7.1 31.9-15.3 42.5C86.2 332.6 80 349.5 80 368c0 44.2 35.8 80 80 80s80-35.8 80-80c0-18.5-6.2-35.4-16.7-48.9c-8.2-10.6-15.3-25.2-15.3-42.5V112c0-26.5-21.5-48-48-48zM48 112C48 50.2 98.1 0 160 0s112 50.1 112 112V276.5c0 .1 .1 .3 .2 .6c.2 .6 .8 1.6 1.7 2.8c18.9 24.4 30.1 55 30.1 88.1c0 79.5-64.5 144-144 144S16 447.5 16 368c0-33.2 11.2-63.8 30.1-88.1c.9-1.2 1.5-2.2 1.7-2.8c.1-.3 .2-.5 .2-.6V112zM208 368c0 26.5-21.5 48-48 48s-48-21.5-48-48c0-20.9 13.4-38.7 32-45.3V144c0-8.8 7.2-16 16-16s16 7.2 16 16V322.7c18.6 6.6 32 24.4 32 45.3z"/>
+                            </svg>
+                            Temperature
+                        </a>
+                    </li>
+                    <li class="custom-sidebar-selection">
+                        <a class="px-3 py-2 text-white text-decoration-none" href="#">
+                            <svg class="me-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="1em" viewBox="0 0 512 512">
+                                <path d="M224 0c13.3 0 24 10.7 24 24V70.1l23-23c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-57 57v76.5l66.2-38.2 20.9-77.8c3.4-12.8 16.6-20.4 29.4-17s20.4 16.6 17 29.4L373 142.2l37.1-21.4c11.5-6.6 26.2-2.7 32.8 8.8s2.7 26.2-8.8 32.8L397 183.8l31.5 8.4c12.8 3.4 20.4 16.6 17 29.4s-16.6 20.4-29.4 17l-77.8-20.9L272 256l66.2 38.2 77.8-20.9c12.8-3.4 26 4.2 29.4 17s-4.2 26-17 29.4L397 328.2l37.1 21.4c11.5 6.6 15.4 21.3 8.8 32.8s-21.3 15.4-32.8 8.8L373 369.8l8.4 31.5c3.4 12.8-4.2 26-17 29.4s-26-4.2-29.4-17l-20.9-77.8L248 297.6v76.5l57 57c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-23-23V488c0 13.3-10.7 24-24 24s-24-10.7-24-24V441.9l-23 23c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l57-57V297.6l-66.2 38.2-20.9 77.8c-3.4 12.8-16.6 20.4-29.4 17s-20.4-16.6-17-29.4L75 369.8 37.9 391.2c-11.5 6.6-26.2 2.7-32.8-8.8s-2.7-26.2 8.8-32.8L51 328.2l-31.5-8.4c-12.8-3.4-20.4-16.6-17-29.4s16.6-20.4 29.4-17l77.8 20.9L176 256l-66.2-38.2L31.9 238.6c-12.8 3.4-26-4.2-29.4-17s4.2-26 17-29.4L51 183.8 13.9 162.4c-11.5-6.6-15.4-21.3-8.8-32.8s21.3-15.4 32.8-8.8L75 142.2l-8.4-31.5c-3.4-12.8 4.2-26 17-29.4s26 4.2 29.4 17l20.9 77.8L200 214.4V137.9L143 81c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l23 23V24c0-13.3 10.7-24 24-24z"/>
+                            </svg>
+                            Salinity
+                        </a>
+                    </li>
+                    <li class="custom-sidebar-selection">
+                        <a class="px-3 py-2 text-white text-decoration-none" href="#">
+                            <svg class="me-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="1em" viewBox="0 0 512 512">
+                                <path d="M368 80c-3.2 0-6.2 .4-8.9 1.3C340 86.8 313 91.9 284.8 84.6C227.4 69.7 160.2 92 110.1 142.1S37.7 259.4 52.6 316.8c7.3 28.2 2.2 55.2-3.3 74.3c-.8 2.8-1.3 5.8-1.3 8.9c0 17.7 14.3 32 32 32c3.2 0 6.2-.4 8.9-1.3c19.1-5.5 46.1-10.7 74.3-3.3c57.4 14.9 124.6-7.4 174.7-57.5s72.4-117.3 57.5-174.7c-7.3-28.2-2.2-55.2 3.3-74.3c.8-2.8 1.3-5.8 1.3-8.9c0-17.7-14.3-32-32-32zm0-48c44.2 0 80 35.8 80 80c0 7.7-1.1 15.2-3.1 22.3c-4.6 15.8-7.1 32.9-3 48.9c20.1 77.6-10.9 161.5-70 220.7s-143.1 90.2-220.7 70c-16-4.1-33-1.6-48.9 3c-7.1 2-14.6 3.1-22.3 3.1c-44.2 0-80-35.8-80-80c0-7.7 1.1-15.2 3.1-22.3c4.6-15.8 7.1-32.9 3-48.9C-14 251.3 17 167.3 76.2 108.2S219.3 18 296.8 38.1c16 4.1 33 1.6 48.9-3c7.1-2 14.6-3.1 22.3-3.1zM246.7 167c-52 15.2-96.5 59.7-111.7 111.7c-3.7 12.7-17.1 20-29.8 16.3s-20-17.1-16.3-29.8c19.8-67.7 76.6-124.5 144.3-144.3c12.7-3.7 26.1 3.6 29.8 16.3s-3.6 26.1-16.3 29.8z"/>
+                            </svg>
+                            pH
+                        </a>
+                    </li>
+                    <li class="custom-sidebar-selection">
+                        <a class="px-3 py-2 text-white text-decoration-none" href="#">
+                            <svg class="me-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="1em" viewBox="0 0 512 512">
+                                <path d="M208 96a48 48 0 1 0 0-96 48 48 0 1 0 0 96zM320 256a64 64 0 1 0 0-128 64 64 0 1 0 0 128zM416 32a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0 160c0 27.6-11.7 52.5-30.4 70.1C422.1 275.7 448 310.8 448 352c0 53-43 96-96 96H160c-53 0-96-43-96-96s43-96 96-96h88.4c-15.2-17-24.4-39.4-24.4-64H96c-53 0-96 43-96 96V416c0 53 43 96 96 96H416c53 0 96-43 96-96V288c0-53-43-96-96-96zM160 288c-35.3 0-64 28.7-64 64s28.7 64 64 64H352c35.3 0 64-28.7 64-64s-28.7-64-64-64H320 160z"/>
+                            </svg>
+                            Dissolved Oxygen
+                        </a>
+                    </li>
+                    <li class="custom-sidebar-selection">
+                        <a class="px-3 py-2 text-white text-decoration-none" href="#">
+                            <svg class="me-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="1em" viewBox="0 0 512 512">
+                                <path d="M368 128c0 44.4-25.4 83.5-64 106.4V256c0 17.7-14.3 32-32 32H176c-17.7 0-32-14.3-32-32V234.4c-38.6-23-64-62.1-64-106.4C80 57.3 144.5 0 224 0s144 57.3 144 128zM168 176a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm144-32a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zM3.4 273.7c7.9-15.8 27.1-22.2 42.9-14.3L224 348.2l177.7-88.8c15.8-7.9 35-1.5 42.9 14.3s1.5 35-14.3 42.9L295.6 384l134.8 67.4c15.8 7.9 22.2 27.1 14.3 42.9s-27.1 22.2-42.9 14.3L224 419.8 46.3 508.6c-15.8 7.9-35 1.5-42.9-14.3s-1.5-35 14.3-42.9L152.4 384 17.7 316.6C1.9 308.7-4.5 289.5 3.4 273.7z"/>
+                            </svg>
+                            Ammonia
+                        </a>
+                    </li>
                 </ol>
+                <div class="m-3 py-4 p-3 bg-primary shadow-sm rounded-2 border border-1 border-dark-subtle ">
+                    <ol class="list-unstyled m-0">
+                        <li class="mb-2 d-flex flex-column">
+                            <a class="link-light fw-medium text-decoration-none" href="#">
+                                Settings
+                            </a>
+                        </li>
+                        <li class="mb-2 d-flex flex-column">
+                            <a class="link-light fw-medium text-decoration-none " href="#">
+                                Account
+                            </a>
+                        </li>
+                        <li class="mb-2 d-flex flex-column">
+                            <a class="link-light fw-medium text-decoration-none" href="#">
+                                Preferences
+                            </a>
+                        </li>
+                        <li class="mb-2 d-flex flex-column">
+                            <a class="link-light fw-medium text-decoration-none" href="#">
+                                Help
+                            </a>
+                        </li>
+                    </ol>
+                </div>
+                <p class="d-flex small text-light text-center m-auto mb-1 ">
+                    Designed By Ternary Operators<br>All rights reserved &copy; 2023
+                </p>
             </section>
             <div id="sidebar-cover" class="z-998 position-fixed w-100 h-100 bg-black opacity-25 d-none"></div>
             <!-- Sidebar -->
             <section class="position-relative z-100 w-100">
-                <nav class="position-absolute z-99 w-100">
-                    <ol class="list-unstyled m-0 mx-0 mx-md-3 me-3 mt-2 d-flex flex-row justify-content-between">
-                        <li class="d-flex flex-row align-content-center">
-                            <a id="sidebar-toggle" class="link link-primary mx-2 p-2 text-decoration-none pointer">
+                <nav id="navbar" class="position-absolute z-99 w-100 navbar-topped">
+                    <ol class="list-unstyled m-0 mx-0 mx-md-3 me-3 mt-0 d-flex flex-row justify-content-between">
+                        <li class="py-2 d-flex flex-row align-content-center">
+                            <a id="sidebar-toggle" class="link mx-2 p-2 text-decoration-none pointer">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="1em" viewBox="0 0 448 512">
                                     <path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/>
                                 </svg>
                             </a>
-                            <img class="me-1 d-md-none align-self-center" height="24" src="./assets/logo-orange-cropped.png">
+                            <img class="me-1 d-md-none align-self-center" height="40" src="./assets/logo-orange.png">
                             <p class="mt-auto mb-auto ms-0 fw-semibold">{Farm Name}</p>
                         </li>
-                        <li class="d-flex flex-row align-content-stretch">
-                            <a class="d-flex flex-row align-content-center text-black text-decoration-none" href="#">
-                                <p class="me-2 pt-1  d-none d-md-block mt-auto mb-auto">{Surname, Firstname}</p>
+                        <li class="py-2 d-flex flex-row align-content-stretch">
+                            <a class="link d-flex flex-row align-content-center text-decoration-none" href="#">
+                                <p class="me-2 pt-1 d-none d-md-block mt-auto mb-auto">{Surname, Firstname}</p>
                                 <div class="profile-circle me-1  bg-dark text-white">
                                     F
                                 </div>
@@ -99,14 +159,69 @@
                         </li> 
                     </ol>
                 </nav>
-                <div id="intersection" class="position-fixed intersection-navbar w-100">
-                </div>
-                <iframe id="iframe" class="position-absolute w-100 h-100 " src="./dashboard.html" frameborder="0">
-                </iframe>
+                <section class="position-sticky vh-100 overflow-y-scroll overflow-x-hidden">
+                    <div id="intersection" class="intersection-navbar w-100">
+                        
+                    </div>
+                    <div id="content">
+                        <p class="ms-5 m-0 h3">Dashboard </p>
+                        <div class="row my-4 mx-2">
+                            <div class="col-12 p-1">
+                                <div class="p-2 rounded-2 border border-1 border-dark-subtle">
+                                    <p class="h6">Summary</p>
+                                    <span class="d-flex flex-column flex-md-row justify-content-evenly my-4 mb-5 mx-1 mx-md-5">
+                                        <span class="d-flex flex-row flex-md-column">
+                                            <p class="h2 m-0 text-center">0</p>
+                                            <p class="h5 m-0 text-center">Pond</p>
+                                        </span>
+                                        <span class="d-flex flex-row flex-md-column">
+                                            <p class="h2 m-0 text-center">0.00</p>
+                                            <p class="h5 m-0 text-center">Averages {parameter}</p>
+                                        </span>
+                                        <span class="d-flex flex-row flex-md-column">
+                                            <p class="h2 m-0 text-center">Optimal</p>
+                                            <p class="h5 m-0 text-center">Farm Health</p>
+                                        </span>
+                                        <span class="d-flex flex-row flex-md-column">
+                                            <p class="h2 m-0 text-center">x</p>
+                                            <p class="h5 m-0 text-center">Pond</p>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 col-xl-4 p-1">
+                                <div class="p-2 rounded-2 border border-1 border-dark-subtle">
+                                    <p class="h6">Temperature</p>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 col-xl-4 p-1">
+                                <div class="p-2 rounded-2 border border-1 border-dark-subtle">
+                                    <p class="h6">Salinity</p>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 col-xl-4 p-1">
+                                <div class="p-2 rounded-2 border border-1 border-dark-subtle">
+                                    <p class="h6">pH</p>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 col-xl-4 p-1">
+                                <div class="p-2 rounded-2 border border-1 border-dark-subtle">
+                                    <p class="h6">Dissolved Oxygen</p>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 col-xl-4 p-1">
+                                <div class="p-2 rounded-2 border border-1 border-dark-subtle">
+                                    <p class="h6">Ammonia</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </section>
         </div>
-        
-        <script src="./resource/script/navbar.intersection.js"></script>
+        <script>
+        </script>
+        <script src="./resource/script/navbar.intersection.js"> </script>
         <script src="./resource/script/sidebar.js"></script>
     </body>
 </html>

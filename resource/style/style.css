@@ -11,6 +11,7 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Raleway', sans-serif;
+    transition: all 0.1s ease;
 }
 
 * {
@@ -101,6 +102,25 @@ a.btn-primary:hover, .btn-primary:hover {
 .link-primary:hover {
     color: #2d1a50 !important;
     transition: all 0.2s ease;
+}
+
+.navbar-topped {
+    background-color: transparent !important;);
+    transition: all 0.1s ease !important;
+}
+
+.navbar-topped * {
+    color: #000 !important;
+}
+
+.navbar-scrolled {
+    background-color: var(--primary-color-subtle)!important;
+    color: #fff !important;
+    transition: all 0.1s ease !important;
+}
+
+.navbar-scrolled * {
+    color: #fff !important;
 }
 
 .profile-circle {
