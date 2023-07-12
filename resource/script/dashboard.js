@@ -11,15 +11,13 @@ var chartData = {
     ],
     "datasets": [
         {
-        "label": "",
         "backgroundColor": "#b3d4ff",
         "fill": true,
         "data": [
             "230",
             "250",
             "260",
-            "240",
-            "233"
+            "240"
         ],
         "borderColor": "#ffffff",
         "borderWidth": "1"
@@ -44,7 +42,7 @@ var chartOptions = {
         "yAxes": [
         {
             "ticks": {
-            "beginAtZero": true,
+            "beginAtZero": false,
             "display": true
             },
             "gridLines": {
