@@ -1,7 +1,7 @@
 
 // NOTE - PLACEHOLDER DATA FOR TESTING PURPOSES
 
-const ids = ['summary', 'temperature', 'salinity', 'ph', 'dissolved-oxygen', 'ammonia']
+const ids = ['temperature', 'salinity', 'ph', 'dissolved-oxygen', 'ammonia']
 var chartData = {
     "labels": [
         "week 1",
