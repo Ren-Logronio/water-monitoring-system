@@ -145,6 +145,14 @@ a.btn-primary:hover, .btn-primary:hover {
     cursor: pointer !important;
 }
 
+.z-1001 {
+    z-index: 1001;
+}
+
+.z-1000 {
+    z-index: 1000;
+}
+
 .z-999 {
     z-index: 999;
 }
