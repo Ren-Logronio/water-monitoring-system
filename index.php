@@ -2,8 +2,26 @@
 
 session_start();
 
+if (isset($_SESSION['userid']) && isset($_SESSION['datetimelogged']) && $_SESSION['loggedin'] == true) {
+    // check datetimelogged if more the 10 minutes has passed
+    /*
+    $now = time();
+    $timeloggedin = $_SESSION['datetimelogged'];
+    if((($now - strtotime($before->format('Y-m-d H:i:s'))) / 60) > 10.0) {
+        // logout
+    }
+    */
+    header('Location: ./dashboard.php');
+    die();
+}
 
+$loginerror;
 
+if(parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY) == 'loginerror'){
+    $loginerror = true;
+} else {
+    $loginerror = false;
+}
 
 ?>
 
@@ -50,13 +68,16 @@ session_start();
                             shadow-sm">
                     <p class="h4 m-0 text-center">Welcome Back</p>
                     <form method="POST" action="./login.php" class="my-4">
+                        <?php if($loginerror) : ?>
+                            <div class="mb-3 alert alert-danger" role="alert">
+                                Invalid username or password.
+                            </div>
+                        <?php endif; ?>
                         <div class="mb-3">
                             <input class="form-control" name="username-email" type="email" placeholder="Username / Email" aria-labelledby="username-email-message"/>
-                            <div id="username-email-message" class="d-none form-text text-danger">Error Message</div>
                         </div>
                         <div class="mb-4">
-                            <input class="form-control" name="password" type="password" placeholder="Password" aria-labelledby="password-message"/>
-                            <div id="password-message" class="d-none form-text text-danger">Error Message</div>
+                            <input class="form-control <?php  ?>" name="password" type="password" placeholder="Password" aria-labelledby="password-message"/>
                         </div>
                         <div class="mb-3 d-flex flex-row justify-content-evenly">
                             <div class="form-check">
@@ -67,18 +88,20 @@ session_start();
                         </div>
                         <input class="mb-3 form-control border border-0 btn-primary" type="submit" value="Log In">
                     </form>
+                    <!--
                     <p class="text-center">Don't have an account? <a class="link link-primary text-decoration-none" href="./register.php">Sign Up</a></p>
                     <div class="mb-3 d-flex flex-row">
                         <div class="w-100 my-3 border-top border-light-subtle"></div>
                         <p class="m-0 px-2 align-self-center">Or</p>
                         <div class="w-100 my-3 border-top border-light-subtle"></div>
                     </div>
-                    <a class="btn btn-outline-dark  form-control border border-1 border-light-subtle">
-                        Sign In with Google
-                        <svg class="ms-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="18" viewBox="0 0 488 512">
-                            <path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"/>
-                        </svg>
-                    </a>
+                        <a class="btn btn-outline-dark  form-control border border-1 border-light-subtle">
+                            Sign In with Google
+                            <svg class="ms-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="18" viewBox="0 0 488 512">
+                                <path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"/>
+                            </svg>
+                        </a>
+                    -->
                 </div>
                 <!-- LOG IN FORM -->
             </div>
