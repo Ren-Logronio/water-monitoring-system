@@ -1,4 +1,11 @@
-/*
+CREATE DATABASE IF NOT EXISTS 'water-monitoring-system-db';
+USE 'water-monitoring-system-db';
+
+DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS farm;
+DROP TABLE IF EXISTS microcontroller;
+DROP TABLE IF EXISTS sensor;
+DROP TABLE IF EXISTS sensordata;
 
 CREATE TABLE IF NOT EXISTS user{
     userid INT NOT NULL AUTO_INCREMENT,
@@ -10,7 +17,7 @@ CREATE TABLE IF NOT EXISTS user{
     PRIMARY KEY (userid)
 }
 
-CREATE TABLE IF NOT EXISTS user_farm {
+CREATE TABLE IF NOT EXISTS account_farm {
     userid INT NOT NULL,
     farmid INT NOT NULL,
     datetime VARCHAR(255) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -50,9 +57,3 @@ CREATE TABLE IF NOT EXISTS sensordata {
     PRIMARY KEY (sensorid),
     FOREIGN KEY (sensorid) REFERENCES sensor(sensorid)
 }   
-
-*/
-
-
-
-INSERT INTO user (firstname, middlename, lastname, email, pass) VALUES ('Juan Dela', 'Pangalan', 'Cruz', 'juandela.cruz@msugensan.edu.ph', '$2y$10$HgkAD5nuDnn8U28YTbg3oeyWCPHVpzdRkDyCbNjLrYzNeVoFIC1lK');

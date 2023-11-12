@@ -8,7 +8,9 @@ const int mq137SensorPin = A0; // Analog pin for the MQ-137 sensor
 const int pHSensorPin = A1;  // Analog pin for the pH sensor
 const int ds18b20Pin = 2;   // Digital pin for the DS18B20 sensor
 const String deviceID = "3b26008c-ac0b-576d-9d0c-2cda7dc0fb3d"; // Device ID for the sensor
-const String deviceName = "TestingDevice"; 
+const String deviceName = "TestingDevice";
+const String deviceSensors = "temperature|ammonia|ph"; 
+// List of sensors separated by a pipe (|), serves as metadata as to what sensor the device is using
 
 void setup() {
   Serial.begin(9600);
@@ -60,6 +62,8 @@ void loop() {
   Serial.print(compensatedpH, 2);
   Serial.print("', 'temperature': '");
   Serial.print(temperatureC, 2);
+  Serial.print("', 'sensors': '");
+  Serial.print("ammonia|ph|temperature");
   Serial.print("'}\n");
 
 

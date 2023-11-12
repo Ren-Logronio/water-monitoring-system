@@ -1,3 +1,12 @@
+<?php
+
+session_start();
+
+
+
+
+?>
+
 
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
@@ -40,9 +49,9 @@
                             border border-1 border-light-subtle
                             shadow-sm">
                     <p class="h4 m-0 text-center">Welcome Back</p>
-                    <form method="POST" class="my-4">
+                    <form method="POST" action="./login.php" class="my-4">
                         <div class="mb-3">
-                            <input class="form-control" name="username-email" type="text" placeholder="Username / Email" aria-labelledby="username-email-message"/>
+                            <input class="form-control" name="username-email" type="email" placeholder="Username / Email" aria-labelledby="username-email-message"/>
                             <div id="username-email-message" class="d-none form-text text-danger">Error Message</div>
                         </div>
                         <div class="mb-4">
