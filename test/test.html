@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Sensor Test</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="../lib/bootstrap.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js" integrity="sha512-SIMGYRUjwY8+gKg7nn9EItdD8LCADSDfJNutF9TPrvEo86sQmFMh6MyralfIyhADlajSxqc7G0gs7+MwWF/ogQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const canvasHandler = document.getElementById("canvas-handler");
+                /*
+                const min = 0.0;
+                const max = 100;
+                const precision = 4;
+                const date = new Date(Math.floor(Math.random() * (Date.now() - 0 + 1)) + 0);
+                for (var i = 0; i < 100; i++) {
+                    const newdate = new Date(date.getTime() + i * 1000);
+                    const data = {datetime: newdate.toISOString(), value: (Math.random() * (max - min) + min).toFixed(precision)};
+                    console.log(JSON.stringify(data));
+                }
+                */
+                var canvas = document.createElement("canvas");
+                canvas.width = 100;
+                canvas.height = 100;
+                var canvasContainer = document.createElement("div");
+                canvasContainer.classList.add("col-6", "rounded", "rounded-2", "bg-white");
+                canvasContainer.appendChild(canvas);
+                canvasHandler.appendChild(canvasContainer);
+                var ctx = canvas.getContext("2d");
+                const labels = [
+                    'Red',
+                    'Blue',
+                    'Yellow',
+                    'Green',
+                    'Purple',
+                    'Orange'
+                ];
+                const data = {
+                    labels: labels,
+                    datasets: [{
+                        label: 'My First Dataset',
+                        data: [65, 59, 80, 81, 56, 55, 40],
+                        fill: false,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                    }]
+                };
+                const config = {
+                    type: 'line',
+                    data: data,
+                };
+                var chart = new Chart(ctx, config);
+            });
+        </script>
+    </head>
+    <body class="bg-dark-subtle">
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <div id="canvas-handler" class="container container-fluid d-flex justify-content-center min-vh-100 min-vw-100 p-5">
+        </div>
+        <script src="../lib/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
