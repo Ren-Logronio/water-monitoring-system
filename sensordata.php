@@ -3,14 +3,13 @@
 require_once('includes/database.init.php');
 
     //check if $_POST is set
-if(!isset($_POST)) {
+if(!isset($_POST) or !isset($_POST['sensors']) or !isset($_POST['deviceid'])) {
     // end
     die();
 }
 /*
 { 'deviceid': 'your_device_id', 'name': 'your_device_name', 'ammonia': 'ammonia_concentration_value', 'ph': 'ph_value', 'temperature': 'temperature_value', 'sensors': 'ammonia|ph|temperature'}
 */
-
 $sensors = explode('|', $_POST['sensors']);
 
 // for every sensor in $sensors
@@ -26,7 +25,15 @@ foreach($sensors as $sensor) {
         // if sensor does not exist
         if(mysqli_num_rows($sensorquery) == 0) {
             // insert sensor into database
-            mysqli_query($con,"INSERT INTO `sensor` (`deviceid`, `sensortype`) VALUES (UUID_TO_BIN('".$deviceid."'), '".$sensor."')");
+            try {
+                mysqli_query($con,"INSERT INTO `sensor` (`deviceid`, `sensortype`) VALUES (UUID_TO_BIN('".$deviceid."'), '".$sensor."')");
+                echo "- added new sensor type to database \n "
+            } catch (Exception $e) {
+                // close connection and print error
+                mysqli_close($con);
+                echo 'Caught exception: ',  $e->getMessage(), "\n ";
+                die();
+            }
         }
         try {
             // get id of sensor from device id
@@ -35,13 +42,25 @@ foreach($sensors as $sensor) {
             $sensoridresult = mysqli_fetch_assoc($sensoridquery);
             $sensorid = $sensoridresult['sensorid'];
             // insert sensor value into database
-            mysqli_query($con,"INSERT INTO `sensordata` (`sensorid`, `value`, `datetime`) VALUES ('".$sensorid."', '".$sensorvalue."', '".$datetime."')");
+            try {
+                mysqli_query($con,"INSERT INTO `sensordata` (`sensorid`, `value`, `datetime`) VALUES ('".$sensorid."', '".$sensorvalue."', '".$datetime."')");
+                echo "added sensor data to database \n";
+            } catch (Exception $e) {
+                // close connection and print error
+                mysqli_close($con);
+                echo 'Caught exception: ',  $e->getMessage(), " \n ";
+                die();
+            }
         } catch (Exception $e) {
             // close connection and print error
             mysqli_close($con);
-            echo 'Caught exception: ',  $e->getMessage(), "\n";
+            echo 'Caught exception: ',  $e->getMessage(), " \n ";
             die();
         }
+    } else {
+        // continue to next loop
+        echo "sensor '", $sensor, "' not set \n";
+        continue;
     }
 }
 
