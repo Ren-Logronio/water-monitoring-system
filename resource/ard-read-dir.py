@@ -1,13 +1,21 @@
-
 from pyuac import main_requires_admin
 import serial
 import httpx
 import time
 import json
+import mysql.connector
 
 @main_requires_admin
 def main():
     ser = serial.Serial('COM6', 9600)
+    config = {
+        'user': 'scott',
+        'password': 'password',
+        'host': '127.0.0.1',
+        'database': 'employees',
+        'raise_on_warnings': True
+    }
+    db = mysql.connector.connect(**config)
     previous_line = ''
     while True:
         #slee[ for 1 second
@@ -23,10 +31,6 @@ def main():
             # add datetime to data using iso string format
             data['datetime'] = time.strftime('%Y-%m-%dT%H:%M:%S')
             #httpx post request
-            r = httpx.post('http://localhost:80/water-monitoring/sensor/index.php', data=data)
-            print(r.text)
-            # store the line for the next iteration
-            previous_line = line
         except ValueError as e:
             print(e)
             # next iteration

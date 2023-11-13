@@ -8,16 +8,13 @@ if(!isset($_POST)) {
     die();
 }
 /*
-{   'deviceid': 'your_device_id', 
-    'name': 'your_device_name', 
-    'ammonia': 'ammonia_concentration_value', 
-    'ph': 'ph_value', 'temperature': 
-    'temperature_value', 'sensors': 
-    'ammonia|ph|temperature'}
+{ 'deviceid': 'your_device_id', 'name': 'your_device_name', 'ammonia': 'ammonia_concentration_value', 'ph': 'ph_value', 'temperature': 'temperature_value', 'sensors': 'ammonia|ph|temperature'}
 */
 
+$sensors = explode('|', $_POST['sensors']);
+
 // for every sensor in $sensors
-foreach($SENSORS as $sensor) {
+foreach($sensors as $sensor) {
     // if sensor is set in $_POST
     if(isset($_POST[$sensor])) {
         // get sensor value
@@ -25,15 +22,15 @@ foreach($SENSORS as $sensor) {
         $deviceid = $_POST['deviceid'];
         $datetime = $_POST['datetime'];
         // check if sensor exists
-        $sensorquery = mysqli_query($con,"SELECT `sensorid` FROM `sensors` WHERE `deviceid` = UUID_TO_BIN('".$deviceid."') AND `sensortype` = '".$sensor."'");
+        $sensorquery = mysqli_query($con,"SELECT `sensorid` FROM `sensor` WHERE `deviceid` = UUID_TO_BIN('".$deviceid."') AND `sensortype` = '".$sensor."'");
         // if sensor does not exist
         if(mysqli_num_rows($sensorquery) == 0) {
             // insert sensor into database
-            mysqli_query($con,"INSERT INTO `sensors` (`deviceid`, `sensortype`) VALUES (UUID_TO_BIN('".$deviceid."'), '".$sensor."')");
+            mysqli_query($con,"INSERT INTO `sensor` (`deviceid`, `sensortype`) VALUES (UUID_TO_BIN('".$deviceid."'), '".$sensor."')");
         }
         try {
             // get id of sensor from device id
-            $sensoridquery = mysqli_query($con,"SELECT `sensorid` FROM `sensors` WHERE `deviceid` = UUID_TO_BIN('".$deviceid."') AND `sensortype` = '".$sensor."'");
+            $sensoridquery = mysqli_query($con,"SELECT `sensorid` FROM `sensor` WHERE `deviceid` = UUID_TO_BIN('".$deviceid."') AND `sensortype` = '".$sensor."'");
             // get sensorid from query
             $sensoridresult = mysqli_fetch_assoc($sensoridquery);
             $sensorid = $sensoridresult['sensorid'];

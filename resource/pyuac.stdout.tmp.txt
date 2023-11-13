@@ -1,0 +1,69 @@
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+<br />
+<b>Warning</b>:  Undefined variable $SENSORS in <b>C:\xampp\htdocs\water-monitoring\sensordata.php</b> on line <b>20</b><br />
+<br />
+<b>Warning</b>:  foreach() argument must be of type array|object, null given in <b>C:\xampp\htdocs\water-monitoring\sensordata.php</b> on line <b>20</b><br />
+
+<br />
+<b>Warning</b>:  Undefined variable $SENSORS in <b>C:\xampp\htdocs\water-monitoring\sensordata.php</b> on line <b>20</b><br />
+<br />
+<b>Warning</b>:  foreach() argument must be of type array|object, null given in <b>C:\xampp\htdocs\water-monitoring\sensordata.php</b> on line <b>20</b><br />
+
+<br />
+<b>Warning</b>:  Undefined variable $SENSORS in <b>C:\xampp\htdocs\water-monitoring\sensordata.php</b> on line <b>20</b><br />
+<br />
+<b>Warning</b>:  foreach() argument must be of type array|object, null given in <b>C:\xampp\htdocs\water-monitoring\sensordata.php</b> on line <b>20</b><br />
+
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+String does not have the expected format
+<br />
+<b>Warning</b>:  Undefined variable $SENSORS in <b>C:\xampp\htdocs\water-monitoring\sensordata.php</b> on line <b>22</b><br />
+<br />
+<b>Warning</b>:  foreach() argument must be of type array|object, null given in <b>C:\xampp\htdocs\water-monitoring\sensordata.php</b> on line <b>22</b><br />
+
+String does not have the expected format
+<br />
+<b>Fatal error</b>:  Uncaught mysqli_sql_exception: Table 'water-monitoring-system-db.sensors' doesn't exist in C:\xampp\htdocs\water-monitoring\sensordata.php:30
+Stack trace:
+#0 C:\xampp\htdocs\water-monitoring\sensordata.php(30): mysqli_query(Object(mysqli), 'SELECT `sensori...')
+#1 {main}
+  thrown in <b>C:\xampp\htdocs\water-monitoring\sensordata.php</b> on line <b>30</b><br />
+
+<br />
+<b>Fatal error</b>:  Uncaught mysqli_sql_exception: Table 'water-monitoring-system-db.sensors' doesn't exist in C:\xampp\htdocs\water-monitoring\sensordata.php:30
+Stack trace:
+#0 C:\xampp\htdocs\water-monitoring\sensordata.php(30): mysqli_query(Object(mysqli), 'SELECT `sensori...')
+#1 {main}
+  thrown in <b>C:\xampp\htdocs\water-monitoring\sensordata.php</b> on line <b>30</b><br />
+

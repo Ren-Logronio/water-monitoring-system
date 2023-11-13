@@ -56,6 +56,6 @@ CREATE TABLE IF NOT EXISTS sensordata {
 
 
 INSERT INTO user (firstname, middlename, lastname, email, pass) VALUES ('Juan Dela', 'Pangalan', 'Cruz', 'juandela.cruz@msugensan.edu.ph', '$2y$10$HgkAD5nuDnn8U28YTbg3oeyWCPHVpzdRkDyCbNjLrYzNeVoFIC1lK');
-INSERT INTO user_farm (userid, farmid) VALUES (1, 1);
 INSERT INTO farm (farmname, farmaddress) VALUES ('MSU-Gensan Campus Research Station', 'Makar-Siguel Rd, General Santos City, South Cotabato');
-INSERT INTO microcontroller (deviceid, farmid, name) VALUES ('3b26008c-ac0b-576d-9d0c-2cda7dc0fb3d', 1, 'TestingDevice');
+INSERT INTO user_farm (userid, farmid) VALUES (1, 1);
+INSERT INTO device (deviceid, farmid, name) VALUES ('3b26008c-ac0b-576d-9d0c-2cda7dc0fb3d', 1, 'TestingDevice');
