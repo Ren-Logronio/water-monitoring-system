@@ -57,6 +57,7 @@ foreach($sensors as $sensor) {
             echo 'Caught exception: ',  $e->getMessage(), " \n ";
             die();
         }
+        
     } else {
         // continue to next loop
         echo "sensor '", $sensor, "' not set \n";
