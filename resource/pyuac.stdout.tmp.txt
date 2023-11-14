@@ -1,69 +1,808 @@
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-String does not have the expected format
 <br />
-<b>Warning</b>:  Undefined variable $SENSORS in <b>C:\xampp\htdocs\water-monitoring\sensordata.php</b> on line <b>20</b><br />
-<br />
-<b>Warning</b>:  foreach() argument must be of type array|object, null given in <b>C:\xampp\htdocs\water-monitoring\sensordata.php</b> on line <b>20</b><br />
+<b>Parse error</b>:  syntax error, unexpected token &quot;}&quot;, expecting &quot;,&quot; or &quot;;&quot; in <b>C:\xampp\htdocs\water-monitoring\sensordata.php</b> on line <b>31</b><br />
 
 <br />
-<b>Warning</b>:  Undefined variable $SENSORS in <b>C:\xampp\htdocs\water-monitoring\sensordata.php</b> on line <b>20</b><br />
-<br />
-<b>Warning</b>:  foreach() argument must be of type array|object, null given in <b>C:\xampp\htdocs\water-monitoring\sensordata.php</b> on line <b>20</b><br />
-
-<br />
-<b>Warning</b>:  Undefined variable $SENSORS in <b>C:\xampp\htdocs\water-monitoring\sensordata.php</b> on line <b>20</b><br />
-<br />
-<b>Warning</b>:  foreach() argument must be of type array|object, null given in <b>C:\xampp\htdocs\water-monitoring\sensordata.php</b> on line <b>20</b><br />
+<b>Parse error</b>:  syntax error, unexpected token &quot;}&quot;, expecting &quot;,&quot; or &quot;;&quot; in <b>C:\xampp\htdocs\water-monitoring\sensordata.php</b> on line <b>31</b><br />
 
 String does not have the expected format
 String does not have the expected format
-String does not have the expected format
-String does not have the expected format
-<br />
-<b>Warning</b>:  Undefined variable $SENSORS in <b>C:\xampp\htdocs\water-monitoring\sensordata.php</b> on line <b>22</b><br />
-<br />
-<b>Warning</b>:  foreach() argument must be of type array|object, null given in <b>C:\xampp\htdocs\water-monitoring\sensordata.php</b> on line <b>22</b><br />
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
 
 String does not have the expected format
-<br />
-<b>Fatal error</b>:  Uncaught mysqli_sql_exception: Table 'water-monitoring-system-db.sensors' doesn't exist in C:\xampp\htdocs\water-monitoring\sensordata.php:30
-Stack trace:
-#0 C:\xampp\htdocs\water-monitoring\sensordata.php(30): mysqli_query(Object(mysqli), 'SELECT `sensori...')
-#1 {main}
-  thrown in <b>C:\xampp\htdocs\water-monitoring\sensordata.php</b> on line <b>30</b><br />
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
 
-<br />
-<b>Fatal error</b>:  Uncaught mysqli_sql_exception: Table 'water-monitoring-system-db.sensors' doesn't exist in C:\xampp\htdocs\water-monitoring\sensordata.php:30
-Stack trace:
-#0 C:\xampp\htdocs\water-monitoring\sensordata.php(30): mysqli_query(Object(mysqli), 'SELECT `sensori...')
-#1 {main}
-  thrown in <b>C:\xampp\htdocs\water-monitoring\sensordata.php</b> on line <b>30</b><br />
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+String does not have the expected format
+String does not have the expected format
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+Error while processing the string: Expecting ',' delimiter: line 1 column 160 (char 159)
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
+
+added sensor data to database 
+added sensor data to database 
+added sensor data to database 
 

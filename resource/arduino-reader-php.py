@@ -8,15 +8,11 @@ import json
 @main_requires_admin
 def main():
     ser = serial.Serial('COM6', 9600)
-    previous_line = ''
     while True:
         #slee[ for 1 second
-        time.sleep(0.25)
+        time.sleep(0.5)
         # read line from serial
         line = ser.readline().decode('utf-8').rstrip()
-        if line == previous_line:
-            # break for half second
-            continue
         # parse to dictionary
         try:
             data = validate_and_convert(line)
@@ -71,3 +67,5 @@ def is_float(value):
 
 if __name__ == "__main__":
     main()
+
+# httpx.post('http://localhost:80/water-monitoring/sensordata.php', data={ 'deviceid': '3b26008c-ac0b-576d-9d0c-2cda7dc0fb3d', 'name': 'TestingDevice', 'ammonia': '1', 'ph': '1', 'temperature': '1', 'sensors': 'ammonia|ph|temperature', 'datetime': time.strftime('%Y-%m-%dT%H:%M:%S')})

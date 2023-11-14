@@ -27,7 +27,7 @@ foreach($sensors as $sensor) {
             // insert sensor into database
             try {
                 mysqli_query($con,"INSERT INTO `sensor` (`deviceid`, `sensortype`) VALUES (UUID_TO_BIN('".$deviceid."'), '".$sensor."')");
-                echo "- added new sensor type to database \n "
+                echo "- added new sensor type to database \n ";
             } catch (Exception $e) {
                 // close connection and print error
                 mysqli_close($con);
