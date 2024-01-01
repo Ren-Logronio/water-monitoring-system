@@ -1,6 +1,6 @@
 # Water Monitoring System
 
-[![Capstone](https://img.shields.io/badge/Capstone-008000)](./)
+[![Capstone](https://img.shields.io/badge/Capstone-008000)](./) [![Status Ongoing](https://img.shields.io/badge/status-on%20development-blue)]
 
 ##### Team Ternary Operators: 
 - John Rey Vilbar
