@@ -41,7 +41,7 @@ Requires (*Install on Windows first*):
 - [Yarn]
 
 > **Important**
-> Make sure you have successfully installed XAMPP at '*<System Drive>*:\xampp' or 'C:\xampp'
+> Make sure you have successfully installed XAMPP at '*[System Drive]*:\xampp' or 'C:\xampp'
 
 **[1] Cloning the repo**  
 
@@ -62,6 +62,8 @@ $ rmdir /s /q C:/xampp/htdocs
 then
 $ mklink
 ```
+
+> At this point (after the symbolic link was created) you can now preview the application by turning on xampp and visiting localhost:80
 
 Go to the dist/api directory from the repo and open the db.php file.
 Change the variable $host, $username, $password variable to correctly connect to your mariadb server
