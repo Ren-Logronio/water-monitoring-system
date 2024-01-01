@@ -44,7 +44,7 @@ To further explain, the index.html, and asset directory and files are generated 
 
 Requires (*Install on Windows first*):
 - [XAMPP] 
-- [MariaDB Server]
+- [MariaDB Server] (v. 11.2.2)
 - [Node] (v 20.6.1)
 - [Yarn] (v 1.22.21)
 
