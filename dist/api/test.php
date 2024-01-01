@@ -1,5 +1,6 @@
 <?php
 
-echo "test - responded";
+header('Content-Type: application/json; charset=utf-8');
+echo json_encode(array('message' => 'Hello World!'));
 
 ?>

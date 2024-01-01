@@ -43,10 +43,10 @@ To further explain, the index.html, and asset directory and files are generated 
 ### Development Setup
 
 Requires (*Install on Windows first*):
-- [XAMPP] (or anything that can host with php like nginx)
+- [XAMPP] 
 - [MariaDB Server]
-- [Node]
-- [Yarn]
+- [Node] (v 20.6.1)
+- [Yarn] (v 1.22.21)
 
 > **Important**
 > Make sure you have successfully installed XAMPP at '*[System Drive]*:\xampp' or 'C:\xampp'
