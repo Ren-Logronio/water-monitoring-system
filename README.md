@@ -65,10 +65,14 @@ Remove the xampp htdocs and add a symbolic link from dist directory from the rep
 > Make sure the command prompt has admin privileges
 ```
 $ rmdir /s /q <directory to your xampp>/htdocs
-or
+```
+or for instance
+```
 $ rmdir /s /q C:/xampp/htdocs
+```
 then
-$ mklink
+```
+$ mklink /D <directory to your xampp>/htdocs <directory to repo>/dist
 ```
 
 > At this point (after the symbolic link was created) you can now preview the application by turning on xampp and visiting localhost:80
