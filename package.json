@@ -1,0 +1,11 @@
+{
+  "name": "water-monitoring-system",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/Ren-Logronio/water-monitoring-system.git",
+  "author": "Ren-Logronio <reinhart.logronio@msugensan.edu.ph>",
+  "license": "MIT",
+  "scripts": {
+    "clean-dist": "node ./dist/clean-dist.js"
+  }
+}
