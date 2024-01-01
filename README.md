@@ -11,12 +11,12 @@
 - **PHP:** The primary language for server-side logic and database framework
 - **React:** Static build of Vite React that is served alongside the PHP backend
 
-> It can be considered that React isn't really part of the stack because of the [system's architecture](#Architecture)
+> It can be considered that React isn't really part of the stack because of the [system's structure](#Structure)
 
-### Architecture
+### Structure
 The whole application shall be hosted on a single server that serves both the Vite React static build files and the PHP endpoints. 
 
-**General structure of the application:**
+General structure of the application:
 
 ```
 <server directory>/
@@ -73,12 +73,13 @@ $username = "your username";
 $password = "your password";
 ```
 
-**Load the database sql file named 'backup.sql' to MariaDB server to perform a restore.** 
+##### Load the database sql file named 'backup.sql' to MariaDB server and perform a restore.
 
 **[3] Setting up Vite React**
 
 Go to the frontend directory from the repo and install the required dependencies 
 ```
+$ cd <directory of the repo>/frontend
 $ yarn install
 ```
 To start developing, run dev script
@@ -94,7 +95,27 @@ $ yarn run build
 ```
 
 ### License
-IDUNNO
+MIT License
+
+Copyright (c) 2024 Reinhart Ferrer Logronio
+
+Permission is hereby granted, free of charge, to any person obtaining a copy 
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 &nbsp;
 &nbsp;
 ****
