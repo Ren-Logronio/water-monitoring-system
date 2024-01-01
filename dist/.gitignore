@@ -1,6 +1,0 @@
-*.html
-*.png
-*.*
-/assets/
-
-!clean-dist.js
