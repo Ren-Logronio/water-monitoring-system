@@ -1,12 +1,12 @@
 <?php
 
 ## to be modified
-$user = 'root';
-$password = 'pass123';
+$user = 'root'; # enter the username of mariadb
+$password = 'pass12345'; # enter the password of mariadb
+$host = 'localhost:3306'; # enter the host of mariadb
 
 ## DO NOT MODIFY
-$dsn = "mysql:host=localhost;dbname=water-monitoring-system-db;charset=utf8mb4";
-$pdo;
+$dsn = "mysql:host=" . $host . ";dbname=water-monitoring-system-db;charset=utf8mb4";
 
 $options = [
   PDO::ATTR_EMULATE_PREPARES   => false, // Disable emulation mode for "real" prepared statements
