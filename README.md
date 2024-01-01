@@ -44,13 +44,15 @@ Requires (*Install on Windows first*):
 > Make sure you have successfully installed XAMPP at '*<System Drive>*:\xampp' or 'C:\xampp'
 
 **[1] Cloning the repo**  
+
 Clone the repo and go to the repo directory
 ```
 $ git clone https://github.com/Ren-Logronio/water-monitoring-system.git
 $ cd water-monitoring system
 ```
 
-**[2] Setting up XAMPP**
+**[2] Setting up XAMPP and MariaDB**
+
 Remove the xampp htdocs and add a symbolic link from dist directory from the repo to xampp htdocs
 > Make sure the command prompt has admin privileges
 ```
@@ -72,6 +74,7 @@ $password = "your password";
 **Load the database sql file named 'backup.sql' to MariaDB server to perform a restore.** 
 
 **[3] Setting up Vite React**
+
 Go to the frontend directory from the repo and install the required dependencies 
 ```
 $ yarn install
