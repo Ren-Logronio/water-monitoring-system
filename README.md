@@ -28,7 +28,7 @@ The whole application shall be hosted on a single server that serves both the Vi
 
 General structure of the application:
 
-```
+```sh
 <server directory>/
 ├── api/
 │   ├── db.php
