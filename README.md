@@ -1,6 +1,6 @@
 # Water Monitoring System
 
-[![Capstone](https://img.shields.io/badge/Capstone-008000)](./) ![Status Ongoing](https://img.shields.io/badge/Status-On%20Development-blue) ![Mental Health](https://img.shields.io/badge/Mental%20Health-I%20am%20fine-orange) [![License](https://img.shields.io/badge/License-MIT-green)](./LICENSE)
+[![Capstone](https://img.shields.io/badge/Capstone-008000)](./) ![Status Ongoing](https://img.shields.io/badge/Status-On%20Development-blue) ![Mental Health](https://img.shields.io/badge/Mental%20Health-Sure-orange) 
 
 ##### Team Ternary Operators: 
 - John Rey Vilbar
@@ -21,14 +21,12 @@
 - **PHP:** The primary language for server-side logic and database framework
 - **React:** Static build of Vite React that is served alongside the PHP backend
 
-> It can be considered that React isn't really part of the stack because of the [system's structure](#Structure)
-
 ### Structure
 The whole application shall be hosted on a single server that serves both the Vite React static build files and the PHP endpoints. 
 
 General structure of the application:
 
-```
+```sh
 <server directory>/
 ├── api/
 │   ├── db.php
@@ -40,7 +38,7 @@ General structure of the application:
 │   └── *.js
 └── index.html
 ```
-To further explain, the index.html, and asset directory and files are generated from React build; React sends requests to */api* url and renders the consumed data. On the other hand, PHP is used to handle the requests from React, manages the internal backend logic and the transactions from the database. *The structure is reasonable enough to warrant the developer to pursue this insanity*
+To further explain, the index.html, and asset directory and files are generated from React build; React sends requests to */api* url and renders the consumed data. On the other hand, PHP is used to handle the requests from React, manages the internal backend logic and the transactions from the database. 
 
 ### Development Setup
 
@@ -108,9 +106,6 @@ This will create static file located in the dist directory which is now linked t
 $ yarn run build
 ```
 
-### Commit
-
-Please refer to the [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) when pushing changes to the repository
 
 &nbsp;
 &nbsp;
