@@ -1,20 +1,17 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import './App.css'
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Header from './components/Header';
+import AuthProvider from './app/AuthProvider';
 
 function App() {
 
-  const Home
-
-
   return (
     <>
-      <BrowserRouter>
+      <BrowserRouter basename=''>
+        <Header />
         <Routes>
           <Route path="/" element={<div>Home</div>} />
           <Route path="/login" element={<div>Home</div>} />
-          <Route path="/dashboard">
-            <Route path="/" element={<div>Dashboard Home</div>} />
-          </Route>
+          <Route path="/dashboard" element={<div>Dashboard</div>} />
         </Routes>
       </BrowserRouter>
     </>
