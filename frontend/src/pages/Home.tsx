@@ -4,7 +4,7 @@ export default function HomePage() {
 
     return (
         <>
-        <div>Home</div>
+            <div className="text-blue-700">Home xx</div>
         </>
     )
 }
