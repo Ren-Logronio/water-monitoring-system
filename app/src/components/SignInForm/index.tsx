@@ -26,17 +26,14 @@ export default function SignInForm() {
         signIn(email, password, () => { 
             router.push('/dashboard');
             setSignInForm({ email: '', password: '', loading: false });
+        }, () => { 
+            setSignInForm({ email: '', password: '', loading: false }) 
         });
     };
 
-    useEffect(() => {
-        
-    }, []);
-
     return (
-        <div className="flex flex-col justify-center">
-            { (status == 'rejected' || status == 'error') && <p className=" text-red-500">{ message }</p> }
-            <h2 className=" font-bold">Sign In</h2>
+        <div className="flex flex-col justify-center min-w-full md:min-w-[400px]">
+            { (status == 'rejected' || status == 'error') && <p className=" text-red-500 text-center">{ message }</p> }
             <div className="mt-2">
                 <Label>Email</Label>
                 <Input disabled={signInForm.loading} placeholder="Enter Email" className="" name="email" type="email" value={signInForm.email} onChange={handleInputChange} />
