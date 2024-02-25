@@ -6,10 +6,11 @@ import { useState } from "react";
 export default function Home() {
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="border border-black">
-        <SignInForm />
-      </div>
+    <main className="min-h-screen flex flex-row justify-center">
+        <div className="h-screen flex flex-col justify-center w-full md:w-[50%] p-4 md:p-12">
+          <SignInForm />
+        </div>
+        <div className="h-screen w-0 md:w-[50%] bg-gray-600"></div>
     </main>
   );
 }
