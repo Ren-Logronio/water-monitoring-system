@@ -18,14 +18,17 @@ export default function SignInForm() {
     const { status, message, signIn, clearStatus } = useAuthStore();
     const [ signInForm, setSignInForm ] = useState<SignInFormType>({ email: '', password: '', loading: false});
   
-    const handleInputChange = (e: any) => setSignInForm({ ...signInForm, [e.target.name]: e.target.value });
+    const handleInputChange = (e: any) => {
+        if (status == 'rejected' || status == 'error') clearStatus();
+        setSignInForm({ ...signInForm, [e.target.name]: e.target.value });
+    };
 
     const handleSignIn = () => {
         setSignInForm({ ...signInForm, loading: true });
         const { email, password } = signInForm;
         signIn(email, password, () => { 
+            console.log("Success");
             router.push('/dashboard');
-            setSignInForm({ email: '', password: '', loading: false });
         }, () => { 
             setSignInForm({ email: '', password: '', loading: false }) 
         });

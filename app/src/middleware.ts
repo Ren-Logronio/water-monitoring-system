@@ -6,11 +6,11 @@ export function middleware(request: NextRequest) {
 
     console.log("Path:", request.nextUrl.pathname)
 
-    if (request.nextUrl.pathname === '/' && userToken && userToken.value === '1234') {
+    if (request.nextUrl.pathname === '/' && userToken) {
         return NextResponse.redirect(new URL('/dashboard', request.url))
     }
     
-    if ((!userToken || !(userToken.value == '1234')) && !(request.nextUrl.pathname === '/') ) {
+    if (!userToken && !(request.nextUrl.pathname === '/') ) {
         return NextResponse.redirect(new URL('/', request.url))
     }
 }
