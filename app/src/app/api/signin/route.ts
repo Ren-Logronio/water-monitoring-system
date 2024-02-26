@@ -2,15 +2,14 @@ import bcrypt from "bcrypt";
 import { NextApiRequest } from "next";
 import { NextResponse } from "next/server";
 import getMySQLConnection from "@/db/mysql";
-import { FieldPacket } from "mysql2";
 import jwt from "jsonwebtoken";
 
 export async function POST(request: NextApiRequest) {
   const connection = await getMySQLConnection();
   const { email, password } = await new Response(request.body).json();
 
-  const [results, rows]: [any[], FieldPacket[]] = await connection.query(
-    "SELECT * FROM users WHERE email = ? LIMIT 1",
+  const [results, rows]: [any[], any[]] = await connection.query(
+    "SELECT `user_id`, `email`, `password` FROM users WHERE email = ? LIMIT 1",
     [email],
   );
 
@@ -34,10 +33,9 @@ export async function POST(request: NextApiRequest) {
 
   const passwordComparison = bcrypt.compareSync(password, results[0].password);
   if (passwordComparison) {
-    const token = jwt.sign(
-      { foo: "bar" },
-      process.env.APP_PRIVATE_KEY || "mykey",
-    );
+    const { user_id, email: user_email } = results[0];
+    console.log(user_id, user_email);
+    const token = jwt.sign({ user_id, user_email }, process.env.APP_PRIVATE_KEY || "mykey"); //! REMOVE 'mykey' WHEN DEPLOYING TO PRODUCTION
     console.log("token:", token);
     return NextResponse.json({
       success: true,

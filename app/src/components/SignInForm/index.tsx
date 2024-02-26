@@ -1,11 +1,13 @@
 "use client";
 
 import { useAuthStore } from "@/store/authStore";
-import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
+import Cookies from "js-cookie";
+import { cookies } from "next/headers";
 
 type SignInFormType = {
   email: string;
@@ -15,12 +17,15 @@ type SignInFormType = {
 
 export default function SignInForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { status, message, signIn, clearStatus } = useAuthStore();
   const [signInForm, setSignInForm] = useState<SignInFormType>({
     email: "",
     password: "",
     loading: false,
   });
+  
+  if (searchParams.has("signout")) Cookies.remove("token");
 
   const handleInputChange = (e: any) => {
     if (status == "rejected" || status == "error") clearStatus();
