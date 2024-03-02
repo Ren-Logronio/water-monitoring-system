@@ -2,7 +2,7 @@ import { SignJWT, jwtVerify, type JWTPayload } from 'jose';
 
 export async function sign(payload: string, secret: string): Promise<string> {
     const iat = Math.floor(Date.now() / 1000);
-    const exp = iat + 60 * 60; // one hour
+    const exp = iat + 60 * 60 * 24; // one hour
 
     return new SignJWT({ payload })
         .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
