@@ -18,14 +18,14 @@ type SignInFormType = {
 export default function SignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { status, message, signIn, clearStatus } = useAuthStore();
+  const { status, message, signIn, signOut, clearStatus } = useAuthStore();
   const [signInForm, setSignInForm] = useState<SignInFormType>({
     email: "",
     password: "",
     loading: false,
   });
   
-  if (searchParams.has("signout")) Cookies.remove("token");
+  if (searchParams.has("signout")) signOut();
 
   const handleInputChange = (e: any) => {
     if (status == "rejected" || status == "error") clearStatus();
@@ -81,7 +81,7 @@ export default function SignInForm() {
         disabled={signInForm.loading}
         onClick={handleSignIn}
       >
-        Sign In
+        { signInForm.loading ? <>Signing In...</> : <>Sign In</> }
       </Button>
     </div>
   );

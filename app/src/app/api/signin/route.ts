@@ -2,14 +2,15 @@ import bcrypt from "bcrypt";
 import { NextApiRequest } from "next";
 import { NextResponse } from "next/server";
 import getMySQLConnection from "@/db/mysql";
-import jwt from "jsonwebtoken";
+import { sign } from '@/utils/Jwt'
+// import jwt from "jsonwebtoken";
 
 export async function POST(request: NextApiRequest) {
   const connection = await getMySQLConnection();
   const { email, password } = await new Response(request.body).json();
 
   const [results, rows]: [any[], any[]] = await connection.query(
-    "SELECT `user_id`, `email`, `password` FROM users WHERE email = ? LIMIT 1",
+    "SELECT `user_id`, `email`, `password`, `firstname`, `lastname` FROM users WHERE email = ? LIMIT 1",
     [email],
   );
 
@@ -34,12 +35,13 @@ export async function POST(request: NextApiRequest) {
   const passwordComparison = bcrypt.compareSync(password, results[0].password);
   if (passwordComparison) {
     const { user_id, email: user_email } = results[0];
-    console.log(user_id, user_email);
-    const token = jwt.sign({ user_id, user_email }, process.env.APP_PRIVATE_KEY || "mykey"); //! REMOVE 'mykey' WHEN DEPLOYING TO PRODUCTION
-    console.log("token:", token);
+    // const token = jwt.sign({ user_id, user_email }, process.env.APP_PRIVATE_KEY || "mykey"); //! REMOVE 'mykey' WHEN DEPLOYING TO PRODUCTION
+    const token = await sign(JSON.stringify({ user_id, user_email }), process.env.APP_PRIVATE_KEY || "mykey"); //! REMOVE 'mykey' WHEN
     return NextResponse.json({
       success: true,
       token,
+      firstname: results[0].firstname,
+      lastname: results[0].lastname,
       message: "Successfully signed in",
     });
   } else {

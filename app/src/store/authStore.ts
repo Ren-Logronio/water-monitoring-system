@@ -10,6 +10,7 @@ type AuthStore = {
   status: "idle" | "pending" | "resolved" | "rejected" | "error";
   message?: string;
   clearStatus: () => void;
+  signOut: () => void;
   signIn: (
     email: string,
     password: string,
@@ -21,16 +22,23 @@ type AuthStore = {
 
 export const useAuthStore = create<AuthStore>((set) => ({
   status: "idle", // 'idle' | 'pending' | 'resolved' | 'rejected
+  firstname: "",
+  lastname: "",
   message: "",
   clearStatus: () => set({ status: "idle", message: "" }),
+  signOut: () => {
+    Cookies.remove("token");
+    set({ status: "idle", firstname: "", lastname: "" });
+  },
   signIn: async (email, password, successCallback, failureCallback) => {
     // call the api
     axios
       .post("/api/signin", { email, password })
       .then((response) => {
-        const { token } = response.data;
+        const { token, firstname, lastname } = response.data;
         // set the token in the cookie
         Cookies.set("token", token, { expires: 2, sameSite: "strict" });
+        set({ status: "resolved", firstname, lastname });
         // invoke the callback function containing route.push()
         successCallback();
       })
