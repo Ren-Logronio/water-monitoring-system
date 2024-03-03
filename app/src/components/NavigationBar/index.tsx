@@ -80,30 +80,6 @@ export default function NavigationBar ({ children }: NavigationBarProps ): React
 
     const nav = path.split('/')[1][0].toUpperCase() + path.split('/')[1].slice(1);
 
-    // const notifications: any = [
-    //     // {
-    //     //     title: "Account Expiry",
-    //     //     action: "WARN",
-    //     //     message: "Your account is about to expire in 7 days",
-    //     //     target: "/parameter/temperature",
-    //     //     dateIssued: "Feb 12, 2022"
-    //     // },
-    //     // {
-    //     //     title: "Account Expiry",
-    //     //     action: "DANGER",
-    //     //     message: "Your account has expired",
-    //     //     target: "/parameter/temperature",
-    //     //     dateIssued: "Feb 13, 2022"
-    //     // },
-    //     // {
-    //     //     title: "Account Created",
-    //     //     action: "INFO",
-    //     //     target: "/parameter/temperature",
-    //     //     message: "Your account has been created",
-    //     //     dateIssued: "Feb 10, 2022"
-    //     // }
-    // ]
-
     if (["/signin", "/"].includes(path)) {
         return <>{children}</>;
     }
@@ -243,7 +219,7 @@ export default function NavigationBar ({ children }: NavigationBarProps ): React
                         {!userName.firstname && !userName.lastname && <div className="min-h-[28px] min-w-[160px] bg-[#EBEBEB] animate-pulse"></div>}
                     </div>
                 </div>
-                <ScrollArea className="flex-grow">
+                <ScrollArea className="flex-grow ">
                     {children}
                 </ScrollArea>
             </div>
