@@ -6,8 +6,6 @@ export default function () {
     // get parameter from the url
     const params = useParams();
 
-    console.log(params);
-
     return (
         <div>
             <h1>Parameter</h1>

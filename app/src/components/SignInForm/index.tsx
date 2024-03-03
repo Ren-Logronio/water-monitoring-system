@@ -37,7 +37,7 @@ export default function SignInForm() {
       password,
       () => {
         console.log("Success");
-        router.push("/dashboard");
+        router.replace("/dashboard");
       },
       () => {
         setSignInForm({ email: "", password: "", loading: false });

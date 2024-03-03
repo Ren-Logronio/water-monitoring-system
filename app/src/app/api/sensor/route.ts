@@ -2,16 +2,15 @@ import getMySQLConnection from "@/db/mysql";
 import getUserInfo from "@/utils/User";
 import { NextApiRequest } from "next";
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextApiRequest) {
+export async function GET(request: NextRequest ) {
   try {
-    const cookieToken = cookies().get('token')?.value;
+    const device_id = request.nextUrl.searchParams.get('device_id');
     const connection = await getMySQLConnection();
-    const { user_id } = await getUserInfo(cookieToken);
     const [ results, rows ]: [ results: any[], rows: any[] ] = await connection.query(
-        "SELECT `device_id`, `name`, `status` FROM `view_farmer_ponds` WHERE `user_id` = ?",
-        [user_id]
+        "SELECT `device_id`, `sensor_id`, `parameter`, `name`, `unit` FROM `view_pond_sensors` WHERE `device_id` = ?",
+        [device_id]
     );
     return NextResponse.json(
         { results },

@@ -13,8 +13,7 @@ export async function POST(request: NextApiRequest) {
     "SELECT `user_id`, `email`, `password`, `firstname`, `lastname` FROM users WHERE email = ? LIMIT 1",
     [email],
   );
-
-  console.log({ results, rows });
+  
   if (
     !results ||
     !results.length ||

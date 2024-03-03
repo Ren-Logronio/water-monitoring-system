@@ -6,7 +6,7 @@ export default function NavigationButton({ disabled, path, imagePath, text, clas
     const router = useRouter();
 
     const handleClick = () => {
-        router.push(path);
+        router.replace(path);
     };
 
     return (

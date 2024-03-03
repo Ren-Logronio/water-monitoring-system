@@ -8,7 +8,8 @@ import { Button } from "../ui/button";
 import axios from "axios";
 
 export default function Dashboard() {
-    const [ ponds, setPonds ] = useState({ ponds: [], noPonds: false});
+    const [ ponds, setPonds ] = useState<{ponds: any[], noPonds: boolean}>({ ponds: [], noPonds: false});
+    const [ selectedPond, setSelectedPond ] = useState<string>("");
     const [ noFarm, setNoFarm ] = useState(true);
     const [ loading, setLoading ] = useState(true);
 
@@ -16,16 +17,35 @@ export default function Dashboard() {
         const response = axios.get("/api/farm").then(response => {
             if (!response.data.results || response.data.results.length <= 0) {
                 setNoFarm(true);
+                setLoading(false);
                 return;
             } 
+            axios.get("/api/pond").then(response => {
+                if(!response.data.results && response.data.results.length <= 0) {
+                    setPonds({ ponds: [], noPonds: true });
+                } else {
+                    setPonds({ ponds: response.data.results, noPonds: false });
+                    setSelectedPond(response.data.results[0].device_id);
+                }
+            }).catch(error => {
+                console.error(error);
+            }).finally(() => {
+                setLoading(false);
+            });
             setNoFarm(false);
         }).catch(error => {
-            console.error(error);
-        }).finally(() => {
             setLoading(false);
-        });
-
+            console.error(error);
+        })
     }, []);
+
+    useEffect(() => {
+        console.log(ponds);
+    }, [ponds])
+
+    const handleSelectChange = (value?: string) => {
+        value && setSelectedPond(value);
+    };
     
     return (
         <div className="p-4">
@@ -38,17 +58,20 @@ export default function Dashboard() {
                 </> : <>
                     { ponds.ponds.length > 0 ?
                         <>
-                            <Select>
+                            <Select value={selectedPond} onValueChange={handleSelectChange}>
                                 <SelectTrigger className="w-[180px] bg-white">
-                                    <SelectValue placeholder="Theme" />
+                                    <SelectValue placeholder="Select Pond" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="light">Light</SelectItem>
-                                    <SelectItem value="dark">Dark</SelectItem>
-                                    <SelectItem value="system">System</SelectItem>
+                                    {
+                                        ponds?.ponds.map(
+                                            (pond) => <SelectItem key={pond.device_id} value={pond.device_id}>{pond.name}</SelectItem>
+                                        )
+                                    }
+                                    {/* <SelectItem value="light">Light</SelectItem> */}
                                 </SelectContent>
                             </Select>
-                            <PondView />
+                            <PondView device_id={selectedPond} />
                         </> :  <>
                             <div className="min-w-full flex flex-col items-center">
                                 <h1 className="text-center">No Pond Details</h1>
