@@ -1,3 +1,8 @@
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Preferences | Water Monitoring System",
+};
 
 export default function Preferences() {
   return (

@@ -1,9 +1,9 @@
 import getMySQLConnection from "@/db/mysql";
-import { verify } from "@/utils/Jwt";
 import getUserInfo from "@/utils/User";
 import { NextApiRequest } from "next";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+
 
 export async function GET(request: NextApiRequest) {
     try {
@@ -11,7 +11,7 @@ export async function GET(request: NextApiRequest) {
         const connection = await getMySQLConnection();
         const { user_id } = await getUserInfo(cookieToken);
         const [ results, rows ]: [ results: any[], rows: any[] ] = await connection.query(
-            "SELECT `farm_id`, `name` FROM `view_farmer_farm` WHERE `user_id` = ?",
+            "SELECT * FROM `user_notification` WHERE `user_id` = 1 ORDER BY `issued_at` DESC",
             [user_id]
         );
         return NextResponse.json(
@@ -23,10 +23,10 @@ export async function GET(request: NextApiRequest) {
     } catch (err: any) {
         console.log(err)
         return NextResponse.json(
-            { message: "Something went wrong while getting the farm info" },
+            { message: "Something went wrong while getting the notification" },
             {
                 status: 500,
             },
         );
-    }
+    } 
 }

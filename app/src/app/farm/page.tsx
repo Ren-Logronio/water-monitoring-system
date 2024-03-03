@@ -1,4 +1,8 @@
+import { Metadata } from "next";
 
+export const metadata: Metadata = {
+    title: "Farm | Water Monitoring System",
+};
 
 export default function Farm() {
     return (

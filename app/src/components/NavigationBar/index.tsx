@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuthStore } from "@/store/authStore";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
@@ -9,9 +8,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuT
 import NavigationButton from "./NavigationButton";
 import { NinetyRing } from "react-svg-spinners";
 import { Separator } from "../ui/separator";
-import { useFarmStore } from "@/store/farmStore";
 import axios from "axios";
-import { GSP_NO_RETURNED_VALUE } from "next/dist/lib/constants";
+import { format } from "date-fns";
 
 interface NavigationBarProps {
     children?: React.ReactNode;
@@ -19,9 +17,10 @@ interface NavigationBarProps {
 
 export default function NavigationBar ({ children }: NavigationBarProps ): React.ReactNode {
     const [ userName, setUserNames ] = useState({firstname: "", lastname: ""});
+    const [ farm, setFarm ] = useState({ name:"", none: false });
+    const [ notifications, setNotifications ] = useState([]);
     const [ navBarLoading, setNavBarLoading ] = useState(true);
     const [ signoutLoading, setSignOutLoading ] = useState(false);
-    const [ farm, setFarm ] = useState({ name:"", none: false });
     const path = usePathname();
     const router = useRouter();
 
@@ -40,6 +39,28 @@ export default function NavigationBar ({ children }: NavigationBarProps ): React
             setNavBarLoading(false);
         });
 
+        const getNotifications = () => {
+            axios.get("/api/notification").then(response => {
+                if (!response.data.results || response.data.results.length <= 0) {
+                    return;
+                }
+                const parsed = response.data.results.map((notification: { action: string, message: string, issued_at: string }) => {
+                    return {
+                        title: notification.action === "WARN" ? "Warning" : notification.action === "ALRT" ? "Alert" : "Information",
+                        action: notification.action,
+                        message: notification.message,
+                        dateIssued: format(notification.issued_at, "MMM d, yyyy")
+                    }
+                });
+                setNotifications(parsed);
+            }).catch(error => {
+                console.error(error);
+            });
+        }
+
+        getNotifications();
+        setInterval(getNotifications, 30000);
+
         setUserNames({ firstname, lastname });
     }, []);
 
@@ -51,37 +72,37 @@ export default function NavigationBar ({ children }: NavigationBarProps ): React
         setSignOutLoading(true);
         setNavBarLoading(true);
         setTimeout(() => {
+            router.push("/signin?signout");
             setSignOutLoading(false);
             setNavBarLoading(false);
-            router.push("/signin?signout");
         }, 2000);
     };
 
     const nav = path.split('/')[1][0].toUpperCase() + path.split('/')[1].slice(1);
 
-    const notifications: any = [
-        // {
-        //     title: "Account Expiry",
-        //     action: "WARN",
-        //     message: "Your account is about to expire in 7 days",
-        //     target: "/parameter/temperature",
-        //     dateIssued: "Feb 12, 2022"
-        // },
-        // {
-        //     title: "Account Expiry",
-        //     action: "DANGER",
-        //     message: "Your account has expired",
-        //     target: "/parameter/temperature",
-        //     dateIssued: "Feb 13, 2022"
-        // },
-        // {
-        //     title: "Account Created",
-        //     action: "INFO",
-        //     target: "/parameter/temperature",
-        //     message: "Your account has been created",
-        //     dateIssued: "Feb 10, 2022"
-        // }
-    ]
+    // const notifications: any = [
+    //     // {
+    //     //     title: "Account Expiry",
+    //     //     action: "WARN",
+    //     //     message: "Your account is about to expire in 7 days",
+    //     //     target: "/parameter/temperature",
+    //     //     dateIssued: "Feb 12, 2022"
+    //     // },
+    //     // {
+    //     //     title: "Account Expiry",
+    //     //     action: "DANGER",
+    //     //     message: "Your account has expired",
+    //     //     target: "/parameter/temperature",
+    //     //     dateIssued: "Feb 13, 2022"
+    //     // },
+    //     // {
+    //     //     title: "Account Created",
+    //     //     action: "INFO",
+    //     //     target: "/parameter/temperature",
+    //     //     message: "Your account has been created",
+    //     //     dateIssued: "Feb 10, 2022"
+    //     // }
+    // ]
 
     if (["/signin", "/"].includes(path)) {
         return <>{children}</>;
@@ -167,7 +188,7 @@ export default function NavigationBar ({ children }: NavigationBarProps ): React
                                                             </svg>
                                                         }
                                                         {
-                                                            notification.action === "DANGER" &&
+                                                            notification.action === "ALRT" &&
                                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-red-500">
                                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
                                                             </svg>
