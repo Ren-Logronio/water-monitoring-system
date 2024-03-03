@@ -22,7 +22,7 @@ export async function GET(req: NextApiRequest) {
   } catch (error) {
     console.log(error);
     return NextResponse.json(
-        { message: "Something went wrong while getting the farm info" },
+        { message: "Something went wrong while getting the pond info" },
         {
             status: 500,
         },

@@ -29,7 +29,7 @@ export default function PondView({ device_id }: { device_id?: string})  {
                     <NinetyRing />
                     <p>Loading Sensors..</p>
                 </div> 
-                : sensors.length > 0 ? <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">{
+                : sensors.length > 0 ? <div className="transition-all grid grid-cols-1 lg:grid-cols-2">{
                     sensors.map(sensor => <Sensor key={sensor.sensor_id} sensor_id={sensor.sensor_id} name={sensor.name} unit={sensor.unit} />)
                 }</div>
                 : <p>No sensors found</p>
