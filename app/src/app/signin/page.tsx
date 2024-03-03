@@ -3,7 +3,7 @@ import SignInForm from "@/components/SignInForm";
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-row justify-center">
-      <div className="flex h-screen w-full flex-col items-center justify-center p-4 md:w-[50%] md:p-12">
+      <div className="flex h-screen w-full flex-col items-center justify-center p-4 md:w-[50%] md:p-12 bg-white">
         <img src="./logo-orange.png" className=" mx-auto size-28 " />
         <h2 className=" text-center font-bold">Sign In</h2>
         <SignInForm />

@@ -2,12 +2,11 @@
 
 import { useAuthStore } from "@/store/authStore";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
-import Cookies from "js-cookie";
-import { cookies } from "next/headers";
+import { NinetyRing } from "react-svg-spinners"
 
 type SignInFormType = {
   email: string;
@@ -16,16 +15,14 @@ type SignInFormType = {
 };
 
 export default function SignInForm() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
   const { status, message, signIn, signOut, clearStatus } = useAuthStore();
   const [signInForm, setSignInForm] = useState<SignInFormType>({
     email: "",
     password: "",
     loading: false,
   });
-  
-  if (searchParams.has("signout")) signOut();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   const handleInputChange = (e: any) => {
     if (status == "rejected" || status == "error") clearStatus();
@@ -47,6 +44,10 @@ export default function SignInForm() {
       },
     );
   };
+
+  useEffect(() => {
+    if (searchParams.has("signout")) signOut();
+  }, [searchParams])
 
   return (
     <div className="flex min-w-full flex-col justify-center md:min-w-[400px]">
@@ -81,7 +82,7 @@ export default function SignInForm() {
         disabled={signInForm.loading}
         onClick={handleSignIn}
       >
-        { signInForm.loading ? <>Signing In...</> : <>Sign In</> }
+        { signInForm.loading ? <div className="flex flex-row items-center space-x-2"><NinetyRing color="#ffffff"/><p>Signing In...</p></div> : <>Sign In</> }
       </Button>
     </div>
   );

@@ -35,8 +35,7 @@ export async function POST(request: NextApiRequest) {
   const passwordComparison = bcrypt.compareSync(password, results[0].password);
   if (passwordComparison) {
     const { user_id, email: user_email } = results[0];
-    // const token = jwt.sign({ user_id, user_email }, process.env.APP_PRIVATE_KEY || "mykey"); //! REMOVE 'mykey' WHEN DEPLOYING TO PRODUCTION
-    const token = await sign(JSON.stringify({ user_id, user_email }), process.env.APP_PRIVATE_KEY || "mykey"); //! REMOVE 'mykey' WHEN
+    const token = await sign(JSON.stringify({ user_id, user_email })); 
     return NextResponse.json({
       success: true,
       token,

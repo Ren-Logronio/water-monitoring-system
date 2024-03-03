@@ -4,6 +4,7 @@ import { verify } from "@/utils/Jwt";
 import getMySQLConnection from "@/db/mysql";
 
 export function middleware(request: NextRequest) {
+  const requestHeaders = new Headers(request.headers)
   const cookieToken = request.cookies.get("token")?.value;
 
   if (["/signin", "/"].includes(request.nextUrl.pathname) && !request.nextUrl.searchParams.has("signout") && cookieToken) {
@@ -11,8 +12,7 @@ export function middleware(request: NextRequest) {
   }
   
   if (cookieToken) {
-    //! REMOVE 'mykey' WHEN DEPLOYING TO PRODUCTION
-    verify(cookieToken, process.env.APP_PRIVATE || "mykey").then(res => {
+    verify(cookieToken).then(res => {
       if(!res) {
         return NextResponse.redirect(new URL("/signin", request.url));
       }

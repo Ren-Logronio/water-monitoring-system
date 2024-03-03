@@ -26,7 +26,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   clearStatus: () => set({ status: "idle", message: "" }),
   signOut: () => {
     Cookies.remove("token");
-    set({ status: "idle", firstname: "", lastname: "" });
+    set({ status: "idle" });
   },
   signIn: async (email, password, successCallback, failureCallback) => {
     // call the api
@@ -36,8 +36,8 @@ export const useAuthStore = create<AuthStore>((set) => ({
         const { token, firstname, lastname } = response.data;
         // set the token in the cookie
         Cookies.set("token", token, { expires: 2, sameSite: "strict" });
-        sessionStorage.setItem("firstname", firstname);
-        sessionStorage.setItem("lastname", lastname);
+        localStorage.setItem("firstname", firstname);
+        localStorage.setItem("lastname", lastname);
         set({ status: "resolved", firstname, lastname });
         // invoke the callback function containing route.push()
         successCallback();
