@@ -54,7 +54,7 @@ export default function NavigationBar ({ children }: NavigationBarProps ): React
     return (
         <div className="min-h-screen min-w-full flex flex-row">
             <div className="relative p-1 py-8 md:pt-[42px] md:pb-[28px] md:px-[42px] transition-all min-w-[80px] max-w-[90px] md:max-w-[316px] flex-1 border-r border-indigo-100 bg-white space-y-[44px]">
-                <div className="flex flex-row justify-center items-center pointer-events-none select-none pr-8">
+                <div className="flex flex-row justify-center items-center pointer-events-none select-none md:pr-8">
                     <img src="./logo-orange-cropped.png" className="h-[32px] md:h-[87px] aspect-auto"/>
                     <div className="flex flex-col items-start justify-center">
                         <p className="transition-all leading-7 hidden md:block text-[24px] font-semibold text-[#FF9B42]">Water</p>
@@ -69,13 +69,13 @@ export default function NavigationBar ({ children }: NavigationBarProps ): React
                     <NavigationButton disabled={navBarLoading || farm.none} path="/preferences" imagePath="./preferences.png" text="Preferences"/>
                 </div>
                 <Separator className="bg-indigo-100"/>
-                <div className="hidden md:flex flex-col">
-                    <p className="text-[#205083]">Parameters</p>
-                    <NavigationButton disabled={navBarLoading || farm.none} path="/parameter/temperature" text="Temperature" className="text-sm hidden md:flex"/>
-                    <NavigationButton disabled={navBarLoading || farm.none} path="/parameter/salinity" text="Salinity" className="text-sm hidden md:flex"/>
-                    <NavigationButton disabled={navBarLoading || farm.none} path="/parameter/do" text="Dissolved Oxygen" className="text-sm hidden md:flex"/>
-                    <NavigationButton disabled={navBarLoading || farm.none} path="/parameter/ph" text="pH Level" className="text-sm hidden md:flex"/>
-                    <NavigationButton disabled={navBarLoading || farm.none} path="/parameter/ammonia" text="Ammonia" className="text-sm hidden md:flex"/>
+                <div className="flex flex-col mx-auto md:mx-0">
+                    <p className="text-[#205083] hidden md:flex  pb-2 pl-2">Parameters</p>
+                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="TMP" path="/parameter/temperature" text="Temperature" />
+                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="SAL" path="/parameter/salinity" text="Salinity" />
+                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="DOX" path="/parameter/do" text="Dissolved Oxygen" />
+                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="pH" path="/parameter/ph" text="pH Level" />
+                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="AMN" path="/parameter/ammonia" text="Ammonia" />
                 </div>
                 <div className="absolute bottom-[28px] left-1/2 -translate-x-1/2 hidden md:flex flex-col text-center text-sm h-fit text-[#205083]">
                     <p>Ternary Operators</p>
@@ -83,8 +83,8 @@ export default function NavigationBar ({ children }: NavigationBarProps ): React
                 </div>
             </div>
             <div className="flex-1 flex-grow flex flex-col h-full">
-                <div className="flex-grow min-h-[54px] bg-white shadow-sm flex flex-row items-center justify-between px-[24px]">
-                    { !farm.none ?<div className="flex flex-row items-center space-x-[20px] transition-all">
+                <div className="flex-grow min-h-[54px] bg-white shadow-sm flex flex-row items-center justify-end sm:justify-between px-[24px]">
+                    { !farm.none ?<div className="flex-row items-center space-x-[20px] hidden sm:flex transition-all">
                         {farm.name ? 
                         <h5 className="text-blue-800 font-bold">
                             {farm.name}
