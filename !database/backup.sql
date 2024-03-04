@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `farms` (
   PRIMARY KEY (`farm_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table water-monitoring-system-db.farms: ~0 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.farms: ~1 rows (approximately)
 DELETE FROM `farms`;
 INSERT INTO `farms` (`farm_id`, `name`, `address_street`, `address_city`, `address_country`) VALUES
 	(1, 'RD Farm', 'Next Street', 'General Santos City', 'Philippines');
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `farm_farmer` (
   CONSTRAINT `farmer_farm_id` FOREIGN KEY (`farm_id`) REFERENCES `farms` (`farm_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table water-monitoring-system-db.farm_farmer: ~0 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.farm_farmer: ~1 rows (approximately)
 DELETE FROM `farm_farmer`;
 INSERT INTO `farm_farmer` (`farm_id`, `farmer_id`, `role`) VALUES
 	(1, 1, 'OWNER');
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `ponds` (
   CONSTRAINT `pond_status` FOREIGN KEY (`status`) REFERENCES `pond_statuses` (`status`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table water-monitoring-system-db.ponds: ~0 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.ponds: ~2 rows (approximately)
 DELETE FROM `ponds`;
 INSERT INTO `ponds` (`device_id`, `farm_id`, `name`, `status`) VALUES
 	('a0f8250e-49a7-4354-bf8c-bae94119a4fb', 1, 'Testing Pond', 'ACTIVE'),
@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS `readings` (
   CONSTRAINT `reading_sensor_id` FOREIGN KEY (`sensor_id`) REFERENCES `sensors` (`sensor_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table water-monitoring-system-db.readings: ~0 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.readings: ~30 rows (approximately)
 DELETE FROM `readings`;
 INSERT INTO `readings` (`reading_id`, `sensor_id`, `value`, `recorded_at`, `modified_at`) VALUES
 	(1, 1, 24, '2024-02-01 00:00:00', '2024-02-01 00:00:00'),
@@ -153,7 +153,7 @@ CREATE TABLE IF NOT EXISTS `sensors` (
   CONSTRAINT `sensor_parameter` FOREIGN KEY (`parameter`) REFERENCES `sensor_parameters` (`parameter`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table water-monitoring-system-db.sensors: ~0 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.sensors: ~1 rows (approximately)
 DELETE FROM `sensors`;
 INSERT INTO `sensors` (`sensor_id`, `device_id`, `parameter`) VALUES
 	(1, 'a0f8250e-49a7-4354-bf8c-bae94119a4fb', 'TMP');
