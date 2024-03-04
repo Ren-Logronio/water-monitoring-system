@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { createRef, useEffect, useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuGroup, DropdownMenuItem } from "../ui/dropdown-menu";
@@ -20,7 +20,7 @@ interface NavigationBarProps {
 
 export default function NavigationBar ({ children }: NavigationBarProps ): React.ReactNode {
     const [ farm, setFarm ] = useState({ name:"", none: false });
-    const [ navBarLoading, setNavBarLoading ] = useState(true);
+    const [navBarLoading, setNavBarLoading] = useState(true);
     const path = usePathname();
 
     useEffect(() => {
@@ -82,8 +82,8 @@ export default function NavigationBar ({ children }: NavigationBarProps ): React
                     <p>Capstone Project 2023-2024</p>
                 </div>
             </div>
-            <div className="flex-1 flex-grow flex flex-col">
-                <div className="flex-grow max-h-[54px] bg-white flex flex-row items-center justify-between px-[24px]">
+            <div className="flex-1 flex-grow flex flex-col h-full">
+                <div className="flex-grow min-h-[54px] bg-white shadow-sm flex flex-row items-center justify-between px-[24px]">
                     { !farm.none ?<div className="flex flex-row items-center space-x-[20px] transition-all">
                         {farm.name ? 
                         <h5 className="text-blue-800 font-bold">
@@ -100,7 +100,7 @@ export default function NavigationBar ({ children }: NavigationBarProps ): React
                         <Account disabled={farm.none} setNavBarLoading={setNavBarLoading} />
                     </div>
                 </div>
-                <ScrollArea className="flex-grow ">
+                <ScrollArea className={`flex flex-col shrink-0 h-[calc(100vh-54px)] overflow-y-auto`}>
                     {children}
                 </ScrollArea>
             </div>

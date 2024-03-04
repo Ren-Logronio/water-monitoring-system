@@ -53,7 +53,7 @@ export default function Sensor({ sensor_id, name, unit }: { sensor_id: number, n
     }
 
     return (
-        <div ref={containingDiv} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className="relative rounded-[var(--radius)] overflow-hidden flex min-h-[352px] bg-white flex flex-col justify-center items-center">
+        <div ref={containingDiv} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className="relative rounded-[var(--radius)] overflow-hidden flex min-h-[352px] bg-white flex-col justify-center items-center">
             {
                 loading ? <NinetyRing/>
                 : readings.length > 0 ? <>
@@ -101,7 +101,7 @@ export default function Sensor({ sensor_id, name, unit }: { sensor_id: number, n
                     </LineChart>
                 </ResponsiveContainer>
                 </> 
-                : <p>No readings found</p>
+                : <p>No { name} readings found</p>
             }
         </div>
     );

@@ -9,7 +9,7 @@ export async function GET(request: NextRequest ) {
     const device_id = request.nextUrl.searchParams.get('device_id');
     const connection = await getMySQLConnection();
     const [ results, rows ]: [ results: any[], rows: any[] ] = await connection.query(
-        "SELECT `device_id`, `sensor_id`, `parameter`, `name`, `unit` FROM `view_pond_sensors` WHERE `device_id` = ?",
+        "SELECT * FROM `view_pond_sensors` WHERE `device_id` = ?",
         [device_id]
     );
     return NextResponse.json(
