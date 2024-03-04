@@ -23,7 +23,7 @@ export default function PondView({ device_id }: { device_id?: string})  {
     }, [device_id]);
 
     return (
-        <div className="p-4">
+        <div className="py-4">
             {
                 loading ? <div className="flex justify-center items-center h-40 space-x-2">
                     <NinetyRing />

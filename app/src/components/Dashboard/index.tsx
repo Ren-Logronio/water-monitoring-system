@@ -39,16 +39,12 @@ export default function Dashboard() {
         })
     }, []);
 
-    useEffect(() => {
-        console.log(ponds);
-    }, [ponds])
-
     const handleSelectChange = (value?: string) => {
         value && setSelectedPond(value);
     };
     
     return (
-        <div className="p-4">
+        <div className="p-4 md:p-[24px]">
             {
                 !loading ? (noFarm ? <>
                     <div className="min-w-full flex flex-col items-center">

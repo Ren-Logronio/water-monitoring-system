@@ -31,7 +31,7 @@ export default function ({ disabled = false, setNavBarLoading }: Readonly<{ disa
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button disabled={signoutLoading} variant="ghost" className=" align-middle px-2">
+                <Button disabled={signoutLoading} variant="outline" className="border-blue-800 text-blue-800 font-light align-middle px-2">
                     { signoutLoading ? 
                         <div className="flex flex-row items-center space-x-2">
                             <NinetyRing color="currentColor"/>
