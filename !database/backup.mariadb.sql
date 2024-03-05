@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `farms` (
   PRIMARY KEY (`farm_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.farms: ~4 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.farms: ~5 rows (approximately)
 DELETE FROM `farms`;
 INSERT INTO `farms` (`farm_id`, `name`, `address_street`, `address_city`, `address_province`) VALUES
 	(1, 'RD Farm', 'Next Street', 'General Santos City', 'South Cotabato'),
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `farm_farmer` (
   CONSTRAINT `farmer_farm_id` FOREIGN KEY (`farm_id`) REFERENCES `farms` (`farm_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.farm_farmer: ~1 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.farm_farmer: ~2 rows (approximately)
 DELETE FROM `farm_farmer`;
 INSERT INTO `farm_farmer` (`farm_id`, `farmer_id`, `role`, `is_approved`) VALUES
 	(1, 1, 'OWNER', 1),
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `ponds` (
   `device_id` char(36) NOT NULL DEFAULT '',
   `farm_id` int(11) DEFAULT NULL,
   `name` varchar(32) NOT NULL DEFAULT 'My Pond',
-  `status` varchar(8) NOT NULL DEFAULT '''IDLE''',
+  `status` varchar(8) NOT NULL DEFAULT 'INACTIVE',
   `width` double DEFAULT 0,
   `length` double DEFAULT 0,
   `depth` double DEFAULT 0,
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS `ponds` (
 -- Dumping data for table water-monitoring-system-db.ponds: ~3 rows (approximately)
 DELETE FROM `ponds`;
 INSERT INTO `ponds` (`device_id`, `farm_id`, `name`, `status`, `width`, `length`, `depth`, `method`) VALUES
-	('797bc4e1-ec79-45d0-bc48-25eb8d7c2c3', NULL, 'My Pond', 'INACTIVE', 0, 0, 0, 'NONE'),
+	('797bc4e1-ec79-45d0-bc48-25eb8d7c2c3', 6, 'Hello Pond', 'ACTIVE', 0, 0, 0, 'SEMI-INTENSIVE'),
 	('a0f8250e-49a7-4354-bf8c-bae94119a4fb', 1, 'Testing Pond', 'ACTIVE', 0, 0, 0, 'SEMI-INTENSIVE'),
 	('e5b672a9-feba-490c-a987-a50fdca38441', 1, 'Virtual Pond', 'ACTIVE', 0, 0, 0, 'SEMI-INTENSIVE');
 
@@ -334,11 +334,14 @@ CREATE TABLE `view_farmer_farm` (
 -- Dumping structure for view water-monitoring-system-db.view_farmer_ponds
 -- Creating temporary table to overcome VIEW dependency errors
 CREATE TABLE `view_farmer_ponds` (
-	`user_id` INT(11) NOT NULL,
 	`farm_id` INT(11) NOT NULL,
 	`device_id` CHAR(36) NOT NULL COLLATE 'utf8mb4_unicode_ci',
 	`name` VARCHAR(32) NOT NULL COLLATE 'utf8mb4_unicode_ci',
-	`status` VARCHAR(8) NOT NULL COLLATE 'utf8mb4_unicode_ci'
+	`status` VARCHAR(8) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+	`width` DOUBLE NULL,
+	`length` DOUBLE NULL,
+	`depth` DOUBLE NULL,
+	`method` VARCHAR(50) NULL COLLATE 'utf8mb4_unicode_ci'
 ) ENGINE=MyISAM;
 
 -- Dumping structure for view water-monitoring-system-db.view_farm_pond_sensor_parameter_reading_dump
@@ -384,7 +387,7 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_farmer_farm` AS selec
 
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `view_farmer_ponds`;
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_farmer_ponds` AS select `farm_farmer`.`farmer_id` AS `user_id`,`farms`.`farm_id` AS `farm_id`,`ponds`.`device_id` AS `device_id`,`ponds`.`name` AS `name`,`ponds`.`status` AS `status` from ((`ponds` join `farms` on(`ponds`.`farm_id` = `farms`.`farm_id`)) join `farm_farmer` on(`farms`.`farm_id` = `farm_farmer`.`farmer_id`));
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_farmer_ponds` AS select `farms`.`farm_id` AS `farm_id`,`ponds`.`device_id` AS `device_id`,`ponds`.`name` AS `name`,`ponds`.`status` AS `status`,`ponds`.`width` AS `width`,`ponds`.`length` AS `length`,`ponds`.`depth` AS `depth`,`ponds`.`method` AS `method` from (`ponds` join `farms` on(`ponds`.`farm_id` = `farms`.`farm_id`));
 
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `view_farm_pond_sensor_parameter_reading_dump`;

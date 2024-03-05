@@ -57,7 +57,7 @@ export default function PondDetails({ farm_id }: { farm_id: number }) {
                 }).then(response => {
                     router.replace('/redirect?w=/dashboard');
                 }).catch(err => {
-
+                    console.error(err);
                 })
             }, 2000)
         });
@@ -86,17 +86,17 @@ export default function PondDetails({ farm_id }: { farm_id: number }) {
                     <div className="flex flex-row space-x-[16px]">
                         <div className="flex flex-col space-y-2">
                             <Label>Width</Label>
-                            <Input disabled={loading} onChange={handleInputChange} type="number" name="width" value={pondForm.width} step={1.01} />
+                            <Input disabled={loading} onChange={handleInputChange} min={0} max={10000} maxLength={5} type="number" name="width" value={pondForm.width} step={1.01} />
                             <p className="hidden text-sm text-red-600"></p>
                         </div>
                         <div className="flex flex-col space-y-2">
                             <Label>Length</Label>
-                            <Input disabled={loading} onChange={handleInputChange} type="number" name="length" value={pondForm.length} step={1.01} />
+                            <Input disabled={loading} onChange={handleInputChange} min={0} max={10000} maxLength={5} type="number" name="length" value={pondForm.length} step={1.01} />
                             <p className="hidden text-sm text-red-600"></p>
                         </div>
                         <div className="flex flex-col space-y-2">
                             <Label>Depth</Label>
-                            <Input disabled={loading} onChange={handleInputChange} type="number" name="depth" value={pondForm.depth} step={1.01} />
+                            <Input disabled={loading} onChange={handleInputChange} min={0} max={10000} maxLength={5} type="number" name="depth" value={pondForm.depth} step={1.01} />
                             <p className="hidden text-sm text-red-600"></p>
                         </div>
                     </div>
