@@ -24,16 +24,15 @@ import { Button } from "../ui/button";
 //     return chartDimensions;
 // }
 
-export default function Sensor({ sensor_id, name, unit }: { sensor_id: number, name: string, unit: string}) {
+export default function Sensor({ sensor, hideCallback, emptyCallback }: { sensor: any, hideCallback: (sensor: any) => void, emptyCallback: (sensor: any) => void}) {
     const [readings, setReadings] = useState<any[]>([]);
     const [hover, setHover] = useState<boolean>(false);
     const [ loading, setLoading ] = useState(true);
     const containingDiv = createRef<HTMLDivElement>();
     // const chartDimensions = useDimensions(containingDiv);
 
-
     useEffect(() => {
-        axios.get(`/api/reading?sensor_id=${sensor_id}`).then((response) => {
+        axios.get(`/api/reading?sensor_id=${sensor.sensor_id}`).then((response) => {
             if(response.data.results && response.data.results.length > 0) {
                 setReadings(response.data.results);
             }
@@ -42,7 +41,20 @@ export default function Sensor({ sensor_id, name, unit }: { sensor_id: number, n
         }).finally(() => {
             setLoading(false);
         });
-    }, [sensor_id]);
+    }, [sensor]);
+
+    useEffect(() => {
+        if (loading) {
+            console.log("ticked");
+            return;
+        }
+        if (readings.length) {
+            console.log("ticked");
+            return;
+        }
+        console.log("yey");
+        emptyCallback(sensor);
+    }, [readings, loading])
 
     const handleMouseEnter = () => {
         setHover(true);
@@ -53,16 +65,16 @@ export default function Sensor({ sensor_id, name, unit }: { sensor_id: number, n
     }
 
     return (
-        <div ref={containingDiv} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className="relative rounded-[var(--radius)] overflow-hidden flex min-h-[352px] bg-white flex-col justify-center items-center">
+        <div ref={containingDiv} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className={`${readings.length <= 0 ? "hidden" : "relative rounded-[var(--radius)] overflow-hidden flex min-h-[352px] bg-white shadow-md flex-col justify-center items-center"} `}>
             {
                 loading ? <NinetyRing/>
                 : readings.length > 0 ? <>
                 <div className={`absolute z-40 size-full flex flex-col justify-end transition-all ${ hover ? 'opacity-0 pointer-events-none' : 'opacity-100' }`}>
                     <div className="text-blue-900 mx-7 mb-4">
-                        <h1 className="text-[20px] leading-[28px] font-medium">{ name }</h1>
+                        <h1 className="text-[20px] leading-[28px] font-medium">{ sensor.name }</h1>
                         <div className="flex flex-row items-center space-x-2">
                             <p className="text-[40px] leading-[32px] m-0 font-semibold">{ readings.sort((a, b) => b.reading_id - a.reading_id)[0].value }</p>
-                            <p className="text-[32px] leading-[26px] m-0 font-semibold">{ unit }</p>
+                            <p className="text-[32px] leading-[26px] m-0 font-semibold">{ sensor.unit }</p>
                         </div>
                         <p className="text-[14px] font-normal m-0">Last recorded reading</p>
                     </div>
@@ -86,7 +98,7 @@ export default function Sensor({ sensor_id, name, unit }: { sensor_id: number, n
                                 const init: any = {
                                     date: format(reading.recorded_at, "MMM dd"),
                                 }
-                                init[name] = reading.value.toString();
+                                init[sensor.name] = reading.value.toString();
                                 return init
                             })
                         }
@@ -95,13 +107,13 @@ export default function Sensor({ sensor_id, name, unit }: { sensor_id: number, n
                     >
                         <CartesianGrid strokeDasharray="1 1" />
                         <XAxis dataKey="date" color="#aaaaaa"/>
-                        <YAxis dataKey={name} color="#aaaaaa"/>
+                        <YAxis dataKey={sensor.name} color="#aaaaaa"/>
                         <Tooltip />
-                        <Line type="monotone" dataKey={name} stroke="#8884d8" activeDot={{ r: 5 }} />
+                        <Line type="monotone" dataKey={sensor.name} stroke="#8884d8" activeDot={{ r: 5 }} />
                     </LineChart>
                 </ResponsiveContainer>
                 </> 
-                : <p>No { name} readings found</p>
+                : <p>No {sensor.name} readings found</p>
             }
         </div>
     );
