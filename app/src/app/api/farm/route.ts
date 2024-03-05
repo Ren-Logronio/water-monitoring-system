@@ -3,7 +3,7 @@ import { verify } from "@/utils/Jwt";
 import getUserInfo from "@/utils/User";
 import { NextApiRequest } from "next";
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextApiRequest) {
     try {
@@ -24,6 +24,28 @@ export async function GET(request: NextApiRequest) {
         console.log(err)
         return NextResponse.json(
             { message: "Something went wrong while getting the farm info" },
+            {
+                status: 500,
+            },
+        );
+    }
+}
+
+export async function POST(request: NextApiRequest) {
+    try {
+        const connection = await getMySQLConnection();
+        const { name, address_street, address_city, address_province } = await new Response(request.body).json();
+        const result = {};
+        return NextResponse.json(
+            { result },
+            {
+                status: 200,
+            },
+        );
+    } catch (err: any) {
+        console.log(err)
+        return NextResponse.json(
+            { message: "Something went wrong while adding the farm" },
             {
                 status: 500,
             },

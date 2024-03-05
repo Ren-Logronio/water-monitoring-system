@@ -29,3 +29,25 @@ export async function GET(req: NextApiRequest) {
     );
   }
 }
+
+export async function POST(req: NextApiRequest) {
+  try {
+    const connection = await getMySQLConnection();
+    const { name, status } = await new Response(req.body).json();
+    const result = {};
+    return NextResponse.json(
+        { result },
+        {
+            status: 200,
+        },
+    );
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json(
+        { message: "Something went wrong while adding the pond" },
+        {
+            status: 500,
+        },
+    );
+  }
+}
