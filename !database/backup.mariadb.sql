@@ -27,16 +27,15 @@ CREATE TABLE IF NOT EXISTS `farms` (
   `address_city` varchar(128) NOT NULL,
   `address_province` varchar(128) NOT NULL,
   PRIMARY KEY (`farm_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.farms: ~5 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.farms: ~4 rows (approximately)
 DELETE FROM `farms`;
 INSERT INTO `farms` (`farm_id`, `name`, `address_street`, `address_city`, `address_province`) VALUES
 	(1, 'RD Farm', 'Next Street', 'General Santos City', 'South Cotabato'),
 	(2, 'MUDA Farm', 'React Street', 'General Santos City', 'South Cotabato'),
 	(3, 'Innoendo Sea Exhibition', 'Tartar ', 'General Santos City', 'Basta ah'),
-	(4, 'Aragazi Shrimp Factory', 'Lando Street', 'General Santos City', 'South Cotabato'),
-	(6, 'Alexis Hatcheries', 'Mango Blvd', 'Davao City', 'Cagayan');
+	(4, 'Aragazi Shrimp Factory', 'Lando Street', 'General Santos City', 'South Cotabato');
 
 -- Dumping structure for table water-monitoring-system-db.farm_farmer
 CREATE TABLE IF NOT EXISTS `farm_farmer` (
@@ -77,10 +76,9 @@ CREATE TABLE IF NOT EXISTS `ponds` (
   CONSTRAINT `pond_status` FOREIGN KEY (`status`) REFERENCES `pond_statuses` (`status`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='INTENSIVE\r\nSEMI-INTENSIVE\r\nTRADITIONAL';
 
--- Dumping data for table water-monitoring-system-db.ponds: ~3 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.ponds: ~2 rows (approximately)
 DELETE FROM `ponds`;
 INSERT INTO `ponds` (`device_id`, `farm_id`, `name`, `status`, `width`, `length`, `depth`, `method`) VALUES
-	('797bc4e1-ec79-45d0-bc48-25eb8d7c2c3', 6, 'Hello Pond', 'ACTIVE', 0, 0, 0, 'SEMI-INTENSIVE'),
 	('a0f8250e-49a7-4354-bf8c-bae94119a4fb', 1, 'Testing Pond', 'ACTIVE', 0, 0, 0, 'SEMI-INTENSIVE'),
 	('e5b672a9-feba-490c-a987-a50fdca38441', 1, 'Virtual Pond', 'ACTIVE', 0, 0, 0, 'SEMI-INTENSIVE');
 
