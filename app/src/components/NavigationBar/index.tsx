@@ -75,11 +75,11 @@ export default function NavigationBar({ children }: NavigationBarProps): React.R
                 <Separator className="bg-indigo-100" />
                 <div className="flex flex-col mx-auto md:mx-0">
                     <p className="text-[#205083] hidden md:flex  pb-2 pl-2">Parameters</p>
-                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="TMP" path="/parameter/temperature" text="Temperature" />
-                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="SAL" path="/parameter/salinity" text="Salinity" />
-                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="DOX" path="/parameter/do" text="Dissolved Oxygen" />
-                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="pH" path="/parameter/ph" text="pH Level" />
-                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="AMN" path="/parameter/ammonia" text="Ammonia" />
+                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="TMP" path="/parameter/temperature/datasheet" text="Temperature" />
+                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="SAL" path="/parameter/salinity/datasheet" text="Salinity" />
+                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="DOX" path="/parameter/do/datasheet" text="Dissolved Oxygen" />
+                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="pH" path="/parameter/ph/datasheet" text="pH Level" />
+                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="AMN" path="/parameter/ammonia/datasheet" text="Ammonia" />
                 </div>
                 <div className="absolute bottom-[28px] left-1/2 -translate-x-1/2 hidden md:flex flex-col text-center text-sm h-fit text-[#205083]">
                     <p>Ternary Operators</p>
