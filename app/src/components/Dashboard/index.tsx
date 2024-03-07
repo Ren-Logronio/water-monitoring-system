@@ -20,7 +20,6 @@ export default function Dashboard() {
 
     useEffect(() => {
         axios.get("/api/farm").then(response => {
-            console.log("results:", response.data.results);
             if (!response.data.results || response.data.results.length <= 0) {
                 setLoading(false);
                 return;
@@ -35,7 +34,7 @@ export default function Dashboard() {
                     setPonds({ ponds: [], noPonds: true });
                 } else {
                     setPonds({ ponds: response.data.results, noPonds: false });
-                    setSelectedPond(response.data.results[0].device_id ? response.data.results[0].device_id : "");
+                    setSelectedPond(response.data.results[0].pond_id ? response.data.results[0].pond_id : "");
                 }
             }).catch(error => {
                 console.error(error);
@@ -58,6 +57,10 @@ export default function Dashboard() {
         }
         return () => clearTimeout(reloadForUpdates.timeout);
     }, [farm])
+
+    useEffect(() => {
+        console.log("selectedPond:", selectedPond);
+    }, [selectedPond]);
 
     const handleSelectChange = (value?: string) => {
         value && setSelectedPond(value);
@@ -88,13 +91,13 @@ export default function Dashboard() {
                                         <SelectContent>
                                             {
                                                 ponds?.ponds.map(
-                                                    (pond) => <SelectItem key={pond.device_id} value={pond.device_id}>{pond.name}</SelectItem>
+                                                    (pond) => <SelectItem key={pond.device_id} value={pond.pond_id}>{pond.name}</SelectItem>
                                                 )
                                             }
                                             {/* <SelectItem value="light">Light</SelectItem> */}
                                         </SelectContent>
                                     </Select>
-                                    <PondView device_id={selectedPond} />
+                                    <PondView pond_id={selectedPond} />
                                 </> : <>
                                     <div className="min-w-full flex flex-col items-center">
                                         <p className="text-center">It seems that you have no pond/s for <span className=" font-[500]">{farm.name}</span>,</p>

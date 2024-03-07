@@ -37,7 +37,6 @@ export default function FarmDetails() {
         console.log(e);
         setLoading(true)
         if (enabledGroup === "search") {
-            console.log("Existing Farm Form", existingFarmForm);
             if (!existingFarmForm.selectedFarm.farm_id) {
                 setExistingFarmForm({ ...existingFarmForm, error: "Please select a farm" });
                 setLoading(false);
@@ -53,7 +52,6 @@ export default function FarmDetails() {
                 console.error(error);
             })
         } else {
-            console.log("New Farm Form", newFarmForm);
             if (!newFarmForm.name || !newFarmForm.address_street || !newFarmForm.address_city || !newFarmForm.address_province) {
                 setNewFarmForm({ ...newFarmForm, error: "Please fill in all fields" });
                 setLoading(false);

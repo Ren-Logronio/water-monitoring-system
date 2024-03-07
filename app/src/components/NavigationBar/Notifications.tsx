@@ -37,11 +37,12 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
     useEffect(() => {
         if (pathIsSignIn(path)) { setNotificationCount(0); return; };
         axios.get("/api/notification/count").then(response => {
+            console.log("Notification Count:", response.data.results);
             if (response.data.results.length <= 0) {
                 setNotificationCount(0);
                 return;
             };
-            setNotificationCount(response.data.results[0].notification_count);
+            setNotificationCount(response.data.results[0].count);
         }).catch(error => {
             console.error(error);
         });
@@ -51,7 +52,7 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
                     setNotificationCount(0);
                     return;
                 };
-                setNotificationCount(response.data.results[0].notification_count);
+                setNotificationCount(response.data.results[0].count);
             }).catch(error => {
                 console.error(error);
             });

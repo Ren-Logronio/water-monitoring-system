@@ -43,12 +43,10 @@ export default function PondDetails({ farm_id }: { farm_id: number }) {
         axios.get(`/api/pond/device?device_id=${pondForm.device_id}`).then(response => {
             setLoading(true);
             if (response.data.results && response.data.results.length <= 0) {
-                console.log("fuck")
                 setPondForm({ ...pondForm, message: "This device id may not exists, or had not established a connection with the system" });
                 setLoading(false);
                 return;
             }
-            console.log("you")
             setPondForm({ ...pondForm, message: `Device (${pondForm.device_id}) found`, status: "green" });
             setTimeout(() => {
                 const { device_id, name, width, length, depth, method } = pondForm;
