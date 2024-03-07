@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
         const device_id = request.nextUrl.searchParams.get('device_id');
         const connection = await getMySQLConnection();
         const [results, rows]: [results: any[], rows: any[]] = await connection.query(
-            "SELECT * FROM `device` WHERE `device_id` = ? AND `status` = 'IDLE'",
+            "SELECT * FROM `devices` WHERE `device_id` = ? AND `status` = 'IDLE'",
             [device_id]
         );
         console.log(results);
@@ -32,7 +32,7 @@ export async function PATCH(request: NextRequest) {
         const connection = await getMySQLConnection();
         const { device_id, status } = await new Response(request.body).json();
         await connection.query(
-            "UPDATE `device` SET `status` = ? WHERE `device_id` = ?",
+            "UPDATE `devices` SET `status` = ? WHERE `device_id` = ?",
             [status, device_id]
         );
         return NextResponse.json(
