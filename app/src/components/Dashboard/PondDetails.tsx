@@ -16,6 +16,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { Checkbox } from "../ui/checkbox";
+import { NinetyRing } from "react-svg-spinners";
 
 export default function PondDetails({ farm_id }: { farm_id: number }) {
     const router = useRouter();
@@ -46,8 +47,13 @@ export default function PondDetails({ farm_id }: { farm_id: number }) {
     }
 
     const handleSubmit = () => {
+        if (pondForm.enter_device_id && !/^[\w\d]{8,8}-[\w\d]{4,4}-[\w\d]{4,4}-[\w\d]{4,4}-[\w\d]{12,12}$/i.test(pondForm.device_id)) {
+            setPondForm({ ...pondForm, message: "Invalid Device Id", status: "red" });
+            return;
+        }
         setLoading(true);
         if (pondForm.enter_device_id) {
+            console.log("device id:", pondForm.device_id);
             axios.get(`/api/device?device_id=${pondForm.device_id}`).then(response => {
                 if (response.data.results && response.data.results.length <= 0) {
                     setPondForm({ ...pondForm, message: "This device id may not exists, or had not established a connection with the system" });
@@ -58,7 +64,7 @@ export default function PondDetails({ farm_id }: { farm_id: number }) {
                 setTimeout(() => {
                     const { device_id, name, width, length, depth, method } = pondForm;
                     axios.patch("/api/device", { device_id: pondForm.device_id, status: "ACTIVE" }).then(response => {
-                        axios.patch("/api/pond", {
+                        axios.post("/api/pond", {
                             device_id, farm_id, name, width, length, depth, method
                         }).then(response => {
                             router.replace('/redirect?w=/dashboard');
@@ -132,7 +138,7 @@ export default function PondDetails({ farm_id }: { farm_id: number }) {
                 </div>
                 <div className="flex flex-row space-x-2">
                     <Checkbox disabled={loading} onCheckedChange={handleCheckboxChange} checked={pondForm.enter_device_id} />
-                    <Label>Enter Device Id</Label>
+                    <Label>This pond has a device</Label>
                 </div>
                 <div className="flex flex-col space-y-2">
                     <Label className={`${!pondForm.enter_device_id && "text-gray-400"}`}>* Device Id</Label>
@@ -144,7 +150,11 @@ export default function PondDetails({ farm_id }: { farm_id: number }) {
                 <DialogClose asChild>
                     <Button disabled={loading} variant="outline">Cancel</Button>
                 </DialogClose>
-                <Button disabled={loading} onClick={handleSubmit} className="bg-sky-600 text-white" type="submit">Add Pond</Button>
+                <Button disabled={loading} onClick={handleSubmit} className="bg-sky-600 text-white flex flex-row items-center space-x-2" type="submit">
+                    {
+                        loading ? <><NinetyRing color="currentColor" /><p>Adding...</p></> : <>Add Pond</>
+                    }
+                </Button>
             </DialogFooter>
         </DialogContent>
     </Dialog>
