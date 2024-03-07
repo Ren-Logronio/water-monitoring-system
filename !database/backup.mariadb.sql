@@ -230,6 +230,7 @@ CREATE TABLE IF NOT EXISTS `readings` (
   `value` double NOT NULL DEFAULT 0,
   `recorded_at` datetime NOT NULL DEFAULT current_timestamp(),
   `modified_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `isRecordedBySensor` tinyint(4) NOT NULL DEFAULT 1,
   PRIMARY KEY (`reading_id`),
   KEY `reading_parameter_id` (`parameter_id`),
   CONSTRAINT `reading_parameter_id` FOREIGN KEY (`parameter_id`) REFERENCES `parameters` (`parameter_id`) ON UPDATE CASCADE
