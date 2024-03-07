@@ -29,11 +29,12 @@ CREATE TABLE IF NOT EXISTS `devices` (
   CONSTRAINT `device_status` FOREIGN KEY (`status`) REFERENCES `device_statuses` (`status`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.devices: ~2 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.devices: ~3 rows (approximately)
 DELETE FROM `devices`;
 INSERT INTO `devices` (`device_id`, `status`, `last_established_connection`) VALUES
-	('a0f8250e-49a7-4354-bf8c-bae94119a4fb', 'IDLE', '2024-03-07 11:49:38'),
-	('e5b672a9-feba-490c-a987-a50fdca38441', 'IDLE', '2024-03-07 11:49:51');
+	('2e2aa43d-38fe-432c-bfff-e454069859cf', 'IDLE', '2024-03-07 12:05:37'),
+	('a0f8250e-49a7-4354-bf8c-bae94119a4fb', 'ACTIVE', '2024-03-07 12:03:44'),
+	('e5b672a9-feba-490c-a987-a50fdca38441', 'ACTIVE', '2024-03-07 12:03:45');
 
 -- Dumping structure for table water-monitoring-system-db.device_statuses
 CREATE TABLE IF NOT EXISTS `device_statuses` (
@@ -109,16 +110,21 @@ CREATE TABLE IF NOT EXISTS `parameters` (
   KEY `parameter_pond_id` (`pond_id`),
   CONSTRAINT `parameter_list` FOREIGN KEY (`parameter`) REFERENCES `parameter_list` (`parameter`) ON UPDATE CASCADE,
   CONSTRAINT `parameter_pond_id` FOREIGN KEY (`pond_id`) REFERENCES `ponds` (`pond_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.parameters: ~5 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.parameters: ~10 rows (approximately)
 DELETE FROM `parameters`;
 INSERT INTO `parameters` (`parameter_id`, `pond_id`, `parameter`) VALUES
 	(1, 1, 'TMP'),
 	(2, 1, 'SAL'),
 	(3, 1, 'PH'),
 	(4, 1, 'DO'),
-	(5, 1, 'AMN');
+	(5, 1, 'AMN'),
+	(6, 4, 'TMP'),
+	(7, 4, 'PH'),
+	(8, 4, 'DO'),
+	(9, 4, 'AMN'),
+	(10, 4, 'SAL');
 
 -- Dumping structure for table water-monitoring-system-db.parameter_list
 CREATE TABLE IF NOT EXISTS `parameter_list` (
@@ -186,27 +192,28 @@ INSERT INTO `parameter_threshold_types` (`type`) VALUES
 -- Dumping structure for table water-monitoring-system-db.ponds
 CREATE TABLE IF NOT EXISTS `ponds` (
   `pond_id` int(11) NOT NULL AUTO_INCREMENT,
-  `device_id` char(36) NOT NULL DEFAULT 'NO DEVICE',
+  `device_id` char(36) DEFAULT NULL,
   `farm_id` int(11) DEFAULT NULL,
   `name` varchar(32) NOT NULL DEFAULT 'My Pond',
   `width` double DEFAULT 0,
   `length` double DEFAULT 0,
   `depth` double DEFAULT 0,
   `method` varchar(50) DEFAULT 'NONE',
-  PRIMARY KEY (`pond_id`,`device_id`),
+  PRIMARY KEY (`pond_id`) USING BTREE,
   KEY `pond_farm_id` (`farm_id`),
   KEY `pond_method` (`method`),
   KEY `pond_device_id` (`device_id`),
   CONSTRAINT `pond_device_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`device_id`) ON UPDATE CASCADE,
   CONSTRAINT `pond_farm_id` FOREIGN KEY (`farm_id`) REFERENCES `farms` (`farm_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `pond_method` FOREIGN KEY (`method`) REFERENCES `pond_methods` (`method`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='INTENSIVE\r\nSEMI-INTENSIVE\r\nTRADITIONAL';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='INTENSIVE\r\nSEMI-INTENSIVE\r\nTRADITIONAL';
 
 -- Dumping data for table water-monitoring-system-db.ponds: ~2 rows (approximately)
 DELETE FROM `ponds`;
 INSERT INTO `ponds` (`pond_id`, `device_id`, `farm_id`, `name`, `width`, `length`, `depth`, `method`) VALUES
 	(1, 'a0f8250e-49a7-4354-bf8c-bae94119a4fb', 1, 'Testing Pond', 0, 0, 0, 'SEMI-INTENSIVE'),
-	(2, 'e5b672a9-feba-490c-a987-a50fdca38441', 1, 'Virtual Pond', 0, 0, 0, 'SEMI-INTENSIVE');
+	(2, 'e5b672a9-feba-490c-a987-a50fdca38441', 1, 'Virtual Pond', 0, 0, 0, 'SEMI-INTENSIVE'),
+	(4, NULL, 6, 'test', 1, 2, 3, 'TRADITIONAL');
 
 -- Dumping structure for table water-monitoring-system-db.pond_methods
 CREATE TABLE IF NOT EXISTS `pond_methods` (
@@ -352,7 +359,7 @@ CREATE TABLE `view_farmer_farm` (
 CREATE TABLE `view_farmer_ponds` (
 	`farm_id` INT(11) NOT NULL,
 	`pond_id` INT(11) NOT NULL,
-	`device_id` CHAR(36) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+	`device_id` CHAR(36) NULL COLLATE 'utf8mb4_unicode_ci',
 	`name` VARCHAR(32) NOT NULL COLLATE 'utf8mb4_unicode_ci',
 	`width` DOUBLE NULL,
 	`length` DOUBLE NULL,
