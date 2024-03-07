@@ -34,7 +34,7 @@ export default function Dashboard() {
                     setPonds({ ponds: [], noPonds: true });
                 } else {
                     setPonds({ ponds: response.data.results, noPonds: false });
-                    setSelectedPond(response.data.results[0].pond_id ? response.data.results[0].pond_id : "");
+                    setSelectedPond(response.data.results[0] && response.data.results[0].pond_id ? response.data.results[0].pond_id : "");
                 }
             }).catch(error => {
                 console.error(error);

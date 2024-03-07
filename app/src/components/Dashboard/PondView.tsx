@@ -24,8 +24,8 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
         });
     }, [pond_id]);
 
-    const removeSensorCallback = (trsensor: any) => {
-        const newSensors = [...parameters.filter(sensor => sensor.sensor_id !== trsensor.sensor_id), { ...trsensor, hidden: true, context: "No Readings", unshowable: true }]
+    const removeSensorCallback = (trparam: any) => {
+        const newSensors = [...parameters.filter(parameter => parameter.parameter_id !== trparam.parameter_id), { ...trparam, hidden: true, context: "No Readings", unshowable: true }]
         setParameters(newSensors);
     }
 
@@ -34,15 +34,15 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
             {
                 loading ? <div className="flex justify-center items-center h-40 space-x-2">
                     <NinetyRing />
-                    <p>Loading Sensors..</p>
+                    <p>Loading Parameters..</p>
                 </div>
                     : parameters.filter(i => !i.hidden).length > 0 ? <>
                         <div className="flex flex-row space-x-2 mb-3">{
                             parameters
                                 .filter(i => i.hidden)
-                                .map(sensor => (
-                                    <Badge key={sensor.sensor_id} className={`bg-sky-600 shadow-md ${sensor.unshowable ? "cursor-default hover:bg-sky-600" : "cursor-pointer hover:bg-sky-700"}`}>
-                                        {sensor.name} {sensor.context && `(${sensor.context})`}
+                                .map(parameter => (
+                                    <Badge key={parameter.parameter_id} className={`bg-sky-600 shadow-md ${parameter.unshowable ? "cursor-default hover:bg-sky-600" : "cursor-pointer hover:bg-sky-700"}`}>
+                                        {parameter.name} {parameter.context && `(${parameter.context})`}
                                     </Badge>
                                 )
                                 )
@@ -50,15 +50,15 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
                         <div className="transition-all grid grid-cols-1 xl:grid-cols-2 gap-4">{
                             parameters
                                 .filter(i => !i.hidden)
-                                .map(sensor => <Parameter
-                                    key={sensor.sensor_id}
-                                    parameter={sensor}
+                                .map(parameter => <Parameter
+                                    key={parameter.parameter_id}
+                                    parameter={parameter}
                                     hideCallback={(sensor: any) => { }}
                                     emptyCallback={removeSensorCallback} />
                                 )
                         }</div>
                     </>
-                        : parameters.filter(i => i.hidden).length <= 0 && <p>No sensors found</p>
+                        : parameters.filter(i => i.hidden).length <= 0 && <p>No parameters found</p>
             }
         </div>
     );

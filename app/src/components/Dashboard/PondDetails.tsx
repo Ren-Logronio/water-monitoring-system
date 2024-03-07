@@ -48,7 +48,7 @@ export default function PondDetails({ farm_id }: { farm_id: number }) {
     const handleSubmit = () => {
         setLoading(true);
         if (pondForm.enter_device_id) {
-            axios.get(`/api/pond/device?device_id=${pondForm.device_id}`).then(response => {
+            axios.get(`/api/device?device_id=${pondForm.device_id}`).then(response => {
                 if (response.data.results && response.data.results.length <= 0) {
                     setPondForm({ ...pondForm, message: "This device id may not exists, or had not established a connection with the system" });
                     setLoading(false);
@@ -57,19 +57,23 @@ export default function PondDetails({ farm_id }: { farm_id: number }) {
                 setPondForm({ ...pondForm, message: `Device (${pondForm.device_id}) found`, status: "green" });
                 setTimeout(() => {
                     const { device_id, name, width, length, depth, method } = pondForm;
-                    axios.patch("/api/pond", {
-                        device_id, farm_id, name, width, length, depth, method
-                    }).then(response => {
-                        router.replace('/redirect?w=/dashboard');
+                    axios.patch("/api/device", { device_id: pondForm.device_id, status: "ACTIVE" }).then(response => {
+                        axios.patch("/api/pond", {
+                            device_id, farm_id, name, width, length, depth, method
+                        }).then(response => {
+                            router.replace('/redirect?w=/dashboard');
+                        }).catch(err => {
+                            console.error(err);
+                        })
                     }).catch(err => {
                         console.error(err);
-                    })
+                    });
                 }, 2000)
             });
         } else {
             setTimeout(() => {
                 const { name, width, length, depth, method } = pondForm;
-                axios.patch("/api/pond", {
+                axios.post("/api/pond", {
                     farm_id, device_id: null, name, width, length, depth, method
                 }).then(response => {
                     router.replace('/redirect?w=/dashboard');
