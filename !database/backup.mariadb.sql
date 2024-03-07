@@ -19,26 +19,6 @@
 CREATE DATABASE IF NOT EXISTS `water-monitoring-system-db` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
 USE `water-monitoring-system-db`;
 
--- Dumping structure for table water-monitoring-system-db.farmer
-CREATE TABLE IF NOT EXISTS `farmer` (
-  `user_id` int(11) NOT NULL AUTO_INCREMENT,
-  `firstname` varchar(64) NOT NULL,
-  `middlename` varchar(64) DEFAULT NULL,
-  `lastname` varchar(64) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `password` varchar(128) NOT NULL,
-  `profile` mediumblob DEFAULT NULL,
-  PRIMARY KEY (`user_id`),
-  UNIQUE KEY `email` (`email`),
-  KEY `password` (`password`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Dumping data for table water-monitoring-system-db.farmer: ~2 rows (approximately)
-DELETE FROM `farmer`;
-INSERT INTO `farmer` (`user_id`, `firstname`, `middlename`, `lastname`, `email`, `password`, `profile`) VALUES
-	(1, 'Juan Dela', 'Vega', 'Cruz', 'test@gmail.com', '$2a$12$ZpPBPSV7AbJboSqL/UNA2O7gnnlVnYaqHpEc5Fc2SoU59KNSigRfS', NULL),
-	(2, 'Reinhart', 'Ferrer', 'Logronio', 'reinhart.logronio@msugensan.edu.ph', '$2a$12$ZpPBPSV7AbJboSqL/UNA2O7gnnlVnYaqHpEc5Fc2SoU59KNSigRfS', NULL);
-
 -- Dumping structure for table water-monitoring-system-db.farms
 CREATE TABLE IF NOT EXISTS `farms` (
   `farm_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -47,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `farms` (
   `address_city` varchar(128) NOT NULL,
   `address_province` varchar(128) NOT NULL,
   PRIMARY KEY (`farm_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table water-monitoring-system-db.farms: ~4 rows (approximately)
 DELETE FROM `farms`;
@@ -66,17 +46,15 @@ CREATE TABLE IF NOT EXISTS `farm_farmer` (
   PRIMARY KEY (`farm_id`,`farmer_id`),
   KEY `farm_farmer_id` (`farmer_id`),
   KEY `farm_farmer_role` (`role`),
-  CONSTRAINT `farm_farmer_id` FOREIGN KEY (`farmer_id`) REFERENCES `farmer` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `farm_farmer_id` FOREIGN KEY (`farmer_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `farm_farmer_role` FOREIGN KEY (`role`) REFERENCES `farm_farmer_roles` (`role`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `farmer_farm_id` FOREIGN KEY (`farm_id`) REFERENCES `farms` (`farm_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.farm_farmer: ~3 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.farm_farmer: ~1 rows (approximately)
 DELETE FROM `farm_farmer`;
 INSERT INTO `farm_farmer` (`farm_id`, `farmer_id`, `role`, `is_approved`) VALUES
-	(1, 1, 'OWNER', 1),
-	(1, 2, 'STAFF', 0),
-	(6, 2, 'OWNER', 1);
+	(1, 1, 'OWNER', 1);
 
 -- Dumping structure for table water-monitoring-system-db.farm_farmer_roles
 CREATE TABLE IF NOT EXISTS `farm_farmer_roles` (
@@ -272,24 +250,44 @@ INSERT INTO `readings` (`reading_id`, `parameter_id`, `value`, `recorded_at`, `m
 
 -- Dumping structure for table water-monitoring-system-db.reading_notifications
 CREATE TABLE IF NOT EXISTS `reading_notifications` (
-  `sensor_notification_id` int(11) NOT NULL AUTO_INCREMENT,
+  `reading_notification_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `reading_id` int(11) NOT NULL,
   `threshold_id` int(11) NOT NULL,
   `issued_at` datetime NOT NULL DEFAULT current_timestamp(),
   `isRead` tinyint(4) DEFAULT 0,
   `read_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`sensor_notification_id`),
+  PRIMARY KEY (`reading_notification_id`) USING BTREE,
   KEY `sensor_notification_threshold_id` (`threshold_id`),
   KEY `sensor_notification_reading_id` (`reading_id`),
   KEY `sensor_notification_user_id` (`user_id`),
   CONSTRAINT `sensor_notification_reading_id` FOREIGN KEY (`reading_id`) REFERENCES `readings` (`reading_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `sensor_notification_threshold_id` FOREIGN KEY (`threshold_id`) REFERENCES `parameter_thresholds` (`threshold_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `sensor_notification_user_id` FOREIGN KEY (`user_id`) REFERENCES `farmer` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `sensor_notification_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table water-monitoring-system-db.reading_notifications: ~0 rows (approximately)
 DELETE FROM `reading_notifications`;
+
+-- Dumping structure for table water-monitoring-system-db.users
+CREATE TABLE IF NOT EXISTS `users` (
+  `user_id` int(11) NOT NULL AUTO_INCREMENT,
+  `firstname` varchar(64) NOT NULL,
+  `middlename` varchar(64) DEFAULT NULL,
+  `lastname` varchar(64) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(128) NOT NULL,
+  `profile` mediumblob DEFAULT NULL,
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `email` (`email`),
+  KEY `password` (`password`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table water-monitoring-system-db.users: ~2 rows (approximately)
+DELETE FROM `users`;
+INSERT INTO `users` (`user_id`, `firstname`, `middlename`, `lastname`, `email`, `password`, `profile`) VALUES
+	(1, 'Juan Dela', 'Vega', 'Cruz', 'test@gmail.com', '$2a$12$ZpPBPSV7AbJboSqL/UNA2O7gnnlVnYaqHpEc5Fc2SoU59KNSigRfS', NULL),
+	(2, 'Reinhart', 'Ferrer', 'Logronio', 'reinhart.logronio@msugensan.edu.ph', '$2a$12$ZpPBPSV7AbJboSqL/UNA2O7gnnlVnYaqHpEc5Fc2SoU59KNSigRfS', NULL);
 
 -- Dumping structure for table water-monitoring-system-db.user_notifications
 CREATE TABLE IF NOT EXISTS `user_notifications` (
@@ -304,13 +302,13 @@ CREATE TABLE IF NOT EXISTS `user_notifications` (
   KEY `notification_user_id` (`user_id`),
   KEY `notification_action` (`action`),
   CONSTRAINT `notification_action` FOREIGN KEY (`action`) REFERENCES `parameter_threshold_actions` (`action`) ON UPDATE CASCADE,
-  CONSTRAINT `notification_user_id` FOREIGN KEY (`user_id`) REFERENCES `farmer` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `notification_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table water-monitoring-system-db.user_notifications: ~1 rows (approximately)
 DELETE FROM `user_notifications`;
 INSERT INTO `user_notifications` (`notification_id`, `user_id`, `action`, `message`, `issued_at`, `isRead`, `read_at`) VALUES
-	(1, 2, 'INFO', 'You have been added as a STAFF to RD Farm, please wait for the farm owner\'s verification..', '2024-03-05 21:57:21', 0, NULL);
+	(1, 1, 'INFO', 'You have been added as a STAFF to RD Farm, please wait for the farm owner\'s verification..', '2024-03-05 21:57:21', 0, NULL);
 
 -- Dumping structure for view water-monitoring-system-db.view_dashboard_ponds_monitored
 -- Creating temporary table to overcome VIEW dependency errors
@@ -328,6 +326,7 @@ CREATE TABLE `view_farmer_farm` (
 	`name` VARCHAR(128) NOT NULL COLLATE 'utf8mb4_unicode_ci',
 	`address_street` VARCHAR(128) NOT NULL COLLATE 'utf8mb4_unicode_ci',
 	`address_city` VARCHAR(128) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+	`address_province` VARCHAR(128) NOT NULL COLLATE 'utf8mb4_unicode_ci',
 	`is_approved` TINYINT(4) NOT NULL
 ) ENGINE=MyISAM;
 
@@ -335,6 +334,7 @@ CREATE TABLE `view_farmer_farm` (
 -- Creating temporary table to overcome VIEW dependency errors
 CREATE TABLE `view_farmer_ponds` (
 	`farm_id` INT(11) NOT NULL,
+	`pond_id` INT(11) NOT NULL,
 	`device_id` CHAR(36) NOT NULL COLLATE 'utf8mb4_unicode_ci',
 	`name` VARCHAR(32) NOT NULL COLLATE 'utf8mb4_unicode_ci',
 	`status` VARCHAR(8) NOT NULL COLLATE 'utf8mb4_unicode_ci',
@@ -344,17 +344,42 @@ CREATE TABLE `view_farmer_ponds` (
 	`method` VARCHAR(50) NULL COLLATE 'utf8mb4_unicode_ci'
 ) ENGINE=MyISAM;
 
+-- Dumping structure for view water-monitoring-system-db.view_pond_parameters
+-- Creating temporary table to overcome VIEW dependency errors
+CREATE TABLE `view_pond_parameters` (
+	`parameter_id` INT(11) NOT NULL,
+	`pond_id` INT(11) NULL,
+	`parameter` VARCHAR(3) NULL COLLATE 'utf8mb4_unicode_ci',
+	`name` VARCHAR(16) NULL COLLATE 'utf8mb4_unicode_ci',
+	`unit` VARCHAR(16) NULL COLLATE 'utf8mb4_unicode_ci'
+) ENGINE=MyISAM;
+
+-- Dumping structure for view water-monitoring-system-db.view_user_notifications_count
+-- Creating temporary table to overcome VIEW dependency errors
+CREATE TABLE `view_user_notifications_count` (
+	`user_id` INT(11) NOT NULL,
+	`count` BIGINT(21) NOT NULL
+) ENGINE=MyISAM;
+
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `view_dashboard_ponds_monitored`;
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_dashboard_ponds_monitored` AS select `farm_farmer`.`farmer_id` AS `farmer_id`,`farms`.`farm_id` AS `farm_id`,count(`ponds`.`device_id`) AS `ponds_monitored` from ((`farm_farmer` join `farms` on(`farm_farmer`.`farmer_id` = `farms`.`farm_id`)) join `ponds` on(`farms`.`farm_id` = `ponds`.`farm_id`)) group by `farm_farmer`.`farmer_id`,`farms`.`farm_id`;
 
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `view_farmer_farm`;
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_farmer_farm` AS select `farm_farmer`.`farmer_id` AS `user_id`,`farms`.`farm_id` AS `farm_id`,`farms`.`name` AS `name`,`farms`.`address_street` AS `address_street`,`farms`.`address_city` AS `address_city`,`farm_farmer`.`is_approved` AS `is_approved` from (`farm_farmer` join `farms` on(`farm_farmer`.`farm_id` = `farms`.`farm_id`));
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_farmer_farm` AS select `farm_farmer`.`farmer_id` AS `user_id`,`farms`.`farm_id` AS `farm_id`,`farms`.`name` AS `name`,`farms`.`address_street` AS `address_street`,`farms`.`address_city` AS `address_city`,`farms`.`address_province` AS `address_province`,`farm_farmer`.`is_approved` AS `is_approved` from (`farm_farmer` join `farms` on(`farm_farmer`.`farm_id` = `farms`.`farm_id`));
 
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `view_farmer_ponds`;
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_farmer_ponds` AS select `farms`.`farm_id` AS `farm_id`,`ponds`.`device_id` AS `device_id`,`ponds`.`name` AS `name`,`ponds`.`status` AS `status`,`ponds`.`width` AS `width`,`ponds`.`length` AS `length`,`ponds`.`depth` AS `depth`,`ponds`.`method` AS `method` from (`ponds` join `farms` on(`ponds`.`farm_id` = `farms`.`farm_id`));
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_farmer_ponds` AS select `farms`.`farm_id` AS `farm_id`,`ponds`.`pond_id` AS `pond_id`,`ponds`.`device_id` AS `device_id`,`ponds`.`name` AS `name`,`ponds`.`status` AS `status`,`ponds`.`width` AS `width`,`ponds`.`length` AS `length`,`ponds`.`depth` AS `depth`,`ponds`.`method` AS `method` from (`ponds` join `farms` on(`ponds`.`farm_id` = `farms`.`farm_id`));
+
+-- Removing temporary table and create final VIEW structure
+DROP TABLE IF EXISTS `view_pond_parameters`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_pond_parameters` AS select `parameters`.`parameter_id` AS `parameter_id`,`parameters`.`pond_id` AS `pond_id`,`parameter_list`.`parameter` AS `parameter`,`parameter_list`.`name` AS `name`,`parameter_list`.`unit` AS `unit` from (`parameters` left join `parameter_list` on(`parameters`.`parameter` = `parameter_list`.`parameter`));
+
+-- Removing temporary table and create final VIEW structure
+DROP TABLE IF EXISTS `view_user_notifications_count`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_user_notifications_count` AS select `users`.`user_id` AS `user_id`,count(`user_notifications`.`notification_id`) AS `count` from (`users` left join `user_notifications` on(`users`.`user_id` = `user_notifications`.`user_id`)) group by `users`.`user_id`;
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
