@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS `farmer` (
   `lastname` varchar(64) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(128) NOT NULL,
+  `profile` mediumblob DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `email` (`email`),
   KEY `password` (`password`)
@@ -34,9 +35,9 @@ CREATE TABLE IF NOT EXISTS `farmer` (
 
 -- Dumping data for table water-monitoring-system-db.farmer: ~2 rows (approximately)
 DELETE FROM `farmer`;
-INSERT INTO `farmer` (`user_id`, `firstname`, `middlename`, `lastname`, `email`, `password`) VALUES
-	(1, 'Juan Dela', 'Vega', 'Cruz', 'test@gmail.com', '$2a$12$ZpPBPSV7AbJboSqL/UNA2O7gnnlVnYaqHpEc5Fc2SoU59KNSigRfS'),
-	(2, 'Reinhart', 'Ferrer', 'Logronio', 'reinhart.logronio@msugensan.edu.ph', '$2a$12$ZpPBPSV7AbJboSqL/UNA2O7gnnlVnYaqHpEc5Fc2SoU59KNSigRfS');
+INSERT INTO `farmer` (`user_id`, `firstname`, `middlename`, `lastname`, `email`, `password`, `profile`) VALUES
+	(1, 'Juan Dela', 'Vega', 'Cruz', 'test@gmail.com', '$2a$12$ZpPBPSV7AbJboSqL/UNA2O7gnnlVnYaqHpEc5Fc2SoU59KNSigRfS', NULL),
+	(2, 'Reinhart', 'Ferrer', 'Logronio', 'reinhart.logronio@msugensan.edu.ph', '$2a$12$ZpPBPSV7AbJboSqL/UNA2O7gnnlVnYaqHpEc5Fc2SoU59KNSigRfS', NULL);
 
 -- Dumping structure for table water-monitoring-system-db.farms
 CREATE TABLE IF NOT EXISTS `farms` (
@@ -101,10 +102,14 @@ CREATE TABLE IF NOT EXISTS `parameters` (
   CONSTRAINT `parameter_pond_id` FOREIGN KEY (`pond_id`) REFERENCES `ponds` (`pond_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.parameters: ~1 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.parameters: ~5 rows (approximately)
 DELETE FROM `parameters`;
 INSERT INTO `parameters` (`parameter_id`, `pond_id`, `parameter`) VALUES
-	(1, 1, 'TMP');
+	(1, 1, 'TMP'),
+	(2, 1, 'SAL'),
+	(3, 1, 'PH'),
+	(4, 1, 'DO'),
+	(5, 1, 'AMN');
 
 -- Dumping structure for table water-monitoring-system-db.parameter_list
 CREATE TABLE IF NOT EXISTS `parameter_list` (
@@ -234,10 +239,36 @@ CREATE TABLE IF NOT EXISTS `readings` (
   PRIMARY KEY (`reading_id`),
   KEY `reading_parameter_id` (`parameter_id`),
   CONSTRAINT `reading_parameter_id` FOREIGN KEY (`parameter_id`) REFERENCES `parameters` (`parameter_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.readings: ~0 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.readings: ~25 rows (approximately)
 DELETE FROM `readings`;
+INSERT INTO `readings` (`reading_id`, `parameter_id`, `value`, `recorded_at`, `modified_at`, `isRecordedBySensor`) VALUES
+	(1, 1, 25, '2024-02-07 10:06:32', '2024-03-07 10:07:02', 1),
+	(2, 1, 26, '2024-02-08 10:07:22', '2024-03-07 10:07:28', 1),
+	(3, 1, 25.88, '2024-02-09 10:07:50', '2024-03-07 10:07:56', 1),
+	(4, 1, 24.45, '2024-02-10 10:08:19', '2024-03-07 10:08:27', 1),
+	(5, 1, 23.89, '2024-02-11 10:08:42', '2024-03-07 10:13:46', 1),
+	(6, 2, 18.56, '2024-02-07 10:14:01', '2024-03-07 10:15:24', 1),
+	(7, 2, 19.23, '2024-02-08 10:15:36', '2024-03-07 10:15:42', 1),
+	(8, 2, 18.6, '2024-02-09 10:15:55', '2024-03-07 10:16:26', 1),
+	(9, 2, 18.45, '2024-02-10 10:16:44', '2024-03-07 10:16:51', 1),
+	(10, 2, 19.1, '2024-02-11 10:16:56', '2024-03-07 10:17:08', 1),
+	(11, 3, 8.54, '2024-02-07 10:17:24', '2024-03-07 10:17:33', 1),
+	(12, 3, 8.2, '2024-02-08 10:17:45', '2024-03-07 10:17:49', 1),
+	(13, 3, 8.31, '2024-02-09 10:18:02', '2024-03-07 10:18:13', 1),
+	(14, 3, 8.43, '2024-02-10 10:18:25', '2024-03-07 10:18:31', 1),
+	(15, 3, 8.18, '2024-02-11 10:18:41', '2024-03-07 10:18:47', 1),
+	(16, 4, 4.35, '2024-02-07 10:19:26', '2024-03-07 10:19:29', 1),
+	(17, 4, 4.25, '2024-02-08 10:19:40', '2024-03-07 10:19:44', 1),
+	(18, 4, 4.87, '2024-02-09 10:19:54', '2024-03-07 10:20:00', 1),
+	(19, 4, 4.3, '2024-02-10 10:20:12', '2024-03-07 10:20:16', 1),
+	(20, 4, 4.239, '2024-02-11 10:20:29', '2024-03-07 10:20:33', 1),
+	(21, 5, 0.345, '2024-02-07 10:21:30', '2024-03-07 10:21:37', 1),
+	(22, 5, 0.325, '2024-02-08 10:21:52', '2024-03-07 10:22:02', 1),
+	(23, 5, 0.316, '2024-02-09 10:22:20', '2024-03-07 10:22:27', 1),
+	(24, 5, 0.338, '2024-02-10 10:22:38', '2024-03-07 10:23:01', 1),
+	(25, 5, 0.313, '2024-02-11 10:23:22', '2024-03-07 10:23:26', 1);
 
 -- Dumping structure for table water-monitoring-system-db.reading_notifications
 CREATE TABLE IF NOT EXISTS `reading_notifications` (
