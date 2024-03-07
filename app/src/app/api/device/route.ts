@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
         );
     } catch (e: any) {
         return NextResponse.json(
-            { message: "Something went wrong while getting the pond methods" },
+            { message: "Something went wrong while getting device" },
             {
                 status: 500,
             },
