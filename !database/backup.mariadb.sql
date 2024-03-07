@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS `parameters` (
   KEY `parameter_pond_id` (`pond_id`),
   CONSTRAINT `parameter_list` FOREIGN KEY (`parameter`) REFERENCES `parameter_list` (`parameter`) ON UPDATE CASCADE,
   CONSTRAINT `parameter_pond_id` FOREIGN KEY (`pond_id`) REFERENCES `ponds` (`pond_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table water-monitoring-system-db.parameters: ~5 rows (approximately)
 DELETE FROM `parameters`;
@@ -120,6 +120,36 @@ INSERT INTO `parameters` (`parameter_id`, `pond_id`, `parameter`) VALUES
 	(3, 1, 'PH'),
 	(4, 1, 'DOX'),
 	(5, 1, 'AMN');
+
+-- Dumping structure for table water-monitoring-system-db.parameter_default_thresholds
+CREATE TABLE IF NOT EXISTS `parameter_default_thresholds` (
+  `threshold_id` int(11) NOT NULL AUTO_INCREMENT,
+  `parameter` varchar(3) NOT NULL DEFAULT '',
+  `type` char(2) NOT NULL,
+  `action` char(4) NOT NULL,
+  `target` double NOT NULL DEFAULT 0,
+  `error` double NOT NULL DEFAULT 0,
+  PRIMARY KEY (`threshold_id`),
+  KEY `default_threshold_parameter` (`parameter`),
+  KEY `default_threshold_type` (`type`),
+  KEY `default_threshold_action` (`action`),
+  CONSTRAINT `default_threshold_action` FOREIGN KEY (`action`) REFERENCES `parameter_threshold_actions` (`action`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `default_threshold_parameter` FOREIGN KEY (`parameter`) REFERENCES `parameter_list` (`parameter`) ON UPDATE CASCADE,
+  CONSTRAINT `default_threshold_type` FOREIGN KEY (`type`) REFERENCES `parameter_threshold_types` (`type`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table water-monitoring-system-db.parameter_default_thresholds: ~9 rows (approximately)
+DELETE FROM `parameter_default_thresholds`;
+INSERT INTO `parameter_default_thresholds` (`threshold_id`, `parameter`, `type`, `action`, `target`, `error`) VALUES
+	(1, 'TMP', 'GT', 'WARN', 30, 2),
+	(2, 'TMP', 'LT', 'WARN', 20, 2),
+	(3, 'AMN', 'GT', 'ALRT', 1, 0.2),
+	(4, 'PH', 'GT', 'ALRT', 8.5, 0.2),
+	(5, 'PH', 'LT', 'ALRT', 7.5, 0.2),
+	(6, 'DOX', 'GT', 'ALRT', 20, 2),
+	(8, 'DOX', 'LT', 'ALRT', 3, 2),
+	(9, 'SAL', 'GT', 'WARN', 25, 2),
+	(10, 'SAL', 'LT', 'ALRT', 15, 2);
 
 -- Dumping structure for table water-monitoring-system-db.parameter_list
 CREATE TABLE IF NOT EXISTS `parameter_list` (
@@ -133,7 +163,7 @@ CREATE TABLE IF NOT EXISTS `parameter_list` (
 DELETE FROM `parameter_list`;
 INSERT INTO `parameter_list` (`parameter`, `name`, `unit`) VALUES
 	('AMN', 'Ammonia', 'ppm'),
-	('DOX', 'Dissolved Oxygen', 'ppm'),
+	('DOX', 'Dissolved Oxygen', 'mg/L'),
 	('PH', 'pH', 'pH'),
 	('SAL', 'Salinity', 'ppt'),
 	('TMP', 'Temperature', '°C');
@@ -153,7 +183,7 @@ CREATE TABLE IF NOT EXISTS `parameter_thresholds` (
   CONSTRAINT `threshold_action` FOREIGN KEY (`action`) REFERENCES `parameter_threshold_actions` (`action`) ON UPDATE CASCADE,
   CONSTRAINT `threshold_parameter_id` FOREIGN KEY (`parameter_id`) REFERENCES `parameters` (`parameter_id`) ON UPDATE CASCADE,
   CONSTRAINT `threshold_type` FOREIGN KEY (`type`) REFERENCES `parameter_threshold_types` (`type`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table water-monitoring-system-db.parameter_thresholds: ~0 rows (approximately)
 DELETE FROM `parameter_thresholds`;
@@ -237,7 +267,7 @@ CREATE TABLE IF NOT EXISTS `readings` (
   CONSTRAINT `reading_parameter_id` FOREIGN KEY (`parameter_id`) REFERENCES `parameters` (`parameter_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.readings: ~25 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.readings: ~20 rows (approximately)
 DELETE FROM `readings`;
 INSERT INTO `readings` (`reading_id`, `parameter_id`, `value`, `recorded_at`, `modified_at`, `isRecordedBySensor`) VALUES
 	(1, 1, 25, '2024-02-07 10:06:32', '2024-03-07 10:07:02', 1),
@@ -255,11 +285,6 @@ INSERT INTO `readings` (`reading_id`, `parameter_id`, `value`, `recorded_at`, `m
 	(13, 3, 8.31, '2024-02-09 10:18:02', '2024-03-07 10:18:13', 1),
 	(14, 3, 8.43, '2024-02-10 10:18:25', '2024-03-07 10:18:31', 1),
 	(15, 3, 8.18, '2024-02-11 10:18:41', '2024-03-07 10:18:47', 1),
-	(16, 4, 4.35, '2024-02-07 10:19:26', '2024-03-07 10:19:29', 1),
-	(17, 4, 4.25, '2024-02-08 10:19:40', '2024-03-07 10:19:44', 1),
-	(18, 4, 4.87, '2024-02-09 10:19:54', '2024-03-07 10:20:00', 1),
-	(19, 4, 4.3, '2024-02-10 10:20:12', '2024-03-07 10:20:16', 1),
-	(20, 4, 4.239, '2024-02-11 10:20:29', '2024-03-07 10:20:33', 1),
 	(21, 5, 0.345, '2024-02-07 10:21:30', '2024-03-07 10:21:37', 1),
 	(22, 5, 0.325, '2024-02-08 10:21:52', '2024-03-07 10:22:02', 1),
 	(23, 5, 0.316, '2024-02-09 10:22:20', '2024-03-07 10:22:27', 1),
@@ -388,6 +413,18 @@ CREATE TRIGGER `parameters_after_pond_insert` AFTER INSERT ON `ponds` FOR EACH R
       (NEW.pond_id, 'SAL'),
       (NEW.pond_id, 'DOX'),
       (NEW.pond_id, 'AMN');
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
+
+-- Dumping structure for trigger water-monitoring-system-db.parameter_thresholds_after_parameters_threshold
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+DELIMITER //
+CREATE TRIGGER `parameter_thresholds_after_parameters_threshold` AFTER INSERT ON `parameters` FOR EACH ROW BEGIN
+	INSERT INTO parameter_thresholds (parameter_id, type, target, action, error)
+	SELECT NEW.parameter_id, dt.type, dt.target, dt.action, dt.error
+	FROM parameter_default_thresholds dt
+	WHERE dt.parameter = NEW.parameter;
 END//
 DELIMITER ;
 SET SQL_MODE=@OLDTMP_SQL_MODE;
