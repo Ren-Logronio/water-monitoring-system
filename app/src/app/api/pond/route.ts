@@ -33,35 +33,18 @@ export async function GET(req: NextApiRequest) {
 export async function POST(req: NextApiRequest) {
   try {
     const connection = await getMySQLConnection();
-    const { name, status } = await new Response(req.body).json();
-    const result = {};
-    return NextResponse.json(
-      { result },
-      {
-        status: 200,
-      },
+    const { farm_id, name, width, length, depth, method } = await new Response(req.body).json();
+    const pondInsertResult = await connection.query(
+      "INSERT INTO `ponds` (`device_id`, `farm_id`, `name`, `width`, `length`, `depth`, `method`) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [null, farm_id, name, width, length, depth, method]
     );
-  } catch (error) {
-    console.log(error);
-    return NextResponse.json(
-      { message: "Something went wrong while adding the pond" },
-      {
-        status: 500,
-      },
-    );
-  }
-}
-
-export async function PATCH(req: NextApiRequest) {
-  try {
-    const connection = await getMySQLConnection();
-    const { device_id, farm_id, name, width, length, depth, method } = await new Response(req.body).json();
+    const insertedPondId = pondInsertResult[0].insertId;
     await connection.query(
-      "UPDATE `ponds` SET `status` = 'ACTIVE', `farm_id` = ?, `name` = ?, `width` = ?, `length` = ?, `depth` = ?, `method` = ? WHERE `device_id` = ?",
-      [farm_id, name, width, length, depth, method, device_id]
+      "INSERT INTO `parameters` (`pond_id`, `parameter`) VALUES (?, ?), (?, ?), (?, ?), (?, ?), (?, ?)",
+      [insertedPondId, "TMP", insertedPondId, "PH", insertedPondId, "DO", insertedPondId, "AMN", insertedPondId, "SAL"]
     );
     return NextResponse.json(
-      { message: "Pond updated successfully" },
+      { message: "Pond inserted successfully" },
       {
         status: 200,
       },
