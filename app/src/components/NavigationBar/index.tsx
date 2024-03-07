@@ -45,7 +45,11 @@ export default function NavigationBar({ children }: NavigationBarProps): React.R
 
     }, [path]);
 
-    const nav = !!path && path.split('/')[1] && path.split('/')[1][0] && path.split('/')[1][0].toUpperCase() + path.split('/')[1].slice(1);
+    const convertToTitleCase = (str: string) => {
+        return str.split(' ').map((word) => word[0].toUpperCase() + word.slice(1)).join(' ');
+    }
+
+    const nav = !!path && path.split('/')[1] && path.split('/').slice(1).map((i, idx) => idx === path.split('/').slice(1).length - 1 ? convertToTitleCase(i) : `${convertToTitleCase(i)} > `);
 
     if (["/signin", "/"].includes(path)) {
         return <>{children}</>;
@@ -55,7 +59,7 @@ export default function NavigationBar({ children }: NavigationBarProps): React.R
         <div className="min-h-screen min-w-full flex flex-row">
             <div className="relative p-1 py-8 md:pt-[42px] md:pb-[28px] md:px-[42px] transition-all min-w-[80px] max-w-[90px] md:max-w-[316px] flex-1 border-r border-indigo-100 bg-white space-y-[44px]">
                 <div className="flex flex-row justify-center items-center pointer-events-none select-none md:pr-8">
-                    <img src="./logo-orange-cropped.png" className="h-[32px] md:h-[87px] aspect-auto" />
+                    <img src="/logo-orange-cropped.png" className="h-[32px] md:h-[87px] aspect-auto" />
                     <div className="flex flex-col items-start justify-center">
                         <p className="transition-all leading-7 hidden md:block text-[24px] font-semibold text-[#FF9B42]">Water</p>
                         <p className="transition-all leading-7 hidden md:block text-[24px] font-semibold text-[#FF9B42]">Monitoring</p>
@@ -63,19 +67,19 @@ export default function NavigationBar({ children }: NavigationBarProps): React.R
                     </div>
                 </div>
                 <div className="flex flex-col">
-                    <NavigationButton disabled={navBarLoading || farm.none} path="/dashboard" imagePath="./dashboard.png" text="Dashboard" />
-                    <NavigationButton disabled={navBarLoading || farm.none} path="/farm" imagePath="./farm.png" text="Farm" />
-                    <NavigationButton disabled={navBarLoading || farm.none} path="/staff" imagePath="./staff.png" text="Staff" />
-                    <NavigationButton disabled={navBarLoading || farm.none} path="/preferences" imagePath="./preferences.png" text="Preferences" />
+                    <NavigationButton disabled={navBarLoading || farm.none} path="/dashboard" imagePath="/dashboard.png" text="Dashboard" />
+                    <NavigationButton disabled={navBarLoading || farm.none} path="/farm" imagePath="/farm.png" text="Farm" />
+                    <NavigationButton disabled={navBarLoading || farm.none} path="/staff" imagePath="/staff.png" text="Staff" />
+                    <NavigationButton disabled={navBarLoading || farm.none} path="/preferences" imagePath="/preferences.png" text="Preferences" />
                 </div>
                 <Separator className="bg-indigo-100" />
                 <div className="flex flex-col mx-auto md:mx-0">
                     <p className="text-[#205083] hidden md:flex  pb-2 pl-2">Parameters</p>
-                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="TMP" path="/parameter/temperature" text="Temperature" />
-                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="SAL" path="/parameter/salinity" text="Salinity" />
-                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="DOX" path="/parameter/do" text="Dissolved Oxygen" />
-                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="pH" path="/parameter/ph" text="pH Level" />
-                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="AMN" path="/parameter/ammonia" text="Ammonia" />
+                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="TMP" path="/parameter/temperature/datasheet" text="Temperature" />
+                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="SAL" path="/parameter/salinity/datasheet" text="Salinity" />
+                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="DOX" path="/parameter/do/datasheet" text="Dissolved Oxygen" />
+                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="pH" path="/parameter/ph/datasheet" text="pH Level" />
+                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="AMN" path="/parameter/ammonia/datasheet" text="Ammonia" />
                 </div>
                 <div className="absolute bottom-[28px] left-1/2 -translate-x-1/2 hidden md:flex flex-col text-center text-sm h-fit text-[#205083]">
                     <p>Ternary Operators</p>

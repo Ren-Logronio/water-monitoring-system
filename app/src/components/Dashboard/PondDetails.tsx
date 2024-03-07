@@ -15,12 +15,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { Checkbox } from "../ui/checkbox";
+import { NinetyRing } from "react-svg-spinners";
 
 export default function PondDetails({ farm_id }: { farm_id: number }) {
     const router = useRouter();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [pondForm, setPondForm] = useState({
+        enter_device_id: false,
         device_id: "",
         name: "My Pond",
         width: 0.00,
@@ -31,6 +34,10 @@ export default function PondDetails({ farm_id }: { farm_id: number }) {
         status: "red",
     });
 
+    const handleCheckboxChange = (value: any) => {
+        setPondForm({ ...pondForm, device_id: "", enter_device_id: value });
+    };
+
     const handleInputChange = (e: any) => {
         setPondForm({ ...pondForm, [e.target.name]: e.target.value });
     };
@@ -40,27 +47,47 @@ export default function PondDetails({ farm_id }: { farm_id: number }) {
     }
 
     const handleSubmit = () => {
-        axios.get(`/api/pond/device?device_id=${pondForm.device_id}`).then(response => {
-            setLoading(true);
-            if (response.data.results && response.data.results.length <= 0) {
-                console.log("fuck")
-                setPondForm({ ...pondForm, message: "This device id may not exists, or had not established a connection with the system" });
-                setLoading(false);
-                return;
-            }
-            console.log("you")
-            setPondForm({ ...pondForm, message: `Device (${pondForm.device_id}) found`, status: "green" });
+        if (pondForm.enter_device_id && !/^[\w\d]{8,8}-[\w\d]{4,4}-[\w\d]{4,4}-[\w\d]{4,4}-[\w\d]{12,12}$/i.test(pondForm.device_id)) {
+            setPondForm({ ...pondForm, message: "Invalid Device Id", status: "red" });
+            return;
+        }
+        setLoading(true);
+        if (pondForm.enter_device_id) {
+            console.log("device id:", pondForm.device_id);
+            axios.get(`/api/device?device_id=${pondForm.device_id}`).then(response => {
+                if (response.data.results && response.data.results.length <= 0) {
+                    setPondForm({ ...pondForm, message: "This device id may not exists, or had not established a connection with the system" });
+                    setLoading(false);
+                    return;
+                }
+                setPondForm({ ...pondForm, message: `Device (${pondForm.device_id}) found`, status: "green" });
+                setTimeout(() => {
+                    const { device_id, name, width, length, depth, method } = pondForm;
+                    axios.patch("/api/device", { device_id: pondForm.device_id, status: "ACTIVE" }).then(response => {
+                        axios.post("/api/pond", {
+                            device_id, farm_id, name, width, length, depth, method
+                        }).then(response => {
+                            router.replace('/redirect?w=/dashboard');
+                        }).catch(err => {
+                            console.error(err);
+                        })
+                    }).catch(err => {
+                        console.error(err);
+                    });
+                }, 2000)
+            });
+        } else {
             setTimeout(() => {
-                const { device_id, name, width, length, depth, method } = pondForm;
-                axios.patch("/api/pond", {
-                    device_id, farm_id, name, width, length, depth, method
+                const { name, width, length, depth, method } = pondForm;
+                axios.post("/api/pond", {
+                    farm_id, device_id: null, name, width, length, depth, method
                 }).then(response => {
                     router.replace('/redirect?w=/dashboard');
                 }).catch(err => {
                     console.error(err);
                 })
             }, 2000)
-        });
+        }
     }
 
     return <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -72,11 +99,6 @@ export default function PondDetails({ farm_id }: { farm_id: number }) {
                 <DialogTitle className="font-normal text-neutral-800">Enter Pond Details</DialogTitle>
             </DialogHeader>
             <div className="space-y-[20px]">
-                <div className="flex flex-col space-y-2">
-                    <Label>* Device Id</Label>
-                    <Input disabled={loading} onChange={handleInputChange} value={pondForm.device_id} name="device_id" />
-                    {!!pondForm.message && <p className={` text-xs ${pondForm.status === "red" ? 'text-red-600' : 'text-green-500'}`}>{pondForm.message}</p>}
-                </div>
                 <div className="flex flex-col space-y-2">
                     <Label>Pond Name</Label>
                     <Input disabled={loading} onChange={handleInputChange} value={pondForm.name} name="name" />
@@ -114,12 +136,25 @@ export default function PondDetails({ farm_id }: { farm_id: number }) {
                         </SelectContent>
                     </Select>
                 </div>
+                <div className="flex flex-row space-x-2">
+                    <Checkbox disabled={loading} onCheckedChange={handleCheckboxChange} checked={pondForm.enter_device_id} />
+                    <Label>This pond has a device</Label>
+                </div>
+                <div className="flex flex-col space-y-2">
+                    <Label className={`${!pondForm.enter_device_id && "text-gray-400"}`}>* Device Id</Label>
+                    <Input disabled={loading || !pondForm.enter_device_id} onChange={handleInputChange} value={pondForm.device_id} name="device_id" />
+                    {!!pondForm.message && <p className={` text-xs ${pondForm.status === "red" ? 'text-red-600' : 'text-green-500'}`}>{pondForm.message}</p>}
+                </div>
             </div>
             <DialogFooter>
                 <DialogClose asChild>
                     <Button disabled={loading} variant="outline">Cancel</Button>
                 </DialogClose>
-                <Button disabled={loading} onClick={handleSubmit} className="bg-sky-600 text-white" type="submit">Add Pond</Button>
+                <Button disabled={loading} onClick={handleSubmit} className="bg-sky-600 text-white flex flex-row items-center space-x-2" type="submit">
+                    {
+                        loading ? <><NinetyRing color="currentColor" /><p>Adding...</p></> : <>Add Pond</>
+                    }
+                </Button>
             </DialogFooter>
         </DialogContent>
     </Dialog>
