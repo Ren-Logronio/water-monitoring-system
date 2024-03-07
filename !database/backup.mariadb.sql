@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `devices` (
   CONSTRAINT `device_status` FOREIGN KEY (`status`) REFERENCES `device_statuses` (`status`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.devices: ~0 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.devices: ~1 rows (approximately)
 DELETE FROM `devices`;
 
 -- Dumping structure for table water-monitoring-system-db.device_statuses
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `farm_farmer` (
   CONSTRAINT `farmer_farm_id` FOREIGN KEY (`farm_id`) REFERENCES `farms` (`farm_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.farm_farmer: ~0 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.farm_farmer: ~1 rows (approximately)
 DELETE FROM `farm_farmer`;
 
 -- Dumping structure for table water-monitoring-system-db.farm_farmer_roles
@@ -281,13 +281,13 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `email` (`email`),
   KEY `password` (`password`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table water-monitoring-system-db.users: ~2 rows (approximately)
 DELETE FROM `users`;
 INSERT INTO `users` (`user_id`, `firstname`, `middlename`, `lastname`, `email`, `password`, `profile`) VALUES
-	(2, 'John Rey', NULL, 'Vilbar', 'johnrey.vilbar@msugensan.edu.ph', '$2a$12$iU8JqBygh6Sw0hKrWr86nubG1WFGrxwmOZ8fG06em.G7WtaMXU3ti', NULL),
-	(3, 'Nielmer', NULL, 'Camintoy', 'nielmer.camintoy@msugensan.edu.ph', '$2a$12$jS0v8FwKFlMT4yoh3sa9R.dv9422WKJEs900PtTvbpGvhC/PquNN6', NULL);
+	(1, 'John Rey', NULL, 'Vilbar', 'johnrey.vilbar@msugensan.edu.ph', '$2a$12$iU8JqBygh6Sw0hKrWr86nubG1WFGrxwmOZ8fG06em.G7WtaMXU3ti', NULL),
+	(2, 'Nielmer', NULL, 'Camintoy', 'nielmer.camintoy@msugensan.edu.ph', '$2a$12$jS0v8FwKFlMT4yoh3sa9R.dv9422WKJEs900PtTvbpGvhC/PquNN6', NULL);
 
 -- Dumping structure for table water-monitoring-system-db.user_notifications
 CREATE TABLE IF NOT EXISTS `user_notifications` (
@@ -305,7 +305,7 @@ CREATE TABLE IF NOT EXISTS `user_notifications` (
   CONSTRAINT `notification_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.user_notifications: ~0 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.user_notifications: ~1 rows (approximately)
 DELETE FROM `user_notifications`;
 
 -- Dumping structure for view water-monitoring-system-db.view_dashboard_ponds_monitored
