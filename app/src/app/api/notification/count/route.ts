@@ -10,8 +10,8 @@ export async function GET(request: NextApiRequest) {
         const cookieToken = cookies().get('token')?.value;
         const connection = await getMySQLConnection();
         const { user_id } = await getUserInfo(cookieToken);
-        const [ results, rows ]: [ results: any[], rows: any[] ] = await connection.query(
-            "SELECT * FROM `view_notification_count` WHERE `user_id` = ? LIMIT 1",
+        const [results, rows]: [results: any[], rows: any[]] = await connection.query(
+            "SELECT * FROM `view_user_notifications_count` WHERE `user_id` = ? LIMIT 1",
             [user_id]
         );
         return NextResponse.json(
@@ -28,5 +28,5 @@ export async function GET(request: NextApiRequest) {
                 status: 500,
             },
         );
-    } 
+    }
 }
