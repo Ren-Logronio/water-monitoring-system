@@ -38,11 +38,6 @@ export async function POST(req: NextApiRequest) {
       "INSERT INTO `ponds` (`device_id`, `farm_id`, `name`, `width`, `length`, `depth`, `method`) VALUES (?, ?, ?, ?, ?, ?, ?)",
       [null, farm_id, name, width, length, depth, method]
     );
-    const insertedPondId = pondInsertResult[0].insertId;
-    await connection.query(
-      "INSERT INTO `parameters` (`pond_id`, `parameter`) VALUES (?, ?), (?, ?), (?, ?), (?, ?), (?, ?)",
-      [insertedPondId, "TMP", insertedPondId, "PH", insertedPondId, "DO", insertedPondId, "AMN", insertedPondId, "SAL"]
-    );
     return NextResponse.json(
       { message: "Pond inserted successfully" },
       {

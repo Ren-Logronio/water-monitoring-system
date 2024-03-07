@@ -112,19 +112,14 @@ CREATE TABLE IF NOT EXISTS `parameters` (
   CONSTRAINT `parameter_pond_id` FOREIGN KEY (`pond_id`) REFERENCES `ponds` (`pond_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.parameters: ~10 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.parameters: ~5 rows (approximately)
 DELETE FROM `parameters`;
 INSERT INTO `parameters` (`parameter_id`, `pond_id`, `parameter`) VALUES
 	(1, 1, 'TMP'),
 	(2, 1, 'SAL'),
 	(3, 1, 'PH'),
-	(4, 1, 'DO'),
-	(5, 1, 'AMN'),
-	(6, 4, 'TMP'),
-	(7, 4, 'PH'),
-	(8, 4, 'DO'),
-	(9, 4, 'AMN'),
-	(10, 4, 'SAL');
+	(4, 1, 'DOX'),
+	(5, 1, 'AMN');
 
 -- Dumping structure for table water-monitoring-system-db.parameter_list
 CREATE TABLE IF NOT EXISTS `parameter_list` (
@@ -138,7 +133,7 @@ CREATE TABLE IF NOT EXISTS `parameter_list` (
 DELETE FROM `parameter_list`;
 INSERT INTO `parameter_list` (`parameter`, `name`, `unit`) VALUES
 	('AMN', 'Ammonia', 'ppm'),
-	('DO', 'Dissolved Oxygen', 'ppm'),
+	('DOX', 'Dissolved Oxygen', 'ppm'),
 	('PH', 'pH', 'pH'),
 	('SAL', 'Salinity', 'ppt'),
 	('TMP', 'Temperature', '°C');
@@ -206,14 +201,13 @@ CREATE TABLE IF NOT EXISTS `ponds` (
   CONSTRAINT `pond_device_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`device_id`) ON UPDATE CASCADE,
   CONSTRAINT `pond_farm_id` FOREIGN KEY (`farm_id`) REFERENCES `farms` (`farm_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `pond_method` FOREIGN KEY (`method`) REFERENCES `pond_methods` (`method`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='INTENSIVE\r\nSEMI-INTENSIVE\r\nTRADITIONAL';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='INTENSIVE\r\nSEMI-INTENSIVE\r\nTRADITIONAL';
 
 -- Dumping data for table water-monitoring-system-db.ponds: ~2 rows (approximately)
 DELETE FROM `ponds`;
 INSERT INTO `ponds` (`pond_id`, `device_id`, `farm_id`, `name`, `width`, `length`, `depth`, `method`) VALUES
 	(1, 'a0f8250e-49a7-4354-bf8c-bae94119a4fb', 1, 'Testing Pond', 0, 0, 0, 'SEMI-INTENSIVE'),
-	(2, 'e5b672a9-feba-490c-a987-a50fdca38441', 1, 'Virtual Pond', 0, 0, 0, 'SEMI-INTENSIVE'),
-	(4, NULL, 6, 'test', 1, 2, 3, 'TRADITIONAL');
+	(2, 'e5b672a9-feba-490c-a987-a50fdca38441', 1, 'Virtual Pond', 0, 0, 0, 'SEMI-INTENSIVE');
 
 -- Dumping structure for table water-monitoring-system-db.pond_methods
 CREATE TABLE IF NOT EXISTS `pond_methods` (
@@ -383,6 +377,20 @@ CREATE TABLE `view_user_notifications_count` (
 	`user_id` INT(11) NOT NULL,
 	`count` BIGINT(21) NOT NULL
 ) ENGINE=MyISAM;
+
+-- Dumping structure for trigger water-monitoring-system-db.parameters_after_pond_insert
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+DELIMITER //
+CREATE TRIGGER `parameters_after_pond_insert` AFTER INSERT ON `ponds` FOR EACH ROW BEGIN
+	INSERT INTO parameters (pond_id, parameter)VALUES
+      (NEW.pond_id, 'TMP'),
+      (NEW.pond_id, 'PH'),
+      (NEW.pond_id, 'SAL'),
+      (NEW.pond_id, 'DOX'),
+      (NEW.pond_id, 'AMN');
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `view_dashboard_ponds_monitored`;
