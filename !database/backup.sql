@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `farm_farmer` (
   CONSTRAINT `farmer_farm_id` FOREIGN KEY (`farm_id`) REFERENCES `farms` (`farm_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.farm_farmer: ~2 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.farm_farmer: ~3 rows (approximately)
 DELETE FROM `farm_farmer`;
 INSERT INTO `farm_farmer` (`farm_id`, `farmer_id`, `role`, `is_approved`) VALUES
 	(1, 1, 'OWNER', 1),
@@ -253,7 +253,7 @@ CREATE TABLE IF NOT EXISTS `threshold_actions` (
   PRIMARY KEY (`action`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.threshold_actions: ~0 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.threshold_actions: ~3 rows (approximately)
 DELETE FROM `threshold_actions`;
 INSERT INTO `threshold_actions` (`action`) VALUES
 	('ALRT'),
@@ -286,7 +286,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   KEY `password` (`password`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.users: ~0 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.users: ~2 rows (approximately)
 DELETE FROM `users`;
 INSERT INTO `users` (`user_id`, `firstname`, `middlename`, `lastname`, `email`, `password`) VALUES
 	(1, 'Juan Dela', 'Vega', 'Cruz', 'test@gmail.com', '$2a$12$ZpPBPSV7AbJboSqL/UNA2O7gnnlVnYaqHpEc5Fc2SoU59KNSigRfS'),
@@ -308,7 +308,7 @@ CREATE TABLE IF NOT EXISTS `user_notifications` (
   CONSTRAINT `notification_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.user_notifications: ~0 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.user_notifications: ~1 rows (approximately)
 DELETE FROM `user_notifications`;
 INSERT INTO `user_notifications` (`notification_id`, `user_id`, `action`, `message`, `issued_at`, `isRead`, `read_at`) VALUES
 	(1, 2, 'INFO', 'You have been added as a STAFF to RD Farm, please wait for the farm owner\'s verification..', '2024-03-05 21:57:21', 0, NULL);
