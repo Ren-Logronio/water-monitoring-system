@@ -52,6 +52,7 @@ CREATE TABLE IF NOT EXISTS `farms` (
   `address_street` varchar(128) NOT NULL,
   `address_city` varchar(128) NOT NULL,
   `address_province` varchar(128) NOT NULL,
+  `wallpaper` mediumblob DEFAULT NULL,
   PRIMARY KEY (`farm_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -281,13 +282,14 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `email` (`email`),
   KEY `password` (`password`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.users: ~2 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.users: ~3 rows (approximately)
 DELETE FROM `users`;
 INSERT INTO `users` (`user_id`, `firstname`, `middlename`, `lastname`, `email`, `password`, `profile`) VALUES
-	(1, 'John Rey', NULL, 'Vilbar', 'johnrey.vilbar@msugensan.edu.ph', '$2a$12$iU8JqBygh6Sw0hKrWr86nubG1WFGrxwmOZ8fG06em.G7WtaMXU3ti', NULL),
-	(2, 'Nielmer', NULL, 'Camintoy', 'nielmer.camintoy@msugensan.edu.ph', '$2a$12$jS0v8FwKFlMT4yoh3sa9R.dv9422WKJEs900PtTvbpGvhC/PquNN6', NULL);
+	(1, 'Reinhart', 'Ferrer', 'Logronio', 'reinhart.logronio@msugensan.edu.ph', '$2a$12$97pPAfoi/KcoKNeaUwYJAOqTV4fKMU6WpGBETtmswdHeiGppnlDpK', NULL),
+	(2, 'John Rey', NULL, 'Vilbar', 'johnrey.vilbar@msugensan.edu.ph', '$2a$12$iU8JqBygh6Sw0hKrWr86nubG1WFGrxwmOZ8fG06em.G7WtaMXU3ti', NULL),
+	(3, 'Nielmer', NULL, 'Camintoy', 'nielmer.camintoy@msugensan.edu.ph', '$2a$12$jS0v8FwKFlMT4yoh3sa9R.dv9422WKJEs900PtTvbpGvhC/PquNN6', NULL);
 
 -- Dumping structure for table water-monitoring-system-db.user_notifications
 CREATE TABLE IF NOT EXISTS `user_notifications` (
