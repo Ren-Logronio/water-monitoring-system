@@ -29,36 +29,49 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
         setParameters(newSensors);
     }
 
+    useEffect(() => {
+        console.log("parameters:", parameters);
+    }, [parameters])
+
     return (
-        <div className="py-4">
+        <div className="py-4 h-full">
             {
                 loading ? <div className="flex justify-center items-center h-40 space-x-2">
                     <NinetyRing />
                     <p>Loading Parameters..</p>
                 </div>
-                    : parameters.filter(i => !i.hidden).length > 0 ? <>
-                        <div className="flex flex-row space-x-2 mb-3">{
-                            parameters
-                                .filter(i => i.hidden)
-                                .map(parameter => (
-                                    <Badge key={parameter.parameter_id} className={`bg-sky-600 shadow-md ${parameter.unshowable ? "cursor-default hover:bg-sky-600" : "cursor-pointer hover:bg-sky-700"}`}>
-                                        {parameter.name} {parameter.context && `(${parameter.context})`}
-                                    </Badge>
-                                )
-                                )
-                        }</div>
-                        <div className="transition-all grid grid-cols-1 xl:grid-cols-2 gap-4">{
-                            parameters
-                                .filter(i => !i.hidden)
-                                .map(parameter => <Parameter
-                                    key={parameter.parameter_id}
-                                    parameter={parameter}
-                                    hideCallback={(sensor: any) => { }}
-                                    emptyCallback={removeSensorCallback} />
-                                )
-                        }</div>
+                    : parameters.length > 0 ? <>
+                        {
+                            parameters.filter(i => i.hidden).length > 0 && <div className="flex flex-row space-x-2 mb-3">{
+                                parameters
+                                    .filter(i => i.hidden)
+                                    .map(parameter => (
+                                        <Badge key={parameter.parameter_id} className={`bg-sky-600 shadow-md ${parameter.unshowable ? "cursor-default hover:bg-sky-600" : "cursor-pointer hover:bg-sky-700"}`}>
+                                            {parameter.name} {parameter.context && `(${parameter.context})`}
+                                        </Badge>
+                                    )
+                                    )
+                            }</div>
+                        }
+                        {
+                            parameters.filter(i => !i.hidden).length > 0 && <>
+                                <div className="transition-all grid grid-cols-1 xl:grid-cols-2 gap-4">{
+                                    parameters
+                                        .filter(i => !i.hidden)
+                                        .map(parameter => <Parameter
+                                            key={parameter.parameter_id}
+                                            parameter={parameter}
+                                            hideCallback={(sensor: any) => { }}
+                                            emptyCallback={removeSensorCallback} />
+                                        )
+                                }</div>
+                            </>
+                        }
+                        {
+                            parameters.filter(i => i.hidden).length === parameters.length && <p className="text-xl">Your Farm has no readings data yet</p>
+                        }
                     </>
-                        : parameters.filter(i => i.hidden).length <= 0 && <p>No parameters found</p>
+                        : parameters.length <= 0 && <p>No parameters found</p>
             }
         </div>
     );
