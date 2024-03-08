@@ -10,7 +10,7 @@ export async function GET(req: NextApiRequest) {
     const connection = await getMySQLConnection();
     const { user_id } = await getUserInfo(cookieToken);
     const [results, rows]: [results: any[], rows: any[]] = await connection.query(
-      "SELECT `device_id`, `name`, `status` FROM `view_farmer_ponds` WHERE `user_id` = ?",
+      "SELECT * FROM `view_farmer_ponds` WHERE `user_id` = ?",
       [user_id]
     );
     return NextResponse.json(
