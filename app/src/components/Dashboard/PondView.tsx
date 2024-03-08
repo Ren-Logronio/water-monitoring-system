@@ -16,7 +16,9 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
                 setParameters([]);
                 return;
             }
-            setParameters(response.data.results.map((i: any) => ({ ...i, hidden: false, context: "", unshowable: false })));
+            setParameters(response.data.results.map((i: any) => {
+                return i.count > 0 ? { ...i, hidden: false, unshowable: false } : { ...i, hidden: true, context: "No Readings", unshowable: true };
+            }));
         }).catch(error => {
             console.error(error);
         }).finally(() => {
@@ -24,14 +26,14 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
         });
     }, [pond_id]);
 
-    const removeSensorCallback = (trparam: any) => {
-        const newSensors = [...parameters.filter(parameter => parameter.parameter_id !== trparam.parameter_id), { ...trparam, hidden: true, context: "No Readings", unshowable: true }]
-        setParameters(newSensors);
-    }
+    // const removeSensorCallback = (trparam: any) => {
+    //     const newSensors = [...parameters.filter(parameter => parameter.parameter_id !== trparam.parameter_id), { ...trparam, hidden: true, context: "No Readings", unshowable: true }]
+    //     setParameters(newSensors);
+    // }
 
-    useEffect(() => {
-        console.log("parameters:", parameters);
-    }, [parameters])
+    // useEffect(() => {
+    //     console.log("parameters:", parameters);
+    // }, [parameters])
 
     return (
         <div className="py-4 h-full">
@@ -61,8 +63,7 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
                                         .map(parameter => <Parameter
                                             key={parameter.parameter_id}
                                             parameter={parameter}
-                                            hideCallback={(sensor: any) => { }}
-                                            emptyCallback={removeSensorCallback} />
+                                            hideCallback={(sensor: any) => { }} />
                                         )
                                 }</div>
                             </>

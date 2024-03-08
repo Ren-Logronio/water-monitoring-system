@@ -24,7 +24,7 @@ import { Button } from "../ui/button";
 //     return chartDimensions;
 // }
 
-export default function Parameter({ parameter, hideCallback, emptyCallback }: { parameter: any, hideCallback: (parameter: any) => void, emptyCallback: (parameter: any) => void }) {
+export default function Parameter({ parameter, hideCallback }: { parameter: any, hideCallback: (parameter: any) => void }) {
     const [readings, setReadings] = useState<any[]>([]);
     const [hover, setHover] = useState<boolean>(false);
     const [loading, setLoading] = useState(true);
@@ -42,16 +42,6 @@ export default function Parameter({ parameter, hideCallback, emptyCallback }: { 
             setLoading(false);
         });
     }, [parameter]);
-
-    useEffect(() => {
-        if (loading) {
-            return;
-        }
-        if (readings.length) {
-            return;
-        }
-        emptyCallback(parameter);
-    }, [readings, loading])
 
     const handleMouseEnter = () => {
         setHover(true);
@@ -99,7 +89,7 @@ export default function Parameter({ parameter, hideCallback, emptyCallback }: { 
                                         return init
                                     })
                                 }
-                                margin={{ top: 5, right: 30, left: -30, bottom: 5 }}
+                                margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
                                 className={`transition-all ${!hover && 'blur-[0.6px]'}`}
                             >
                                 <CartesianGrid strokeDasharray="1 1" />
