@@ -68,6 +68,7 @@ CREATE TABLE IF NOT EXISTS `farm_farmer` (
   `role` char(5) NOT NULL DEFAULT 'STAFF',
   `is_approved` tinyint(4) NOT NULL DEFAULT 0,
   PRIMARY KEY (`farm_id`,`farmer_id`),
+  UNIQUE KEY `farmer_id` (`farmer_id`),
   KEY `farm_farmer_id` (`farmer_id`),
   KEY `farm_farmer_role` (`role`),
   CONSTRAINT `farm_farmer_id` FOREIGN KEY (`farmer_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
