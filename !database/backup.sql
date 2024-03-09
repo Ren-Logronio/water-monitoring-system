@@ -68,6 +68,7 @@ CREATE TABLE IF NOT EXISTS `farm_farmer` (
   `role` char(5) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'STAFF',
   `is_approved` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`farm_id`,`farmer_id`),
+  UNIQUE KEY `farmer_id` (`farmer_id`),
   KEY `farm_farmer_id` (`farmer_id`),
   KEY `farm_farmer_role` (`role`),
   CONSTRAINT `farm_farmer_id` FOREIGN KEY (`farmer_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -75,10 +76,11 @@ CREATE TABLE IF NOT EXISTS `farm_farmer` (
   CONSTRAINT `farmer_farm_id` FOREIGN KEY (`farm_id`) REFERENCES `farms` (`farm_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.farm_farmer: ~0 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.farm_farmer: ~2 rows (approximately)
 DELETE FROM `farm_farmer`;
 INSERT INTO `farm_farmer` (`farm_id`, `farmer_id`, `role`, `is_approved`) VALUES
-	(1, 1, 'OWNER', 1);
+	(1, 1, 'OWNER', 1),
+	(1, 2, 'STAFF', 0);
 
 -- Dumping structure for table water-monitoring-system-db.farm_farmer_roles
 CREATE TABLE IF NOT EXISTS `farm_farmer_roles` (
@@ -104,14 +106,19 @@ CREATE TABLE IF NOT EXISTS `parameters` (
   CONSTRAINT `parameter_pond_id` FOREIGN KEY (`pond_id`) REFERENCES `ponds` (`pond_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.parameters: ~0 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.parameters: ~7 rows (approximately)
 DELETE FROM `parameters`;
 INSERT INTO `parameters` (`parameter_id`, `pond_id`, `parameter`) VALUES
 	(1, 1, 'TMP'),
 	(2, 1, 'PH'),
 	(3, 1, 'SAL'),
 	(4, 1, 'DOX'),
-	(5, 1, 'AMN');
+	(5, 1, 'AMN'),
+	(6, 2, 'TMP'),
+	(7, 2, 'PH'),
+	(8, 2, 'SAL'),
+	(9, 2, 'DOX'),
+	(10, 2, 'AMN');
 
 -- Dumping structure for table water-monitoring-system-db.parameter_default_thresholds
 CREATE TABLE IF NOT EXISTS `parameter_default_thresholds` (
@@ -177,7 +184,7 @@ CREATE TABLE IF NOT EXISTS `parameter_thresholds` (
   CONSTRAINT `threshold_type` FOREIGN KEY (`type`) REFERENCES `parameter_threshold_types` (`type`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.parameter_thresholds: ~0 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.parameter_thresholds: ~18 rows (approximately)
 DELETE FROM `parameter_thresholds`;
 INSERT INTO `parameter_thresholds` (`threshold_id`, `parameter_id`, `type`, `action`, `target`, `error`) VALUES
 	(1, 1, 'GT', 'WARN', 30, 2),
@@ -188,7 +195,16 @@ INSERT INTO `parameter_thresholds` (`threshold_id`, `parameter_id`, `type`, `act
 	(8, 3, 'LT', 'ALRT', 15, 2),
 	(10, 4, 'GT', 'ALRT', 20, 2),
 	(11, 4, 'LT', 'ALRT', 3, 2),
-	(13, 5, 'GT', 'ALRT', 1, 0.2);
+	(13, 5, 'GT', 'ALRT', 1, 0.2),
+	(14, 6, 'GT', 'WARN', 30, 2),
+	(15, 6, 'LT', 'WARN', 20, 2),
+	(17, 7, 'GT', 'ALRT', 8.5, 0.2),
+	(18, 7, 'LT', 'ALRT', 7.5, 0.2),
+	(20, 8, 'GT', 'WARN', 25, 2),
+	(21, 8, 'LT', 'ALRT', 15, 2),
+	(23, 9, 'GT', 'ALRT', 20, 2),
+	(24, 9, 'LT', 'ALRT', 3, 2),
+	(26, 10, 'GT', 'ALRT', 1, 0.2);
 
 -- Dumping structure for table water-monitoring-system-db.parameter_threshold_actions
 CREATE TABLE IF NOT EXISTS `parameter_threshold_actions` (
@@ -235,10 +251,11 @@ CREATE TABLE IF NOT EXISTS `ponds` (
   CONSTRAINT `pond_method` FOREIGN KEY (`method`) REFERENCES `pond_methods` (`method`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='INTENSIVE\r\nSEMI-INTENSIVE\r\nTRADITIONAL';
 
--- Dumping data for table water-monitoring-system-db.ponds: ~0 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.ponds: ~2 rows (approximately)
 DELETE FROM `ponds`;
 INSERT INTO `ponds` (`pond_id`, `device_id`, `farm_id`, `name`, `width`, `length`, `depth`, `method`) VALUES
-	(1, NULL, 1, 'Section 1', 90, 100, 4, 'SEMI-INTENSIVE');
+	(1, NULL, 1, 'Section 1', 90, 100, 4, 'SEMI-INTENSIVE'),
+	(2, NULL, 1, 'Section 2', 80, 105, 4, 'SEMI-INTENSIVE');
 
 -- Dumping structure for table water-monitoring-system-db.pond_methods
 CREATE TABLE IF NOT EXISTS `pond_methods` (
@@ -305,7 +322,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   KEY `password` (`password`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.users: ~3 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.users: ~0 rows (approximately)
 DELETE FROM `users`;
 INSERT INTO `users` (`user_id`, `firstname`, `middlename`, `lastname`, `email`, `password`) VALUES
 	(1, 'Reinhart', 'Ferrer', 'Logronio', 'reinhart.logronio@msugensan.edu.ph', '$2a$12$97pPAfoi/KcoKNeaUwYJAOqTV4fKMU6WpGBETtmswdHeiGppnlDpK'),
@@ -354,6 +371,7 @@ CREATE TABLE `view_farmer_farm` (
 -- Dumping structure for view water-monitoring-system-db.view_farmer_ponds
 -- Creating temporary table to overcome VIEW dependency errors
 CREATE TABLE `view_farmer_ponds` (
+	`user_id` INT(10) NOT NULL,
 	`farm_id` INT(10) NOT NULL,
 	`pond_id` INT(10) NOT NULL,
 	`device_id` CHAR(36) NULL COLLATE 'utf8mb4_unicode_ci',
@@ -371,7 +389,21 @@ CREATE TABLE `view_pond_parameters` (
 	`pond_id` INT(10) NULL,
 	`parameter` VARCHAR(3) NULL COLLATE 'utf8mb4_unicode_ci',
 	`name` VARCHAR(16) NULL COLLATE 'utf8mb4_unicode_ci',
-	`unit` VARCHAR(16) NULL COLLATE 'utf8mb4_unicode_ci'
+	`unit` VARCHAR(16) NULL COLLATE 'utf8mb4_unicode_ci',
+	`count` BIGINT(19) NOT NULL
+) ENGINE=MyISAM;
+
+-- Dumping structure for view water-monitoring-system-db.view_pond_parameter_readings
+-- Creating temporary table to overcome VIEW dependency errors
+CREATE TABLE `view_pond_parameter_readings` (
+	`pond_id` INT(10) NOT NULL,
+	`parameter_id` INT(10) NOT NULL,
+	`reading_id` INT(10) NOT NULL,
+	`parameter` VARCHAR(3) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+	`value` DOUBLE NOT NULL,
+	`recorded_at` DATETIME NOT NULL,
+	`modified_at` DATETIME NOT NULL,
+	`isRecordedBySensor` TINYINT(3) NOT NULL
 ) ENGINE=MyISAM;
 
 -- Dumping structure for view water-monitoring-system-db.view_user_notifications_count
@@ -417,11 +449,15 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_farmer_farm` AS selec
 
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `view_farmer_ponds`;
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_farmer_ponds` AS select `farms`.`farm_id` AS `farm_id`,`ponds`.`pond_id` AS `pond_id`,`ponds`.`device_id` AS `device_id`,`ponds`.`name` AS `name`,`ponds`.`width` AS `width`,`ponds`.`length` AS `length`,`ponds`.`depth` AS `depth`,`ponds`.`method` AS `method` from (`ponds` join `farms` on((`ponds`.`farm_id` = `farms`.`farm_id`)));
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_farmer_ponds` AS select `farm_farmer`.`farmer_id` AS `user_id`,`farms`.`farm_id` AS `farm_id`,`ponds`.`pond_id` AS `pond_id`,`ponds`.`device_id` AS `device_id`,`ponds`.`name` AS `name`,`ponds`.`width` AS `width`,`ponds`.`length` AS `length`,`ponds`.`depth` AS `depth`,`ponds`.`method` AS `method` from ((`ponds` join `farms` on((`ponds`.`farm_id` = `farms`.`farm_id`))) join `farm_farmer` on((`farm_farmer`.`farm_id` = `farms`.`farm_id`)));
 
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `view_pond_parameters`;
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_pond_parameters` AS select `parameters`.`parameter_id` AS `parameter_id`,`parameters`.`pond_id` AS `pond_id`,`parameter_list`.`parameter` AS `parameter`,`parameter_list`.`name` AS `name`,`parameter_list`.`unit` AS `unit` from (`parameters` left join `parameter_list` on((`parameters`.`parameter` = `parameter_list`.`parameter`)));
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_pond_parameters` AS select `parameters`.`parameter_id` AS `parameter_id`,`parameters`.`pond_id` AS `pond_id`,`parameter_list`.`parameter` AS `parameter`,`parameter_list`.`name` AS `name`,`parameter_list`.`unit` AS `unit`,count(`readings`.`reading_id`) AS `count` from ((`parameters` left join `parameter_list` on((`parameters`.`parameter` = `parameter_list`.`parameter`))) left join `readings` on((`readings`.`parameter_id` = `parameters`.`parameter_id`))) group by `parameters`.`parameter_id`;
+
+-- Removing temporary table and create final VIEW structure
+DROP TABLE IF EXISTS `view_pond_parameter_readings`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_pond_parameter_readings` AS select `ponds`.`pond_id` AS `pond_id`,`parameters`.`parameter_id` AS `parameter_id`,`readings`.`reading_id` AS `reading_id`,`parameters`.`parameter` AS `parameter`,`readings`.`value` AS `value`,`readings`.`recorded_at` AS `recorded_at`,`readings`.`modified_at` AS `modified_at`,`readings`.`isRecordedBySensor` AS `isRecordedBySensor` from ((`readings` join `parameters` on((`readings`.`parameter_id` = `parameters`.`parameter_id`))) join `ponds` on((`parameters`.`pond_id` = `ponds`.`pond_id`)));
 
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `view_user_notifications_count`;
