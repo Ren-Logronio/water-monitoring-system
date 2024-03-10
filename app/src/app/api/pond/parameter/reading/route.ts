@@ -15,7 +15,6 @@ export async function GET(request: NextRequest) {
             "SELECT * FROM `view_pond_parameter_readings` WHERE `pond_id` = ? AND `parameter` = ?",
             [pond_id, res[0].parameter]
         );
-        console.log(results);
         return NextResponse.json(
             { results },
             {

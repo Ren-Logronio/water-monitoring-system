@@ -14,7 +14,7 @@ export function middleware(request: NextRequest) {
   if (cookieToken) {
     verify(cookieToken).then(res => {
       if(!res) {
-        return NextResponse.redirect(new URL("/signin", request.url));
+        return NextResponse.redirect(new URL("/signin?signout", request.url));
       }
       const { exp } = res;
       const now = Math.floor(Date.now() / 1000);
