@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `farms` (
   PRIMARY KEY (`farm_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.farms: ~0 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.farms: ~1 rows (approximately)
 DELETE FROM `farms`;
 INSERT INTO `farms` (`farm_id`, `name`, `address_street`, `address_city`, `address_province`, `wallpaper`) VALUES
 	(1, 'RD Farm', 'Jungle Street', 'General Santos City', 'South Cotabato', NULL);
@@ -251,7 +251,7 @@ CREATE TABLE IF NOT EXISTS `ponds` (
   CONSTRAINT `pond_method` FOREIGN KEY (`method`) REFERENCES `pond_methods` (`method`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='INTENSIVE\r\nSEMI-INTENSIVE\r\nTRADITIONAL';
 
--- Dumping data for table water-monitoring-system-db.ponds: ~0 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.ponds: ~2 rows (approximately)
 DELETE FROM `ponds`;
 INSERT INTO `ponds` (`pond_id`, `device_id`, `farm_id`, `name`, `width`, `length`, `depth`, `method`) VALUES
 	(1, NULL, 1, 'Section 1', 90, 100, 4, 'SEMI-INTENSIVE'),
@@ -283,10 +283,16 @@ CREATE TABLE IF NOT EXISTS `readings` (
   PRIMARY KEY (`reading_id`),
   KEY `reading_parameter_id` (`parameter_id`),
   CONSTRAINT `reading_parameter_id` FOREIGN KEY (`parameter_id`) REFERENCES `parameters` (`parameter_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.readings: ~0 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.readings: ~5 rows (approximately)
 DELETE FROM `readings`;
+INSERT INTO `readings` (`reading_id`, `parameter_id`, `value`, `recorded_at`, `modified_at`, `isRecordedBySensor`) VALUES
+	(1, 1, 23, '2024-03-01 17:00:00', '2024-03-11 16:39:35', 0),
+	(2, 1, 24, '2024-03-02 17:41:00', '2024-03-11 16:39:35', 0),
+	(3, 1, 23.8, '2024-03-03 17:00:00', '2024-03-11 16:39:37', 0),
+	(4, 1, 22.1, '2024-03-04 17:07:00', '2024-03-11 16:39:39', 0),
+	(5, 1, 22.9, '2024-03-05 17:01:00', '2024-03-11 16:39:40', 0);
 
 -- Dumping structure for table water-monitoring-system-db.reading_notifications
 CREATE TABLE IF NOT EXISTS `reading_notifications` (
@@ -400,6 +406,8 @@ CREATE TABLE `view_pond_parameter_readings` (
 	`parameter_id` INT(11) NOT NULL,
 	`reading_id` INT(11) NOT NULL,
 	`parameter` VARCHAR(3) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+	`name` VARCHAR(16) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+	`unit` VARCHAR(16) NOT NULL COLLATE 'utf8mb4_unicode_ci',
 	`value` DOUBLE NOT NULL,
 	`recorded_at` DATETIME NOT NULL,
 	`modified_at` DATETIME NOT NULL,
@@ -457,7 +465,7 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_pond_parameters` AS s
 
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `view_pond_parameter_readings`;
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_pond_parameter_readings` AS select `ponds`.`pond_id` AS `pond_id`,`parameters`.`parameter_id` AS `parameter_id`,`readings`.`reading_id` AS `reading_id`,`parameters`.`parameter` AS `parameter`,`readings`.`value` AS `value`,`readings`.`recorded_at` AS `recorded_at`,`readings`.`modified_at` AS `modified_at`,`readings`.`isRecordedBySensor` AS `isRecordedBySensor` from ((`readings` join `parameters` on(`readings`.`parameter_id` = `parameters`.`parameter_id`)) join `ponds` on(`parameters`.`pond_id` = `ponds`.`pond_id`));
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_pond_parameter_readings` AS select `ponds`.`pond_id` AS `pond_id`,`parameters`.`parameter_id` AS `parameter_id`,`readings`.`reading_id` AS `reading_id`,`parameters`.`parameter` AS `parameter`,`parameter_list`.`name` AS `name`,`parameter_list`.`unit` AS `unit`,`readings`.`value` AS `value`,`readings`.`recorded_at` AS `recorded_at`,`readings`.`modified_at` AS `modified_at`,`readings`.`isRecordedBySensor` AS `isRecordedBySensor` from (((`readings` join `parameters` on(`readings`.`parameter_id` = `parameters`.`parameter_id`)) join `parameter_list` on(`parameters`.`parameter` = `parameter_list`.`parameter`)) join `ponds` on(`parameters`.`pond_id` = `ponds`.`pond_id`));
 
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `view_user_notifications_count`;
