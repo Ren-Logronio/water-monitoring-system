@@ -14,10 +14,6 @@ export default function EditReading({ reading }: { reading: any }) {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        console.log(currentReadingForm);
-    }, [currentReadingForm])
-
     const handleEdit = () => {
         const editedDateTime = format(`${currentReadingForm.date} ${currentReadingForm.time}`, "yyyy-MM-dd'T'HH:mm");
         setLoading(true);

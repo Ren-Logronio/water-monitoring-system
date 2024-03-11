@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { use, useEffect, useRef, useState } from "react";
 import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-quartz.css";
+import "ag-grid-community/styles/ag-theme-material.css";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
@@ -103,7 +103,7 @@ export default function ({ pond_id }: { pond_id?: string }) {
                             <Download pond_id={pond_id} />
                         </div>
                     </div>
-                    <div className="ag-theme-quartz h-[calc(100vh-200px)]">
+                    <div className="ag-theme-material h-[calc(100vh-200px)]">
                         <AgGridReact rowData={rowData} columnDefs={columnDefs} autoSizeStrategy={autoSizeStrategy} />
                     </div>
                 </>
