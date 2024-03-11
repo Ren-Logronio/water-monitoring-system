@@ -2,7 +2,7 @@
 
 import { useParams, useSearchParams } from "next/navigation";
 import { format } from "date-fns";
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
@@ -16,6 +16,7 @@ import AddReading from "./AddReading";
 import { Input } from "../ui/input";
 import Download from "./Download";
 import Actions from "./Actions";
+import { useParameterDatasheetStore } from "@/store/parameterDatasheetStore";
 
 const autoSizeStrategy = {
     type: 'fitGridWidth',
@@ -33,13 +34,12 @@ const autoSizeStrategy = {
 };
 
 
-
 export default function ({ pond_id }: { pond_id?: string }) {
     // get parameter from the url
     const params = useParams();
+    const { rowData, setRowData } = useParameterDatasheetStore();
     const inputFile = useRef<HTMLInputElement | null>(null);
     const [loading, setLoading] = useState(true);
-    const [rowData, setRowData] = useState([]);
     const [columnDefs, setColumnDefs] = useState([
         { field: "idx", headerName: "#", lockPosition: "left", resizable: false },
         { field: "reading_id", headerName: "reading_id", lockPosition: "left", resizable: false, hide: true },
