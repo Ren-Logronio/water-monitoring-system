@@ -70,3 +70,28 @@ export async function PATCH(request: NextApiRequest) {
     );
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const reading_id = request.nextUrl.searchParams.get('reading_id');
+    const connection = await getMySQLConnection();
+    await connection.query(
+      "DELETE FROM `readings` WHERE `reading_id` = ?",
+      [reading_id]
+    );
+    return NextResponse.json(
+      { message: "Successfully deleted the sensor reading" },
+      {
+        status: 200,
+      },
+    );
+  } catch (e) {
+    console.log(e);
+    return NextResponse.json(
+      { message: "Something went wrong while deleting the sensor reading" },
+      {
+        status: 500,
+      },
+    );
+  }
+}
