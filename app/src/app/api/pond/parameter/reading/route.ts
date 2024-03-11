@@ -31,3 +31,27 @@ export async function GET(request: NextRequest) {
         );
     }
 }
+
+export async function POST(request: NextRequest) {
+    try {
+        const { pond_id, parameter, value, date } = await request.json();
+        const connection = await getMySQLConnection();
+        const [results, rows]: [results: any[], rows: any[]] = await connection.query(
+            "INSERT INTO `readings` (`parameter_id`, `value`, `recorded_at`, `isRecordedBySensor`) VALUES ((SELECT `parameter_id` FROM `view_pond_parameters` WHERE `pond_id` = ? AND `name` = ? LIMIT 1), ?, ?, 0)",
+            [pond_id, parameter, value, date]
+        );
+        return NextResponse.json(
+            { results },
+            {
+                status: 200,
+            },
+        );
+    } catch (e) {
+        return NextResponse.json(
+            { message: "Something went wrong while adding the readings info" },
+            {
+                status: 500,
+            },
+        );
+    }
+}
