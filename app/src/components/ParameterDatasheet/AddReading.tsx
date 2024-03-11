@@ -4,38 +4,48 @@ import { Button } from "@/components/ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { NinetyRing } from "react-svg-spinners";
-import { format } from "date-fns";
-import { useParams } from "next/navigation";
+import { format, } from "date-fns";
+import { useRouter, useParams } from "next/navigation";
+import axios from "axios";
 
 export default function AddReading({ pond_id }: { pond_id?: string }) {
     const { parameter } = useParams();
-    const [ open, setOpen ] = useState(false);
-    const [ loading, setLoading ] = useState(false);
-    const [ readingForm, setReadingForm ] = useState({ reading: 0.00, date: "", time: "" });
-    const [ dateTime, setDateTime ] = useState({ datetime: "" });
+    const router = useRouter();
+    const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [readingForm, setReadingForm] = useState({ reading: 0.00, date: "", time: "" });
+    const [dateTime, setDateTime] = useState<string>("");
 
     useEffect(() => {
-        readingForm.date && readingForm.time && setDateTime({ datetime: format(`${readingForm.date} ${readingForm.time}`, "yyyy-MM-dd'T'HH:mm") });
+        readingForm.date && readingForm.time && setDateTime(format(`${readingForm.date} ${readingForm.time}`, "yyyy-MM-dd'T'HH:mm"));
     }, [readingForm]);
 
     const handleFormSubmit = (e: any) => {
         e.preventDefault();
         setLoading(true);
-        console.log("readingForm:", readingForm);
-        console.log("dateTime:", dateTime);
-        setTimeout(() => {
+        axios.post("/api/pond/parameter/reading", {
+            pond_id,
+            parameter,
+            value: readingForm.reading,
+            date: dateTime
+        }).then(res => {
+            console.log(res);
             setLoading(false);
             setOpen(false);
-        }, 2000);
+            router.replace(`/redirect?w=parameter/${parameter}/datasheet`);
+        }).catch(err => {
+            console.log(err);
+            setLoading(false);
+        });
     }
 
     return <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
             <Button>Add</Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent onInteractOutside={(e: any) => { e.preventDefault() }} className="sm:max-w-lg">
             <DialogHeader>
-                <DialogTitle>Add Reading ({pond_id})</DialogTitle>
+                <DialogTitle>Add Reading</DialogTitle>
             </DialogHeader>
             <div className="flex flex-row space-x-2">
                 <div className="flex flex-col space-y-2">
@@ -57,8 +67,8 @@ export default function AddReading({ pond_id }: { pond_id?: string }) {
                         Cancel
                     </Button>
                 </DialogClose>
-                <Button onClick={handleFormSubmit} disabled={loading} type="submit">
-                    {loading ? <div className="flex flex-row space-x-2"><NinetyRing /><p>Adding..</p></div> : "Add"}
+                <Button onClick={handleFormSubmit} disabled={loading} className="flex flex-row space-x-2" type="submit">
+                    {loading ? <div className="flex flex-row space-x-2"><NinetyRing color="currentColor" /><p>Adding..</p></div> : "Add"}
                 </Button>
             </DialogFooter>
         </DialogContent>

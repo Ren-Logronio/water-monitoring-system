@@ -49,6 +49,31 @@ export async function POST(request: NextApiRequest) {
   }
 }
 
+export async function PUT(request: NextApiRequest) {
+  try {
+    const connection = await getMySQLConnection();
+    const { reading_id, value, recorded_at } = await new Response(request.body).json();
+    const [result, fields] = await connection.query(
+      "UPDATE `readings` SET `value` = ?, `recorded_at` = ? WHERE `reading_id` = ?",
+      [value, recorded_at, reading_id]
+    );
+    return NextResponse.json(
+      { result },
+      {
+        status: 200,
+      },
+    );
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json(
+      { message: "Something went wrong while updating the reading" },
+      {
+        status: 500,
+      },
+    );
+  }
+}
+
 export async function PATCH(request: NextApiRequest) {
   try {
     const connection = await getMySQLConnection();
@@ -64,6 +89,31 @@ export async function PATCH(request: NextApiRequest) {
     console.log(error);
     return NextResponse.json(
       { message: "Something went wrong while updating the reading" },
+      {
+        status: 500,
+      },
+    );
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const reading_id = request.nextUrl.searchParams.get('reading_id');
+    const connection = await getMySQLConnection();
+    await connection.query(
+      "DELETE FROM `readings` WHERE `reading_id` = ?",
+      [reading_id]
+    );
+    return NextResponse.json(
+      { message: "Successfully deleted the sensor reading" },
+      {
+        status: 200,
+      },
+    );
+  } catch (e) {
+    console.log(e);
+    return NextResponse.json(
+      { message: "Something went wrong while deleting the sensor reading" },
       {
         status: 500,
       },

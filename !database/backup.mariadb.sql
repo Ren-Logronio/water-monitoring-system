@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `farms` (
   PRIMARY KEY (`farm_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.farms: ~1 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.farms: ~0 rows (approximately)
 DELETE FROM `farms`;
 INSERT INTO `farms` (`farm_id`, `name`, `address_street`, `address_city`, `address_province`, `wallpaper`) VALUES
 	(1, 'RD Farm', 'Jungle Street', 'General Santos City', 'South Cotabato', NULL);
@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS `farm_farmer` (
   CONSTRAINT `farmer_farm_id` FOREIGN KEY (`farm_id`) REFERENCES `farms` (`farm_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.farm_farmer: ~2 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.farm_farmer: ~1 rows (approximately)
 DELETE FROM `farm_farmer`;
 INSERT INTO `farm_farmer` (`farm_id`, `farmer_id`, `role`, `is_approved`) VALUES
 	(1, 1, 'OWNER', 1),
@@ -251,7 +251,7 @@ CREATE TABLE IF NOT EXISTS `ponds` (
   CONSTRAINT `pond_method` FOREIGN KEY (`method`) REFERENCES `pond_methods` (`method`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='INTENSIVE\r\nSEMI-INTENSIVE\r\nTRADITIONAL';
 
--- Dumping data for table water-monitoring-system-db.ponds: ~2 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.ponds: ~0 rows (approximately)
 DELETE FROM `ponds`;
 INSERT INTO `ponds` (`pond_id`, `device_id`, `farm_id`, `name`, `width`, `length`, `depth`, `method`) VALUES
 	(1, NULL, 1, 'Section 1', 90, 100, 4, 'SEMI-INTENSIVE'),
