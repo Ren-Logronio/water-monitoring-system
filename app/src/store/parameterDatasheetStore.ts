@@ -26,6 +26,8 @@ export const useParameterDatasheetStore = create<ParameterDatasheetStore>((set) 
     addRowData: (rowData: any) => {
         set((state: any) => ({ rowData: [...state.rowData, rowData] }))
     },
-    editRowData: (rowData: any) => set((state: any) => ({ rowData: state.rowData.map((r: any) => r.reading_id === rowData.reading_id ? { ...rowData, reading_id: r.reading_id } : r) })),
+    editRowData: (rowData: any) => {
+        set((state: any) => ({ rowData: state.rowData.map((row: any) => row.reading_id === rowData.reading_id ? { ...row, edit_recorded_at: rowData.edit_recorded_at, edit_time: rowData.edit_time, reading: rowData.reading, date: rowData.date, time: rowData.time } : row) }))
+    },
     deleteRowData: (reading_id: number) => set((state: any) => ({ rowData: state.rowData.filter((rowData: any) => rowData.reading_id !== reading_id) })),
 }));
