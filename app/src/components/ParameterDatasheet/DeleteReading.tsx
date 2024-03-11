@@ -4,9 +4,11 @@ import { useState } from "react";
 import { NinetyRing } from "react-svg-spinners";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
+import { useParameterDatasheetStore } from "@/store/parameterDatasheetStore";
 
 export default function DeleteReading({ reading_id }: { reading_id: number }) {
     const [open, setOpen] = useState(false);
+    const { deleteRowData } = useParameterDatasheetStore();
     const router = useRouter();
     const { parameter } = useParams();
     const [loading, setLoading] = useState(false);
@@ -16,7 +18,7 @@ export default function DeleteReading({ reading_id }: { reading_id: number }) {
             console.log(res);
             setLoading(false);
             setOpen(false);
-            router.replace(`/redirect?w=parameter/${parameter}/datasheet`);
+            deleteRowData(reading_id);
         }).catch(err => {
             console.log(err);
             setLoading(false);
