@@ -37,7 +37,7 @@ const autoSizeStrategy = {
 export default function ({ pond_id }: { pond_id?: string }) {
     // get parameter from the url
     const params = useParams();
-    const { rowData, setRowData } = useParameterDatasheetStore();
+    const { rowData, setRowData, purgeRowData } = useParameterDatasheetStore();
     const inputFile = useRef<HTMLInputElement | null>(null);
     const [loading, setLoading] = useState(true);
     const [columnDefs, setColumnDefs] = useState([
@@ -54,6 +54,7 @@ export default function ({ pond_id }: { pond_id?: string }) {
 
     useEffect(() => {
         !loading && setLoading(true);
+        purgeRowData();
         axios.get(`/api/pond/parameter/reading?pond_id=${pond_id}&parameter=${params.parameter}`).then(response => {
             if (response.data.results && response.data.results.length > 0) {
                 console.log("response.data.results:", response.data.results);
