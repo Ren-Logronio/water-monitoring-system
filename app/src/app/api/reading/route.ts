@@ -49,6 +49,31 @@ export async function POST(request: NextApiRequest) {
   }
 }
 
+export async function PUT(request: NextApiRequest) {
+  try {
+    const connection = await getMySQLConnection();
+    const { reading_id, value, recorded_at } = await new Response(request.body).json();
+    const [result, fields] = await connection.query(
+      "UPDATE `readings` SET `value` = ?, `recorded_at` = ? WHERE `reading_id` = ?",
+      [value, recorded_at, reading_id]
+    );
+    return NextResponse.json(
+      { result },
+      {
+        status: 200,
+      },
+    );
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json(
+      { message: "Something went wrong while updating the reading" },
+      {
+        status: 500,
+      },
+    );
+  }
+}
+
 export async function PATCH(request: NextApiRequest) {
   try {
     const connection = await getMySQLConnection();
