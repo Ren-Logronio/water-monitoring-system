@@ -15,6 +15,7 @@ import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogT
 import AddReading from "./AddReading";
 import { Input } from "../ui/input";
 import Download from "./Download";
+import Actions from "./Actions";
 
 const autoSizeStrategy = {
     type: 'fitGridWidth',
@@ -22,25 +23,16 @@ const autoSizeStrategy = {
     columnLimits: [
         {
             colId: 'idx',
-            minWidth: 300
+            maxWidth: 0
+        },
+        {
+            colId: "actions",
+            maxWidth: 0
         }
     ]
 };
 
-const actions = (props: any) => {
 
-    const handleEdit = () => {
-        console.log("Edit IDX:", props.getValue());
-    }
-
-    return (
-        <div className="flex flex-row space-x-2">
-            <Button onClick={handleEdit}>Edit</Button>
-            <Button>Delete</Button>
-        </div>
-    );
-
-}
 
 export default function ({ pond_id }: { pond_id?: string }) {
     // get parameter from the url
@@ -50,11 +42,12 @@ export default function ({ pond_id }: { pond_id?: string }) {
     const [rowData, setRowData] = useState([]);
     const [columnDefs, setColumnDefs] = useState([
         { field: "idx", headerName: "#", lockPosition: "left", resizable: false },
+        { field: "reading_id", headerName: "reading_id", lockPosition: "left", resizable: false, hide: true },
         { field: "reading", headerName: "Reading", lockPosition: "left", resizable: false },
         { field: "date", headerName: "Date", lockPosition: "left", resizable: false },
         { field: "time", headerName: "Time", lockPosition: "left", resizable: false },
         { field: "recorded_by", headerName: "Recorded By", lockPosition: "left", resizable: false },
-        { headerName: "Actions", lockPosition: "right", cellRenderer: actions, valueGetter: (params: any) => ({ idx: params.data.idx, reading: params.data.reading, date: params.data.date, time: params.data.time, recorded_by: params.data.recorded_by }), resizable: false }
+        { headerName: "Actions", lockPosition: "right", cellRenderer: Actions, valueGetter: (params: any) => ({ idx: params.data.idx, reading_id: params.data.reading_id, reading: params.data.reading, date: params.data.date, time: params.data.time, recorded_by: params.data.recorded_by }), resizable: false }
     ]);
 
     useEffect(() => {
@@ -62,7 +55,7 @@ export default function ({ pond_id }: { pond_id?: string }) {
         axios.get(`/api/pond/parameter/reading?pond_id=${pond_id}&parameter=${params.parameter}`).then(response => {
             if (response.data.results && response.data.results.length > 0) {
                 console.log("response.data.results:", response.data.results);
-                setRowData(response.data.results.sort((a: any, b: any) => b.reading_id - a.reading_id).map((row: any, idx: number) => ({ idx, reading: row.value, date: format(new Date(row.recorded_at), "MMM d"), time: format(new Date(row.recorded_at), "h:mm a"), recorded_by: row.isRecordedBySensor ? "sensor" : "farmer" })));
+                setRowData(response.data.results.sort((a: any, b: any) => b.reading_id - a.reading_id).map((row: any, idx: number) => ({ idx, reading_id: row.reading_id, reading: row.value, date: format(new Date(row.recorded_at), "MMM d"), time: format(new Date(row.recorded_at), "h:mm a"), recorded_by: row.isRecordedBySensor ? "sensor" : "farmer" })));
             }
         }).catch(error => {
             console.error(error);
@@ -104,7 +97,7 @@ export default function ({ pond_id }: { pond_id?: string }) {
                                 </svg>
                                 <p>Print View</p>
                             </Button>
-                            <Download pond_id={pond_id}/>
+                            <Download pond_id={pond_id} />
                         </div>
                     </div>
                     <div className="ag-theme-quartz h-[calc(100vh-200px)]">
