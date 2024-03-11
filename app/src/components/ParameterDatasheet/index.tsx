@@ -43,11 +43,13 @@ export default function ({ pond_id }: { pond_id?: string }) {
     const [columnDefs, setColumnDefs] = useState([
         { field: "idx", headerName: "#", lockPosition: "left", resizable: false },
         { field: "reading_id", headerName: "reading_id", lockPosition: "left", resizable: false, hide: true },
+        { field: "edit_recorded_at", headerName: "edit_recorded_at", lockPosition: "left", resizable: false, hide: true },
+        { field: "edit_time", headerName: "edit_time", lockPosition: "left", resizable: false, hide: true },
         { field: "reading", headerName: "Reading", lockPosition: "left", resizable: false },
         { field: "date", headerName: "Date", lockPosition: "left", resizable: false },
         { field: "time", headerName: "Time", lockPosition: "left", resizable: false },
         { field: "recorded_by", headerName: "Recorded By", lockPosition: "left", resizable: false },
-        { headerName: "Actions", lockPosition: "right", cellRenderer: Actions, valueGetter: (params: any) => ({ idx: params.data.idx, reading_id: params.data.reading_id, reading: params.data.reading, date: params.data.date, time: params.data.time, recorded_by: params.data.recorded_by }), resizable: false }
+        { headerName: "Actions", lockPosition: "right", cellRenderer: Actions, valueGetter: (params: any) => ({ reading_id: params.data.reading_id, reading: params.data.reading, date: params.data.edit_recorded_at, time: params.data.edit_time }), resizable: false }
     ]);
 
     useEffect(() => {
@@ -55,7 +57,7 @@ export default function ({ pond_id }: { pond_id?: string }) {
         axios.get(`/api/pond/parameter/reading?pond_id=${pond_id}&parameter=${params.parameter}`).then(response => {
             if (response.data.results && response.data.results.length > 0) {
                 console.log("response.data.results:", response.data.results);
-                setRowData(response.data.results.sort((a: any, b: any) => b.reading_id - a.reading_id).map((row: any, idx: number) => ({ idx, reading_id: row.reading_id, reading: row.value, date: format(new Date(row.recorded_at), "MMM d"), time: format(new Date(row.recorded_at), "h:mm a"), recorded_by: row.isRecordedBySensor ? "sensor" : "farmer" })));
+                setRowData(response.data.results.sort((a: any, b: any) => b.reading_id - a.reading_id).map((row: any, idx: number) => ({ idx, reading_id: row.reading_id, edit_recorded_at: format(row.recorded_at, "yyyy-MM-dd"), edit_time: format(row.recorded_at, "hh:mm"), reading: row.value, date: format(new Date(row.recorded_at), "MMM dd, yyyy"), time: format(new Date(row.recorded_at), "h:mm a"), recorded_by: row.isRecordedBySensor ? "sensor" : "farmer" })));
             }
         }).catch(error => {
             console.error(error);
