@@ -33,7 +33,6 @@ export default function Dashboard() {
                 if (!response.data.results && response.data.results.length <= 0) {
                     setPonds({ ponds: [], noPonds: true });
                 } else {
-                    console.log("ponds:", response.data.results);
                     setPonds({ ponds: response.data.results, noPonds: false });
                     setSelectedPond(response.data.results[0] && response.data.results[0].pond_id ? response.data.results[0].pond_id : "");
                 }

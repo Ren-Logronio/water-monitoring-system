@@ -88,13 +88,13 @@ export default function NavigationBar({ children }: NavigationBarProps): React.R
             </div>
             <div className="flex-1 flex-grow flex flex-col h-full">
                 <div className="flex-grow min-h-[54px] bg-white shadow-sm flex flex-row items-center justify-end sm:justify-between px-[24px]">
-                    {!farm.none ? <div className="flex-row items-center space-x-[20px] hidden sm:flex transition-all">
+                    {!farm.none ? <div className={`flex-row items-center space-x-[20px] hidden sm:flex transition-all ${ path.startsWith("/farm") ? "opacity-0" : "opacity-100" }`}>
                         {farm.name ?
-                            <h5 className="text-blue-800 font-bold">
+                            <h5 className={`text-blue-800 font-bold transition-all`}>
                                 {farm.name}
                             </h5> : <div className="w-[80px] h-[32px] bg-gray-500 animate-pulse"></div>}
                         <Separator orientation="vertical" className="bg-indigo-100 h-7" />
-                        <p className=" text-[12px] text-neutral-500">{nav}</p>
+                        <p className=" text-[12px] text-neutral-500">{ !path.startsWith("/farm") && nav }</p>
                     </div>
                         : <div>No Farm</div>
                     }

@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import FarmPage from "@/components/Farm";
 
 export const metadata: Metadata = {
     title: "Farm | Water Monitoring System",
@@ -6,8 +7,6 @@ export const metadata: Metadata = {
 
 export default function Farm() {
     return (
-        <div>
-            <h1>Farm</h1>
-        </div>
+        <FarmPage />
     );
 }
