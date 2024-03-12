@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `farms` (
   PRIMARY KEY (`farm_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.farms: ~0 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.farms: ~1 rows (approximately)
 DELETE FROM `farms`;
 INSERT INTO `farms` (`farm_id`, `name`, `address_street`, `address_city`, `address_province`, `wallpaper`) VALUES
 	(1, 'RD Farm', 'Jungle Street', 'General Santos City', 'South Cotabato', NULL);
@@ -322,7 +322,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   KEY `password` (`password`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.users: ~3 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.users: ~0 rows (approximately)
 DELETE FROM `users`;
 INSERT INTO `users` (`user_id`, `firstname`, `middlename`, `lastname`, `email`, `password`) VALUES
 	(1, 'Reinhart', 'Ferrer', 'Logronio', 'reinhart.logronio@msugensan.edu.ph', '$2a$12$97pPAfoi/KcoKNeaUwYJAOqTV4fKMU6WpGBETtmswdHeiGppnlDpK'),
@@ -400,6 +400,8 @@ CREATE TABLE `view_pond_parameter_readings` (
 	`parameter_id` INT(10) NOT NULL,
 	`reading_id` INT(10) NOT NULL,
 	`parameter` VARCHAR(3) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+	`name` VARCHAR(16) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+	`unit` VARCHAR(16) NOT NULL COLLATE 'utf8mb4_unicode_ci',
 	`value` DOUBLE NOT NULL,
 	`recorded_at` DATETIME NOT NULL,
 	`modified_at` DATETIME NOT NULL,
@@ -457,7 +459,7 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_pond_parameters` AS s
 
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `view_pond_parameter_readings`;
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_pond_parameter_readings` AS select `ponds`.`pond_id` AS `pond_id`,`parameters`.`parameter_id` AS `parameter_id`,`readings`.`reading_id` AS `reading_id`,`parameters`.`parameter` AS `parameter`,`readings`.`value` AS `value`,`readings`.`recorded_at` AS `recorded_at`,`readings`.`modified_at` AS `modified_at`,`readings`.`isRecordedBySensor` AS `isRecordedBySensor` from ((`readings` join `parameters` on((`readings`.`parameter_id` = `parameters`.`parameter_id`))) join `ponds` on((`parameters`.`pond_id` = `ponds`.`pond_id`)));
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_pond_parameter_readings` AS select `ponds`.`pond_id` AS `pond_id`,`parameters`.`parameter_id` AS `parameter_id`,`readings`.`reading_id` AS `reading_id`,`parameters`.`parameter` AS `parameter`,`parameter_list`.`name` AS `name`,`parameter_list`.`unit` AS `unit`,`readings`.`value` AS `value`,`readings`.`recorded_at` AS `recorded_at`,`readings`.`modified_at` AS `modified_at`,`readings`.`isRecordedBySensor` AS `isRecordedBySensor` from (((`readings` join `parameters` on((`readings`.`parameter_id` = `parameters`.`parameter_id`))) join `parameter_list` on((`parameters`.`parameter` = `parameter_list`.`parameter`))) join `ponds` on((`parameters`.`pond_id` = `ponds`.`pond_id`)));
 
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `view_user_notifications_count`;
