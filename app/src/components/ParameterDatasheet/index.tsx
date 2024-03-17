@@ -34,7 +34,7 @@ const autoSizeStrategy = {
 };
 
 
-export default function ({ pond_id }: { pond_id?: string }) {
+export default function ParameterDatasheet({ pond_id }: { pond_id?: string }) {
     // get parameter from the url
     const params = useParams();
     const { rowData, setRowData, purgeRowData } = useParameterDatasheetStore();
