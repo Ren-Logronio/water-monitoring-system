@@ -26,7 +26,7 @@ export default function ApproveStaff({ staff, deleteCallback }: { staff: any, de
         </DialogTrigger>
         <DialogContent onInteractOutside={(e: any) => { e.preventDefault() }}>
             <DialogHeader>
-                <DialogTitle>Approve {staff.role.toLowerCase()} request</DialogTitle>
+                <DialogTitle>Remove staff</DialogTitle>
             </DialogHeader>
             <div className="flex flex-row space-x-2">
                 <p>Are you sure you want to remove {staff.lastname}, {staff.firstname} from the staff list?</p>
