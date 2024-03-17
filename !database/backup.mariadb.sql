@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS `farm_farmer` (
 DELETE FROM `farm_farmer`;
 INSERT INTO `farm_farmer` (`farm_id`, `farmer_id`, `role`, `is_approved`) VALUES
 	(1, 1, 'OWNER', 1),
-	(1, 2, 'STAFF', 0);
+	(1, 3, 'STAFF', 0);
 
 -- Dumping structure for table water-monitoring-system-db.farm_farmer_roles
 CREATE TABLE IF NOT EXISTS `farm_farmer_roles` (
@@ -103,22 +103,11 @@ CREATE TABLE IF NOT EXISTS `parameters` (
   KEY `sensor_parameter` (`parameter`),
   KEY `parameter_pond_id` (`pond_id`),
   CONSTRAINT `parameter_list` FOREIGN KEY (`parameter`) REFERENCES `parameter_list` (`parameter`) ON UPDATE CASCADE,
-  CONSTRAINT `parameter_pond_id` FOREIGN KEY (`pond_id`) REFERENCES `ponds` (`pond_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  CONSTRAINT `parameter_pond_id` FOREIGN KEY (`pond_id`) REFERENCES `ponds` (`pond_id`) ON DELETE CASCADE ON UPDATE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.parameters: ~10 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.parameters: ~0 rows (approximately)
 DELETE FROM `parameters`;
-INSERT INTO `parameters` (`parameter_id`, `pond_id`, `parameter`) VALUES
-	(1, 1, 'TMP'),
-	(2, 1, 'PH'),
-	(3, 1, 'SAL'),
-	(4, 1, 'DOX'),
-	(5, 1, 'AMN'),
-	(6, 2, 'TMP'),
-	(7, 2, 'PH'),
-	(8, 2, 'SAL'),
-	(9, 2, 'DOX'),
-	(10, 2, 'AMN');
 
 -- Dumping structure for table water-monitoring-system-db.parameter_default_thresholds
 CREATE TABLE IF NOT EXISTS `parameter_default_thresholds` (
@@ -180,31 +169,12 @@ CREATE TABLE IF NOT EXISTS `parameter_thresholds` (
   KEY `threshold_action` (`action`),
   KEY `threshold_sensor_id` (`parameter_id`) USING BTREE,
   CONSTRAINT `threshold_action` FOREIGN KEY (`action`) REFERENCES `parameter_threshold_actions` (`action`) ON UPDATE CASCADE,
-  CONSTRAINT `threshold_parameter_id` FOREIGN KEY (`parameter_id`) REFERENCES `parameters` (`parameter_id`) ON UPDATE CASCADE,
+  CONSTRAINT `threshold_parameter_id` FOREIGN KEY (`parameter_id`) REFERENCES `parameters` (`parameter_id`) ON DELETE CASCADE,
   CONSTRAINT `threshold_type` FOREIGN KEY (`type`) REFERENCES `parameter_threshold_types` (`type`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.parameter_thresholds: ~18 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.parameter_thresholds: ~0 rows (approximately)
 DELETE FROM `parameter_thresholds`;
-INSERT INTO `parameter_thresholds` (`threshold_id`, `parameter_id`, `type`, `action`, `target`, `error`) VALUES
-	(1, 1, 'GT', 'WARN', 30, 2),
-	(2, 1, 'LT', 'WARN', 20, 2),
-	(4, 2, 'GT', 'ALRT', 8.5, 0.2),
-	(5, 2, 'LT', 'ALRT', 7.5, 0.2),
-	(7, 3, 'GT', 'WARN', 25, 2),
-	(8, 3, 'LT', 'ALRT', 15, 2),
-	(10, 4, 'GT', 'ALRT', 20, 2),
-	(11, 4, 'LT', 'ALRT', 3, 2),
-	(13, 5, 'GT', 'ALRT', 1, 0.2),
-	(14, 6, 'GT', 'WARN', 30, 2),
-	(15, 6, 'LT', 'WARN', 20, 2),
-	(17, 7, 'GT', 'ALRT', 8.5, 0.2),
-	(18, 7, 'LT', 'ALRT', 7.5, 0.2),
-	(20, 8, 'GT', 'WARN', 25, 2),
-	(21, 8, 'LT', 'ALRT', 15, 2),
-	(23, 9, 'GT', 'ALRT', 20, 2),
-	(24, 9, 'LT', 'ALRT', 3, 2),
-	(26, 10, 'GT', 'ALRT', 1, 0.2);
 
 -- Dumping structure for table water-monitoring-system-db.parameter_threshold_actions
 CREATE TABLE IF NOT EXISTS `parameter_threshold_actions` (
@@ -246,16 +216,13 @@ CREATE TABLE IF NOT EXISTS `ponds` (
   KEY `pond_farm_id` (`farm_id`),
   KEY `pond_method` (`method`),
   KEY `pond_device_id` (`device_id`),
-  CONSTRAINT `pond_device_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`device_id`) ON UPDATE CASCADE,
+  CONSTRAINT `pond_device_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`device_id`) ON UPDATE SET NULL,
   CONSTRAINT `pond_farm_id` FOREIGN KEY (`farm_id`) REFERENCES `farms` (`farm_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `pond_method` FOREIGN KEY (`method`) REFERENCES `pond_methods` (`method`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='INTENSIVE\r\nSEMI-INTENSIVE\r\nTRADITIONAL';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='INTENSIVE\r\nSEMI-INTENSIVE\r\nTRADITIONAL';
 
--- Dumping data for table water-monitoring-system-db.ponds: ~2 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.ponds: ~0 rows (approximately)
 DELETE FROM `ponds`;
-INSERT INTO `ponds` (`pond_id`, `device_id`, `farm_id`, `name`, `width`, `length`, `depth`, `method`) VALUES
-	(1, NULL, 1, 'Section 1', 90, 100, 4, 'SEMI-INTENSIVE'),
-	(2, NULL, 1, 'Section 2', 80, 105, 4, 'SEMI-INTENSIVE');
 
 -- Dumping structure for table water-monitoring-system-db.pond_methods
 CREATE TABLE IF NOT EXISTS `pond_methods` (
@@ -326,8 +293,8 @@ CREATE TABLE IF NOT EXISTS `users` (
 DELETE FROM `users`;
 INSERT INTO `users` (`user_id`, `firstname`, `middlename`, `lastname`, `email`, `password`) VALUES
 	(1, 'Reinhart', 'Ferrer', 'Logronio', 'reinhart.logronio@msugensan.edu.ph', '$2a$12$97pPAfoi/KcoKNeaUwYJAOqTV4fKMU6WpGBETtmswdHeiGppnlDpK'),
-	(2, 'John Rey', NULL, 'Vilbar', 'johnrey.vilbar@msugensan.edu.ph', '$2a$12$iU8JqBygh6Sw0hKrWr86nubG1WFGrxwmOZ8fG06em.G7WtaMXU3ti'),
-	(3, 'Nielmer', NULL, 'Camintoy', 'nielmer.camintoy@msugensan.edu.ph', '$2a$12$jS0v8FwKFlMT4yoh3sa9R.dv9422WKJEs900PtTvbpGvhC/PquNN6');
+	(2, 'John Rey', NULL, 'Vilbar', 'johnrey.vilbar@msugensan.edu.ph', '$2a$12$JR3OLT2XOTvWV0G5tTYUpeXkhxy5IXSHju7JXS6MKDxbGZI3Ix0rm'),
+	(3, 'Nielmer', NULL, 'Camintoy', 'nielmer.camintoy@msugensan.edu.ph', '$2a$12$/9c02UGSKL4.RB9OmZWbRewJHa0TX.s48uUXIqK6GABg9LyTFubqK');
 
 -- Dumping structure for table water-monitoring-system-db.user_notifications
 CREATE TABLE IF NOT EXISTS `user_notifications` (
@@ -375,11 +342,28 @@ CREATE TABLE `view_farmer_ponds` (
 	`farm_id` INT(11) NOT NULL,
 	`pond_id` INT(11) NOT NULL,
 	`device_id` CHAR(36) NULL COLLATE 'utf8mb4_unicode_ci',
+	`status` VARCHAR(8) NULL COLLATE 'utf8mb4_unicode_ci',
+	`last_established_connection` DATETIME NULL,
 	`name` VARCHAR(32) NOT NULL COLLATE 'utf8mb4_unicode_ci',
 	`width` DOUBLE NULL,
 	`length` DOUBLE NULL,
 	`depth` DOUBLE NULL,
 	`method` VARCHAR(50) NULL COLLATE 'utf8mb4_unicode_ci'
+) ENGINE=MyISAM;
+
+-- Dumping structure for view water-monitoring-system-db.view_farm_farmers
+-- Creating temporary table to overcome VIEW dependency errors
+CREATE TABLE `view_farm_farmers` (
+	`farm_id` INT(11) NOT NULL,
+	`farmer_id` INT(11) NOT NULL,
+	`role` CHAR(5) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+	`is_approved` TINYINT(4) NOT NULL,
+	`user_id` INT(11) NOT NULL,
+	`firstname` VARCHAR(64) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+	`middlename` VARCHAR(64) NULL COLLATE 'utf8mb4_unicode_ci',
+	`lastname` VARCHAR(64) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+	`email` VARCHAR(255) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+	`password` VARCHAR(128) NOT NULL COLLATE 'utf8mb4_unicode_ci'
 ) ENGINE=MyISAM;
 
 -- Dumping structure for view water-monitoring-system-db.view_pond_parameters
@@ -451,7 +435,11 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_farmer_farm` AS selec
 
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `view_farmer_ponds`;
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_farmer_ponds` AS select `farm_farmer`.`farmer_id` AS `user_id`,`farms`.`farm_id` AS `farm_id`,`ponds`.`pond_id` AS `pond_id`,`ponds`.`device_id` AS `device_id`,`ponds`.`name` AS `name`,`ponds`.`width` AS `width`,`ponds`.`length` AS `length`,`ponds`.`depth` AS `depth`,`ponds`.`method` AS `method` from ((`ponds` join `farms` on(`ponds`.`farm_id` = `farms`.`farm_id`)) join `farm_farmer` on(`farm_farmer`.`farm_id` = `farms`.`farm_id`));
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_farmer_ponds` AS select `farm_farmer`.`farmer_id` AS `user_id`,`farms`.`farm_id` AS `farm_id`,`ponds`.`pond_id` AS `pond_id`,`ponds`.`device_id` AS `device_id`,`devices`.`status` AS `status`,`devices`.`last_established_connection` AS `last_established_connection`,`ponds`.`name` AS `name`,`ponds`.`width` AS `width`,`ponds`.`length` AS `length`,`ponds`.`depth` AS `depth`,`ponds`.`method` AS `method` from (((`ponds` left join `devices` on(`ponds`.`device_id` = `devices`.`device_id`)) join `farms` on(`ponds`.`farm_id` = `farms`.`farm_id`)) join `farm_farmer` on(`farm_farmer`.`farm_id` = `farms`.`farm_id`));
+
+-- Removing temporary table and create final VIEW structure
+DROP TABLE IF EXISTS `view_farm_farmers`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_farm_farmers` AS select `farm_farmer`.`farm_id` AS `farm_id`,`farm_farmer`.`farmer_id` AS `farmer_id`,`farm_farmer`.`role` AS `role`,`farm_farmer`.`is_approved` AS `is_approved`,`users`.`user_id` AS `user_id`,`users`.`firstname` AS `firstname`,`users`.`middlename` AS `middlename`,`users`.`lastname` AS `lastname`,`users`.`email` AS `email`,`users`.`password` AS `password` from (`farm_farmer` join `users` on(`farm_farmer`.`farmer_id` = `users`.`user_id`));
 
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `view_pond_parameters`;
