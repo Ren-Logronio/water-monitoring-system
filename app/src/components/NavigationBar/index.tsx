@@ -76,10 +76,9 @@ export default function NavigationBar({ children }: NavigationBarProps): React.R
                 <div className="flex flex-col mx-auto md:mx-0">
                     <p className="text-[#205083] hidden md:flex  pb-2 pl-2">Parameters</p>
                     <NavigationButton disabled={navBarLoading || farm.none} shortcut="TMP" path="/parameter/temperature/datasheet" text="Temperature" />
-                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="SAL" path="/parameter/salinity/datasheet" text="Salinity" />
-                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="DOX" path="/parameter/do/datasheet" text="Dissolved Oxygen" />
                     <NavigationButton disabled={navBarLoading || farm.none} shortcut="pH" path="/parameter/ph/datasheet" text="pH Level" />
                     <NavigationButton disabled={navBarLoading || farm.none} shortcut="AMN" path="/parameter/ammonia/datasheet" text="Ammonia" />
+                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="TDS" path="/parameter/total dissolved oxygen/datasheet" text="Total Dissolved Oxygen" />
                 </div>
                 <div className="absolute bottom-[28px] left-1/2 -translate-x-1/2 hidden md:flex flex-col text-center text-sm h-fit text-[#205083]">
                     <p>Ternary Operators</p>
@@ -88,13 +87,13 @@ export default function NavigationBar({ children }: NavigationBarProps): React.R
             </div>
             <div className="flex-1 flex-grow flex flex-col h-full">
                 <div className="flex-grow min-h-[54px] bg-white shadow-sm flex flex-row items-center justify-end sm:justify-between px-[24px]">
-                    {!farm.none ? <div className={`flex-row items-center space-x-[20px] hidden sm:flex transition-all ${ path.startsWith("/farm") ? "opacity-0" : "opacity-100" }`}>
+                    {!farm.none ? <div className={`flex-row items-center space-x-[20px] hidden sm:flex transition-all ${path.startsWith("/farm") ? "opacity-0" : "opacity-100"}`}>
                         {farm.name ?
                             <h5 className={`text-blue-800 font-bold transition-all`}>
                                 {farm.name}
                             </h5> : <div className="w-[80px] h-[32px] bg-gray-500 animate-pulse"></div>}
                         <Separator orientation="vertical" className="bg-indigo-100 h-7" />
-                        <p className=" text-[12px] text-neutral-500">{ !path.startsWith("/farm") && nav }</p>
+                        <p className=" text-[12px] text-neutral-500">{!path.startsWith("/farm") && nav}</p>
                     </div>
                         : <div>No Farm</div>
                     }

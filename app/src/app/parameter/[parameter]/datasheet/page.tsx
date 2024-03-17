@@ -10,7 +10,7 @@ import { NinetyRing } from "react-svg-spinners";
 export default function Datasheet() {
     const param = useParams();
 
-    if (!["temperature", "ph", "do", "salinity", "ammonia"].includes(param.parameter as string)) {
+    if (!["temperature", "ph", "tds", "ammonia"].includes(param.parameter as string)) {
         notFound();
     }
 

@@ -24,7 +24,9 @@ export async function GET(request: NextRequest) {
     } catch (e) {
         console.log(e);
         return NextResponse.json(
-            { message: "Something went wrong while getting the readings info" },
+            {
+                message: "Something went wrong while getting the readings info"
+            },
             {
                 status: 500,
             },
