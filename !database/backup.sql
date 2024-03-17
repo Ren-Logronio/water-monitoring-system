@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `parameters` (
   CONSTRAINT `parameter_pond_id` FOREIGN KEY (`pond_id`) REFERENCES `ponds` (`pond_id`) ON DELETE CASCADE ON UPDATE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.parameters: ~10 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.parameters: ~0 rows (approximately)
 DELETE FROM `parameters`;
 
 -- Dumping structure for table water-monitoring-system-db.parameter_default_thresholds
@@ -173,7 +173,7 @@ CREATE TABLE IF NOT EXISTS `parameter_thresholds` (
   CONSTRAINT `threshold_type` FOREIGN KEY (`type`) REFERENCES `parameter_threshold_types` (`type`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.parameter_thresholds: ~18 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.parameter_thresholds: ~0 rows (approximately)
 DELETE FROM `parameter_thresholds`;
 
 -- Dumping structure for table water-monitoring-system-db.parameter_threshold_actions
@@ -221,7 +221,7 @@ CREATE TABLE IF NOT EXISTS `ponds` (
   CONSTRAINT `pond_method` FOREIGN KEY (`method`) REFERENCES `pond_methods` (`method`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='INTENSIVE\r\nSEMI-INTENSIVE\r\nTRADITIONAL';
 
--- Dumping data for table water-monitoring-system-db.ponds: ~2 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.ponds: ~0 rows (approximately)
 DELETE FROM `ponds`;
 
 -- Dumping structure for table water-monitoring-system-db.pond_methods
