@@ -2,7 +2,7 @@ import getMySQLConnection from "@/db/mysql";
 import getUserInfo from "@/utils/User";
 import { NextApiRequest } from "next";
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextApiRequest) {
   try {
@@ -48,6 +48,31 @@ export async function POST(req: NextApiRequest) {
     console.log(error);
     return NextResponse.json(
       { message: "Something went wrong while updating the pond" },
+      {
+        status: 500,
+      },
+    );
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const pond_id = request.nextUrl.searchParams.get('pond_id');
+    const connection = await getMySQLConnection();
+    const pondDeleteResult = await connection.query(
+      "DELETE FROM `ponds` WHERE `pond_id` = ?",
+      [pond_id]
+    );
+    return NextResponse.json(
+      { message: "Pond deleted successfully" },
+      {
+        status: 200,
+      },
+    );
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json(
+      { message: "Something went wrong while deleting the pond" },
       {
         status: 500,
       },

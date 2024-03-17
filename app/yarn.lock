@@ -168,15 +168,10 @@
   dependencies:
     glob "10.3.10"
 
-"@next/swc-linux-x64-gnu@14.1.1":
+"@next/swc-win32-x64-msvc@14.1.1":
   version "14.1.1"
-  resolved "https://registry.npmjs.org/@next/swc-linux-x64-gnu/-/swc-linux-x64-gnu-14.1.1.tgz"
-  integrity sha512-rv6AAdEXoezjbdfp3ouMuVqeLjE1Bin0AuE6qxE6V9g3Giz5/R3xpocHoAi7CufRR+lnkuUjRBn05SYJ83oKNQ==
-
-"@next/swc-linux-x64-musl@14.1.1":
-  version "14.1.1"
-  resolved "https://registry.npmjs.org/@next/swc-linux-x64-musl/-/swc-linux-x64-musl-14.1.1.tgz"
-  integrity sha512-YAZLGsaNeChSrpz/G7MxO3TIBLaMN8QWMr3X8bt6rCvKovwU7GqQlDu99WdvF33kI8ZahvcdbFsy4jAFzFX7og==
+  resolved "https://registry.npmjs.org/@next/swc-win32-x64-msvc/-/swc-win32-x64-msvc-14.1.1.tgz"
+  integrity sha512-S6K6EHDU5+1KrBDLko7/c1MNy/Ya73pIAmvKeFwsF4RmBFJSO7/7YeD4FnZ4iBdzE69PpQ4sOMU9ORKeNuxe8A==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -224,6 +219,19 @@
   integrity sha512-yQ8oGX2GVsEYMWGxcovu1uGWPCxV5BFfeeYxqPmuAzUyLT9qmaMXSAhXpb0WrspIeqYzdJpkh2vHModJPgRIaw==
   dependencies:
     "@babel/runtime" "^7.13.10"
+
+"@radix-ui/react-alert-dialog@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.npmjs.org/@radix-ui/react-alert-dialog/-/react-alert-dialog-1.0.5.tgz"
+  integrity sha512-OrVIOcZL0tl6xibeuGt5/+UxoT2N27KCFOPjFyfXMnchxSHZ/OW7cCX2nGlIYJrbHK/fczPcFzAwvNBB6XBNMA==
+  dependencies:
+    "@babel/runtime" "^7.13.10"
+    "@radix-ui/primitive" "1.0.1"
+    "@radix-ui/react-compose-refs" "1.0.1"
+    "@radix-ui/react-context" "1.0.1"
+    "@radix-ui/react-dialog" "1.0.5"
+    "@radix-ui/react-primitive" "1.0.3"
+    "@radix-ui/react-slot" "1.0.2"
 
 "@radix-ui/react-arrow@1.0.3":
   version "1.0.3"
@@ -287,7 +295,7 @@
   dependencies:
     "@babel/runtime" "^7.13.10"
 
-"@radix-ui/react-dialog@^1.0.5":
+"@radix-ui/react-dialog@^1.0.5", "@radix-ui/react-dialog@1.0.5":
   version "1.0.5"
   resolved "https://registry.npmjs.org/@radix-ui/react-dialog/-/react-dialog-1.0.5.tgz"
   integrity sha512-GjWJX/AUpB703eEBanuBnIWdIXg6NvJFCXcNlSZk4xdszCdhrJgBoUd1cGk67vFO+WdA2pfI/plOpqz/5GUP6Q==

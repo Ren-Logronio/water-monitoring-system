@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `device_statuses` (
   PRIMARY KEY (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.device_statuses: ~3 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.device_statuses: ~2 rows (approximately)
 DELETE FROM `device_statuses`;
 INSERT INTO `device_statuses` (`status`) VALUES
 	('ACTIVE'),
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `farms` (
   PRIMARY KEY (`farm_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.farms: ~1 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.farms: ~0 rows (approximately)
 DELETE FROM `farms`;
 INSERT INTO `farms` (`farm_id`, `name`, `address_street`, `address_city`, `address_province`, `wallpaper`) VALUES
 	(1, 'RD Farm', 'Jungle Street', 'General Santos City', 'South Cotabato', NULL);
@@ -285,7 +285,7 @@ CREATE TABLE IF NOT EXISTS `readings` (
   CONSTRAINT `reading_parameter_id` FOREIGN KEY (`parameter_id`) REFERENCES `parameters` (`parameter_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.readings: ~0 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.readings: ~1 rows (approximately)
 DELETE FROM `readings`;
 
 -- Dumping structure for table water-monitoring-system-db.reading_notifications
@@ -322,7 +322,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   KEY `password` (`password`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.users: ~0 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.users: ~3 rows (approximately)
 DELETE FROM `users`;
 INSERT INTO `users` (`user_id`, `firstname`, `middlename`, `lastname`, `email`, `password`) VALUES
 	(1, 'Reinhart', 'Ferrer', 'Logronio', 'reinhart.logronio@msugensan.edu.ph', '$2a$12$97pPAfoi/KcoKNeaUwYJAOqTV4fKMU6WpGBETtmswdHeiGppnlDpK'),

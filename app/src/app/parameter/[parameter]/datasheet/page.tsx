@@ -60,9 +60,9 @@ export default function Datasheet() {
             {
                 !loading && ponds.length <= 0 && <p>No Ponds Found</p>
             }
-            {
+            {/* {
                 !loading && !selectedPond && <p>No Pond Selected</p>
-            }
+            } */}
             {
                 !loading && selectedPond && <ParameterDatasheet pond_id={selectedPond} />
             }
