@@ -24,7 +24,7 @@ export default function Farm() {
     }, [])
 
     return (
-        <div className="p-4">
+        <div className="relative p-4">
             {
                 loading && <div>Loading...</div>
             }
@@ -32,7 +32,7 @@ export default function Farm() {
                 !loading && farm.none && <><div>No farm details</div><FarmDetails/></>
             }
             {
-                !loading && !farm.none && <>
+                !loading && !farm.none && <div>
                     <div className="flex flex-col">
                         <p className="text-blue-800 text-2xl font-semibold">{farm.name}</p>
                         <div className="flex flex-row">
@@ -42,7 +42,7 @@ export default function Farm() {
                         </div>
                     </div>
                     <PondList farm_id={farm.farm_id} />
-                </>
+                </div>
             }
         </div>
     );
