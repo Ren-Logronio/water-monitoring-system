@@ -1,7 +1,7 @@
+import StaffPage from '@/components/Staff';
+
 export default function Staff() {
     return (
-        <div>
-            <h1>Staff</h1>
-        </div>
+        <StaffPage/>
     );
 }
