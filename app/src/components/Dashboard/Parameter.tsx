@@ -59,7 +59,7 @@ export default function Parameter({ parameter, hideCallback }: { parameter: any,
 
     return (
         <div ref={containingDiv} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}
-            className={`${readings.length <= 0 ? "hidden" : "relative rounded-[var(--radius)] overflow-hidden flex min-h-[352px] bg-white shadow-md flex-col justify-center items-center"} `}>
+            className={`${readings.length <= 0 ? "hidden" : "select-none relative rounded-[var(--radius)] overflow-hidden flex min-h-[352px] bg-white shadow-md hover:shadow-lg flex-col justify-center items-center"} `}>
 
             {/* Loading spinner */}
             {loading && <NinetyRing />}
