@@ -11,7 +11,10 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
     useEffect(() => {
         setParameters([]);
         setLoading(true);
+
+        // get parameters from the server
         axios.get(`/api/parameter?pond_id=${pond_id}`).then(response => {
+            // if no parameters found
             if (!response.data.results || response.data.results.length <= 0) {
                 setParameters([]);
                 return;
@@ -22,58 +25,67 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
         }).catch(error => {
             console.error(error);
         }).finally(() => {
+            // set loading state to false
             setLoading(false);
         });
     }, [pond_id]);
 
-    // const removeSensorCallback = (trparam: any) => {
-    //     const newSensors = [...parameters.filter(parameter => parameter.parameter_id !== trparam.parameter_id), { ...trparam, hidden: true, context: "No Readings", unshowable: true }]
-    //     setParameters(newSensors);
-    // }
-
-    // useEffect(() => {
-    //     console.log("parameters:", parameters);
-    // }, [parameters])
 
     return (
         <div className="py-4 h-full">
-            {
-                loading ? <div className="flex justify-center items-center h-40 space-x-2">
-                    <NinetyRing />
-                    <p>Loading Parameters..</p>
+
+            {/* while fetching data */}
+            {loading &&
+                <div className="flex justify-center items-center h-40 space-x-2">
+                    <NinetyRing width={40} height={40} />
                 </div>
-                    : parameters.length > 0 ? <>
-                        {
-                            parameters.filter(i => i.hidden).length > 0 && <div className="flex flex-row space-x-2 mb-3">{
-                                parameters
-                                    .filter(i => i.hidden)
-                                    .map(parameter => (
-                                        <Badge key={parameter.parameter_id} className={`bg-sky-600 shadow-md ${parameter.unshowable ? "cursor-default hover:bg-sky-600" : "cursor-pointer hover:bg-sky-700"}`}>
-                                            {parameter.name} {parameter.context && `(${parameter.context})`}
-                                        </Badge>
-                                    )
-                                    )
-                            }</div>
-                        }
-                        {
-                            parameters.filter(i => !i.hidden).length > 0 && <>
-                                <div className="transition-all grid grid-cols-1 xl:grid-cols-2 gap-4">{
-                                    parameters
-                                        .filter(i => !i.hidden)
-                                        .map(parameter => <Parameter
-                                            key={parameter.parameter_id}
-                                            parameter={parameter}
-                                            hideCallback={(sensor: any) => { }} />
-                                        )
-                                }</div>
-                            </>
-                        }
-                        {
-                            parameters.filter(i => i.hidden).length === parameters.length && <p className="text-xl">Your Farm has no readings data yet</p>
-                        }
-                    </>
-                        : parameters.length <= 0 && <p>No parameters found</p>
             }
+
+            {/* if data is fetched and has data for parameters */}
+            {!loading && parameters.length > 0 &&
+                <>
+                    {parameters.filter(i => i.hidden).length > 0 &&
+                        <div className="flex flex-row space-x-2 mb-10">
+                            {parameters
+                                .filter(i => i.hidden)
+                                .map(parameter => (
+                                    <Badge key={parameter.parameter_id} variant={"default"}>
+                                        {parameter.name}
+                                        &nbsp; --
+                                    </Badge>
+                                )
+                                )}
+                        </div>
+                    }
+
+                    {/* if all parameters have data */}
+                    {parameters.filter(i => !i.hidden).length > 0 &&
+                        <>
+                            <div className="transition-all grid grid-cols-1 xl:grid-cols-2 gap-4">
+                                {parameters.filter(i => !i.hidden).map(parameter =>
+                                    // render parameter component with data
+                                    <Parameter
+                                        key={parameter.parameter_id}
+                                        parameter={parameter}
+                                        hideCallback={(sensor: any) => { }} />
+                                )
+                                }
+                            </div>
+                        </>
+                    }
+
+                    {/* if all parameters have no data */}
+                    {parameters.filter(i => i.hidden).length === parameters.length &&
+                        <p className="text-xl text-center m-auto">This pond has no data readings yet</p>
+                    }
+                </>
+            }
+
+            {/* if data is fetched and has no data for parameters */}
+            {!loading && parameters.length <= 0 &&
+                <p className="text-xl text-center mt-10">No parameters found</p>
+            }
+
         </div>
     );
 }
