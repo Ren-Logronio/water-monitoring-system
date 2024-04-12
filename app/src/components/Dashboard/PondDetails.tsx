@@ -1,7 +1,6 @@
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
@@ -12,30 +11,38 @@ import { Label } from "../ui/label";
 import { DialogClose } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { Checkbox } from "../ui/checkbox";
 import { NinetyRing } from "react-svg-spinners";
+import { Switch } from "../ui/switch";
+
+
+// default values for the form
+const PondDetailsProps = {
+    enter_device_id: false,
+    device_id: "",
+    name: "My Pond",
+    width: 0.00,
+    length: 0.00,
+    depth: 0.00,
+    method: "SEMI-INTENSIVE",
+    message: "",
+    status: "red",
+}
+
 
 export default function PondDetails({ farm_id }: { farm_id: number }) {
     const router = useRouter();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [pondForm, setPondForm] = useState({
-        enter_device_id: false,
-        device_id: "",
-        name: "My Pond",
-        width: 0.00,
-        length: 0.00,
-        depth: 0.00,
-        method: "SEMI-INTENSIVE",
-        message: "",
-        status: "red",
-    });
+
+    // initial values for the form
+    const [pondForm, setPondForm] = useState(PondDetailsProps);
 
     const handleCheckboxChange = (value: any) => {
         setPondForm({ ...pondForm, device_id: "", enter_device_id: value });
+
     };
 
     const handleInputChange = (e: any) => {
@@ -48,7 +55,7 @@ export default function PondDetails({ farm_id }: { farm_id: number }) {
 
     const handleSubmit = () => {
         if (pondForm.enter_device_id && !/^[\w\d]{8,8}-[\w\d]{4,4}-[\w\d]{4,4}-[\w\d]{4,4}-[\w\d]{12,12}$/i.test(pondForm.device_id)) {
-            setPondForm({ ...pondForm, message: "Invalid Device Id", status: "red" });
+            setPondForm({ ...pondForm, message: "* Invalid Device ID", status: "red" });
             return;
         }
         setLoading(true);
@@ -90,67 +97,98 @@ export default function PondDetails({ farm_id }: { farm_id: number }) {
         }
     }
 
+    // reset the form when the dialog is closed
+    useEffect(() => {
+        if (!dialogOpen) setPondForm(PondDetailsProps);
+    }, [dialogOpen]);
+
+
     return <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogTrigger asChild>
-            <Button variant="outline">Enter Pond Details</Button>
+            <Button variant="addBtn_orange_outline">
+                + Add new pond
+            </Button>
         </DialogTrigger>
-        <DialogContent onInteractOutside={(e) => e.preventDefault()} className="sm:max-w-[625px]">
+
+        {/* Dialog content */}
+        <DialogContent onInteractOutside={(e) => e.preventDefault()} className="sm:max-w-[625px] select-none">
             <DialogHeader>
-                <DialogTitle className="font-normal text-neutral-800">Enter Pond Details</DialogTitle>
+                <DialogTitle className="font-semibold text-xl text-neutral-800 px-2">Add New Pond</DialogTitle>
             </DialogHeader>
-            <div className="space-y-[20px]">
-                <div className="flex flex-col space-y-2">
-                    <Label>Pond Name</Label>
-                    <Input disabled={loading} onChange={handleInputChange} value={pondForm.name} name="name" />
+            <div className="px-2">
+
+                {/* Row 1 */}
+                <div className="flex flex-row justify-between space-x-5 my-5">
+                    {/* Pond name */}
+                    <div className="flex flex-col space-y-2 my-1 w-full">
+                        <Label className="text-md">Pond Name</Label>
+                        <Input disabled={loading} onChange={handleInputChange} value={pondForm.name} name="name" autoComplete="false" spellCheck="false" />
+                    </div>
+
+                    {/* Type of farming */}
+                    <div className="flex flex-col space-y-2 my-1">
+                        <Label className="text-md">Type of Farming</Label>
+                        <Select disabled={loading} name="method" onValueChange={handleSelectChange} value={pondForm.method}>
+                            <SelectTrigger className="w-[180px] border-2 border-blue-400 bg-blue-50 focus-visible:ring-blue-200/40 focus-visible:ring-4 shadow-none rounded-2xl">
+                                <SelectValue placeholder="Select..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="SEMI-INTENSIVE">Semi-Intensive</SelectItem>
+                                <SelectItem value="INTENSIVE">Intensive</SelectItem>
+                                <SelectItem value="TRADITIONAL">Traditional</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
                 </div>
-                <div className="flex flex-col space-y-[12px]">
-                    <Label>Dimensions of Pond (Optional)</Label>
-                    <div className="flex flex-row space-x-[16px]">
-                        <div className="flex flex-col space-y-2">
+
+                {/* Pond dimensions */}
+                <div className="flex flex-col space-y-[12px] my-5">
+                    <Label className="text-md">
+                        Dimensions of Pond
+                        <span className="text-sm"> (Optional)</span>
+                    </Label>
+
+                    {/* Input fields */}
+                    <div className="flex flex-row justify-between">
+                        <div className="flex flex-row items-center space-x-2">
                             <Label>Width</Label>
-                            <Input disabled={loading} onChange={handleInputChange} min={0} max={10000} maxLength={5} type="number" name="width" value={pondForm.width} step={1.01} />
+                            <Input disabled={loading} onChange={handleInputChange} min={0} max={10000} maxLength={5} type="number" name="width" value={pondForm.width} step={1.0} />
                             <p className="hidden text-sm text-red-600"></p>
                         </div>
-                        <div className="flex flex-col space-y-2">
+                        <div className="flex flex-row items-center space-x-2">
                             <Label>Length</Label>
-                            <Input disabled={loading} onChange={handleInputChange} min={0} max={10000} maxLength={5} type="number" name="length" value={pondForm.length} step={1.01} />
+                            <Input disabled={loading} onChange={handleInputChange} min={0} max={10000} maxLength={5} type="number" name="length" value={pondForm.length} step={1.0} />
                             <p className="hidden text-sm text-red-600"></p>
                         </div>
-                        <div className="flex flex-col space-y-2">
+                        <div className="flex flex-row items-center space-x-2">
                             <Label>Depth</Label>
-                            <Input disabled={loading} onChange={handleInputChange} min={0} max={10000} maxLength={5} type="number" name="depth" value={pondForm.depth} step={1.01} />
+                            <Input disabled={loading} onChange={handleInputChange} min={0} max={10000} maxLength={5} type="number" name="depth" value={pondForm.depth} step={1.0} />
                             <p className="hidden text-sm text-red-600"></p>
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col space-y-2">
-                    <Label>* Type of Farming</Label>
-                    <Select disabled={loading} name="method" onValueChange={handleSelectChange} value={pondForm.method}>
-                        <SelectTrigger className="w-[180px] bg-white">
-                            <SelectValue placeholder="Select Farming Type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="SEMI-INTENSIVE">Semi-Intensive</SelectItem>
-                            <SelectItem value="INTENSIVE">Intensive</SelectItem>
-                            <SelectItem value="TRADITIONAL">Traditional</SelectItem>
-                        </SelectContent>
-                    </Select>
+
+                {/* Device */}
+                <div className={`flex flex-row space-x-5 border-2 p-3 rounded-2xl mt-10 mb-3 ${pondForm.enter_device_id ? "border-blue-400 bg-blue-100/30" : ""}`}>
+                    <div className="flex flex-row space-x-2 items-center w-2/5">
+                        <Switch disabled={loading} checked={pondForm.enter_device_id} onCheckedChange={handleCheckboxChange} />
+                        <Label>Has device?</Label>
+                    </div>
+
+                    <Input disabled={loading || !pondForm.enter_device_id} onChange={handleInputChange} value={pondForm.device_id} name="device_id" placeholder="Device ID"
+                        className={`bg-white ${!!pondForm.message ? "border-red-300" : "border-slate-200"}`} autoComplete="false" spellCheck="false" />
                 </div>
-                <div className="flex flex-row space-x-2">
-                    <Checkbox disabled={loading} onCheckedChange={handleCheckboxChange} checked={pondForm.enter_device_id} />
-                    <Label>This pond has a device</Label>
-                </div>
-                <div className="flex flex-col space-y-2">
-                    <Label className={`${!pondForm.enter_device_id && "text-gray-400"}`}>* Device Id</Label>
-                    <Input disabled={loading || !pondForm.enter_device_id} onChange={handleInputChange} value={pondForm.device_id} name="device_id" />
-                    {!!pondForm.message && <p className={` text-xs ${pondForm.status === "red" ? 'text-red-600' : 'text-green-500'}`}>{pondForm.message}</p>}
-                </div>
+
+                {/* Error Message */}
+                {!!pondForm.message && <p className={` text-sm text-center ${pondForm.status === "red" ? 'text-red-600' : 'text-green-500'}`}>{pondForm.message}</p>}
+
             </div>
             <DialogFooter>
                 <DialogClose asChild>
-                    <Button disabled={loading} variant="outline">Cancel</Button>
+                    <Button disabled={loading} variant="ghost">Cancel</Button>
                 </DialogClose>
-                <Button disabled={loading} onClick={handleSubmit} className="bg-sky-600 text-white flex flex-row items-center space-x-2" type="submit">
+
+                <Button disabled={loading} onClick={handleSubmit} variant={"addBtn_orange_solid"} className="text-white flex flex-row items-center space-x-2" type="submit">
                     {
                         loading ? <><NinetyRing color="currentColor" /><p>Adding...</p></> : <>Add Pond</>
                     }
