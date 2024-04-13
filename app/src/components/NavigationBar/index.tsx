@@ -1,12 +1,11 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
-import { createRef, useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
-import { Button } from "../ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuGroup, DropdownMenuItem } from "../ui/dropdown-menu";
+import Image from "next/image";
+
 import NavigationButton from "./NavigationButton";
-import { NinetyRing } from "react-svg-spinners";
 import { Separator } from "../ui/separator";
 import axios from "axios";
 import { format } from "date-fns";
@@ -22,6 +21,7 @@ export default function NavigationBar({ children }: NavigationBarProps): React.R
     const [farm, setFarm] = useState({ name: "", none: false });
     const [navBarLoading, setNavBarLoading] = useState(true);
     const path = usePathname();
+    const title = ["Water", "Monitoring", "System"];
 
     useEffect(() => {
         if (pathIsSignIn(path)) {
@@ -58,20 +58,29 @@ export default function NavigationBar({ children }: NavigationBarProps): React.R
     return (
         <div className="min-h-screen min-w-full flex flex-row">
             <div className="relative p-1 py-8 md:pt-[42px] md:pb-[28px] md:px-[42px] transition-all min-w-[80px] max-w-[90px] md:max-w-[316px] flex-1 border-r border-indigo-100 bg-white space-y-[44px]">
-                <div className="flex flex-row justify-center items-center pointer-events-none select-none md:pr-8">
-                    <img src="/logo-orange-cropped.png" className="h-[32px] md:h-[87px] aspect-auto" />
-                    <div className="flex flex-col items-start justify-center">
-                        <p className="transition-all leading-7 hidden md:block text-[24px] font-semibold text-[#FF9B42]">Water</p>
-                        <p className="transition-all leading-7 hidden md:block text-[24px] font-semibold text-[#FF9B42]">Monitoring</p>
-                        <p className="transition-all leading-7 hidden md:block text-[24px] font-semibold text-[#FF9B42]">System</p>
+
+                {/* Icon and Title */}
+                <div className="flex flex-row justify-center items-center pointer-events-none select-none ">
+                    <Image src="/logo-orange-cropped.png" alt="Logo" height={32} width={87} className="aspect-auto" />
+                    <div className="flex flex-col items-start justify-center ">
+
+                        {/* Water Monitoring System title */}
+                        {title.map((text) => (
+                            <p key={text} className="transition-all leading-7 text-[24px] font-semibold text-[#FF9B42]">{text}</p>
+                        ))
+                        }
+
                     </div>
                 </div>
-                <div className="flex flex-col">
+
+                {/* Navigation Buttons */}
+                <div className="flex flex-col space-y-2">
                     <NavigationButton disabled={navBarLoading || farm.none} path="/dashboard" imagePath="/dashboard.png" text="Dashboard" />
                     <NavigationButton disabled={navBarLoading || farm.none} path="/farm" imagePath="/farm.png" text="Farm" />
                     <NavigationButton disabled={navBarLoading || farm.none} path="/staff" imagePath="/staff.png" text="Staff" />
                     <NavigationButton disabled={navBarLoading || farm.none} path="/preferences" imagePath="/preferences.png" text="Preferences" />
                 </div>
+
                 <Separator className="bg-indigo-100" />
                 <div className="flex flex-col mx-auto md:mx-0">
                     <p className="text-[#205083] hidden md:flex  pb-2 pl-2">Parameters</p>

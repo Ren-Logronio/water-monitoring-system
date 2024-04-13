@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 import PondView from "./PondView";
 import { NinetyRing } from "react-svg-spinners";
-import { Button } from "../ui/button";
 
 import axios from "axios";
 import FarmDetails from "./FarmDetails";
@@ -56,7 +55,7 @@ export default function Dashboard() {
 
         }
         return () => clearTimeout(reloadForUpdates.timeout);
-    }, [farm])
+    }, [farm, router])
 
     useEffect(() => {
         console.log("selectedPond:", selectedPond);
@@ -67,50 +66,73 @@ export default function Dashboard() {
     };
 
     return (
-        <div className="p-4 md:p-[24px]">
-            {
-                !loading ? (!farm.farm_id ? <>
-                    <div className="min-w-full flex flex-col items-center">
-                        <h1 className="text-center">No Farm Details</h1>
-                        <FarmDetails />
-                    </div>
-                </>
-                    : farm.farm_id && !farm.is_approved ?
-                        <div className="min-w-full flex flex-col items-center">
-                            <NinetyRing width={25} height={25} />
-                            <h1 className="text-center">Waiting approval...</h1>
-                            <p className="text-center">It seems that you have farm details but is unverified by the current owner of the farm</p>
-                        </div>
-                        : <>
-                            {farm.farm_id && farm.is_approved && ponds.ponds.length > 0 ?
-                                <>
-                                    <Select value={selectedPond} onValueChange={handleSelectChange}>
-                                        <SelectTrigger className="w-[180px] bg-white">
-                                            <SelectValue placeholder="Select Pond" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {
-                                                ponds?.ponds.map(
-                                                    (pond) => <SelectItem key={pond.pond_id} value={pond.pond_id}>{pond.name}</SelectItem>
-                                                )
-                                            }
-                                            {/* <SelectItem value="light">Light</SelectItem> */}
-                                        </SelectContent>
-                                    </Select>
-                                    <PondView pond_id={selectedPond} />
-                                </> : <>
-                                    <div className="min-w-full flex flex-col items-center">
-                                        <p className="text-center">It seems that you have no pond/s for <span className=" font-[500]">{farm.name}</span>,</p>
-                                        <p className="mb-8">please begin by adding the pond</p>
-                                        <PondDetails farm_id={farm.farm_id} />
-                                    </div>
-                                </>
-                            }
-                        </>) : (<div className="flex flex-row justify-center items-center space-x-2">
-                            <NinetyRing width={25} height={25} />
-                            <p>Loading Dashboard...</p>
-                        </div>)
+        <div className="p-4 md:p-[24px] h-screen">
+
+            {/* loading spinner */}
+            {loading &&
+                <div className="flex flex-row justify-center items-center space-x-2 mt-10">
+                    <NinetyRing width={40} height={40} />
+
+                </div>
             }
+
+            {/* No Farm Details */}
+            {!loading && !farm.farm_id &&
+                <div className="min-w-full flex flex-col items-center">
+                    <h1 className="text-center">No Farm Details</h1>
+                    <FarmDetails />
+                </div>
+            }
+
+            {/* Farm Details but not approved */}
+            {!loading && farm.farm_id && !farm.is_approved &&
+                <div className="min-w-full flex flex-col items-center">
+                    <NinetyRing width={25} height={25} />
+                    <h1 className="text-center">Waiting approval...</h1>
+                    <p className="text-center">It seems that you have farm details but is unverified by the current owner of the farm</p>
+                </div>
+            }
+
+            {/* Farm Details and approved */}
+            {!loading && farm.farm_id && farm.is_approved && ponds.ponds.length > 0 &&
+                <>
+                    {/* Dropdown menu for pond names */}
+                    <div className="flex flex-row align-middle items-center space-x-4">
+                        <span className="font-bold text-[#205083]">Pond: </span>
+
+                        <Select value={selectedPond} onValueChange={handleSelectChange}>
+                            <SelectTrigger className="font-bold text-[#205083] w-[150px] shadow-none border-0 border-b-2 border-orange-300 rounded-none px-1">
+                                <SelectValue placeholder="Select Pond" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {
+                                    ponds?.ponds.map((pond) =>
+                                        <SelectItem key={pond.pond_id} value={pond.pond_id}>
+                                            {pond.name}
+                                        </SelectItem>
+                                    )
+                                }
+
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                    {/* Pond details */}
+                    <PondView pond_id={selectedPond} />
+                </>
+            }
+
+            {/* Farm Details and approved but no ponds */}
+            {!loading && farm.farm_id && farm.is_approved && ponds.ponds.length == 0 &&
+                <div className="min-w-full mt-[30vh] flex flex-col items-center select-none justify-center">
+                    <p className="text-center">It seems that you have no pond/s for&nbsp;
+                        <span className="font-semibold">{farm.name}</span>,
+                    </p>
+                    <p className="mb-8">please begin by adding the pond</p>
+                    <PondDetails farm_id={farm.farm_id} />
+                </div>
+            }
+
         </div>
     )
 }
