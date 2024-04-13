@@ -8,7 +8,8 @@ import { NinetyRing } from "react-svg-spinners";
 import axios from "axios";
 import FarmDetails from "./FarmDetails";
 import { useRouter } from "next/navigation";
-import PondDetails from "./PondDetails";
+
+import AddPondDialog from "../ui/dialog/AddPond.dialog";
 
 export default function Dashboard() {
     const router = useRouter();
@@ -129,7 +130,9 @@ export default function Dashboard() {
                         <span className="font-semibold">{farm.name}</span>,
                     </p>
                     <p className="mb-8">please begin by adding the pond</p>
-                    <PondDetails farm_id={farm.farm_id} />
+
+                    {/* Dialog for adding ponds */}
+                    <AddPondDialog farm_id={farm.farm_id} page="dashboard" />
                 </div>
             }
 
