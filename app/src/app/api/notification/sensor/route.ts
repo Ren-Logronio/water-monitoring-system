@@ -2,15 +2,15 @@ import getMySQLConnection from "@/db/mysql";
 import getUserInfo from "@/utils/User";
 import { NextApiRequest } from "next";
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 
-export async function GET(request: NextApiRequest) {
+export async function GET(request: NextRequest) {
     try {
         const cookieToken = cookies().get('token')?.value;
         const connection = await getMySQLConnection();
         const { user_id } = await getUserInfo(cookieToken);
-        const [ results, rows ]: [ results: any[], rows: any[] ] = await connection.query(
+        const [results, rows]: [results: any[], rows: any[]] = await connection.query(
             "SELECT * FROM `user_notifications` WHERE `user_id` = 1 ORDER BY `issued_at` DESC",
             [user_id]
         );
@@ -28,5 +28,5 @@ export async function GET(request: NextApiRequest) {
                 status: 500,
             },
         );
-    } 
+    }
 }

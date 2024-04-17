@@ -27,10 +27,10 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function POST(request: NextApiRequest) {
+export async function POST(request: NextRequest) {
   try {
     const connection = await getMySQLConnection();
-    const { sensor_id, value } = await new Response(request.body).json();
+    const { sensor_id, value } = await request.json();
     const result = {};
     return NextResponse.json(
       { result },
@@ -49,10 +49,10 @@ export async function POST(request: NextApiRequest) {
   }
 }
 
-export async function PUT(request: NextApiRequest) {
+export async function PUT(request: NextRequest) {
   try {
     const connection = await getMySQLConnection();
-    const { reading_id, value, recorded_at } = await new Response(request.body).json();
+    const { reading_id, value, recorded_at } = await request.json();
     const [result, fields] = await connection.query(
       "UPDATE `readings` SET `value` = ?, `recorded_at` = ? WHERE `reading_id` = ?",
       [value, recorded_at, reading_id]
@@ -74,10 +74,10 @@ export async function PUT(request: NextApiRequest) {
   }
 }
 
-export async function PATCH(request: NextApiRequest) {
+export async function PATCH(request: NextRequest) {
   try {
     const connection = await getMySQLConnection();
-    const { sensor_id, value } = await new Response(request.body).json();
+    const { sensor_id, value } = await request.json();
     const result = {};
     return NextResponse.json(
       { result },
