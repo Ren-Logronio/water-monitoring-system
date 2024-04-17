@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 
-export default function () {
+export default function ParameterPage() {
     // get parameter from the url
     const params = useParams();
 
