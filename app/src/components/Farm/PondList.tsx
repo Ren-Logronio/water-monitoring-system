@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
-import AddPond from "./AddPond";
-import DeletePond from "./DeletePond";
+import AddPond from "AddPond";
+import DeletePond from "DeletePond";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
 export default function PondList({ farm_id }: { farm_id: number }) {
@@ -13,7 +13,7 @@ export default function PondList({ farm_id }: { farm_id: number }) {
         axios.get(`/api/farm/pond?farm_id=${farm_id}`).then(response => {
             if (!response.data.results && response.data.results.length <= 0) {
                 return;
-            } 
+            }
             setPonds(response.data.results);
         }).catch(error => {
             console.error(error);
@@ -39,7 +39,7 @@ export default function PondList({ farm_id }: { farm_id: number }) {
                                 <Tooltip>
                                     <TooltipTrigger asChild>
                                         <div className="flex flex-row cursor-pointer items-center space-x-2">
-                                            <div className={` size-2 rounded-full  ${ pond.device_id && pond.status === "ACTIVE" && "bg-green-600" } ${ pond.device_id && pond.status === "IDLE" && "bg-orange-500" } ${ (!pond.device_id || pond.status === "INACTIVE") && "bg-slate-500" }`}></div>
+                                            <div className={` size-2 rounded-full  ${pond.device_id && pond.status === "ACTIVE" && "bg-green-600"} ${pond.device_id && pond.status === "IDLE" && "bg-orange-500"} ${(!pond.device_id || pond.status === "INACTIVE") && "bg-slate-500"}`}></div>
                                             <p className=" font-medium">{pond.name}</p>
                                         </div>
                                     </TooltipTrigger>
