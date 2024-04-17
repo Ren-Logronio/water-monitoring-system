@@ -5,7 +5,7 @@ import { NextApiRequest } from "next";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextApiRequest) {
+export async function GET(request: NextRequest) {
     try {
         const cookieToken = cookies().get('token')?.value;
         const connection = await getMySQLConnection();
@@ -31,12 +31,12 @@ export async function GET(request: NextApiRequest) {
     }
 }
 
-export async function POST(request: NextApiRequest) {
+export async function POST(request: NextRequest) {
     try {
         const cookieToken = cookies().get('token')?.value;
         const connection = await getMySQLConnection();
         const { user_id } = await getUserInfo(cookieToken);
-        const { name, address_street, address_city, address_province } = await new Response(request.body).json();
+        const { name, address_street, address_city, address_province } = await request.json();
         const [results, rows]: [results: any, rows: any[]] = await connection.query(
             "INSERT INTO `farms` (`name`, `address_street`, `address_city`, `address_province`) VALUES (?, ?, ?, ?)",
             [name, address_street, address_city, address_province]

@@ -1,19 +1,19 @@
 import bcrypt from "bcrypt";
 import { NextApiRequest } from "next";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import getMySQLConnection from "@/db/mysql";
 import { sign } from '@/utils/Jwt'
 // import jwt from "jsonwebtoken";
 
-export async function POST(request: NextApiRequest) {
+export async function POST(request: NextRequest) {
   const connection = await getMySQLConnection();
-  const { email, password } = await new Response(request.body).json();
+  const { email, password } = await request.json();
 
   const [results, rows]: [any[], any[]] = await connection.query(
     "SELECT `user_id`, `email`, `password`, `firstname`, `lastname` FROM users WHERE email = ? LIMIT 1",
     [email],
   );
-  
+
   if (
     !results ||
     !results.length ||
@@ -34,7 +34,7 @@ export async function POST(request: NextApiRequest) {
   const passwordComparison = bcrypt.compareSync(password, results[0].password);
   if (passwordComparison) {
     const { user_id, email: user_email } = results[0];
-    const token = await sign(JSON.stringify({ user_id, user_email })); 
+    const token = await sign(JSON.stringify({ user_id, user_email }));
     return NextResponse.json({
       success: true,
       token,

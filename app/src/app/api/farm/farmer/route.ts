@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
             [farm_id]
         );
         const filterPassword = results.map((i: any) => {
-            const {password, ...rest} = i;
+            const { password, ...rest } = i;
             return rest;
         });
         const withMeDetermined = filterPassword.map((i: any) => { return i.farmer_id === user_id ? { ...i, me: true } : i });
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
     }
 }
 
-export async function PATCH (request: NextRequest) {
+export async function PATCH(request: NextRequest) {
     try {
         const connection = await getMySQLConnection();
         const farmer_id = request.nextUrl.searchParams.get("farmer_id");
@@ -66,12 +66,12 @@ export async function PATCH (request: NextRequest) {
     }
 }
 
-export async function POST(request: NextApiRequest) {
+export async function POST(request: NextRequest) {
     try {
         const cookieToken = cookies().get('token')?.value;
         const connection = await getMySQLConnection();
         const { user_id } = await getUserInfo(cookieToken);
-        const { farm, isOwner } = await new Response(request.body).json();
+        const { farm, isOwner } = await request.json();
         const role = isOwner ? "OWNER" : "STAFF";
         const [results, rows]: [results: any, rows: any[]] = await connection.query(
             "INSERT INTO `farm_farmer` (`farmer_id`, `farm_id`, `role`) VALUES (?, ?, ?)",
