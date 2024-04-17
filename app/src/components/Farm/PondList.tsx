@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
-import AddPond from "AddPond";
-import DeletePond from "DeletePond";
+import AddPondDialog from "../ui/dialog/AddPond.dialog";
+import DeletePond from "./DeletePond";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
 export default function PondList({ farm_id }: { farm_id: number }) {
@@ -64,7 +64,7 @@ export default function PondList({ farm_id }: { farm_id: number }) {
                         <p className="text-sm">{pond.method.toLowerCase()} pond</p>
                     </div>
                 })}
-                <AddPond farm_id={farm_id} />
+                <AddPondDialog farm_id={farm_id} page="farm" />
             </div>
         }
     </div>)

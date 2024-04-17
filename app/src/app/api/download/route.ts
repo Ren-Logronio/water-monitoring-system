@@ -39,7 +39,13 @@ export async function GET(request: NextRequest) {
             headers['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
             headers['Content-Disposition'] = 'attachment;filename=example.xlsx';
 
-            return NextResponse.
+            return NextResponse.json(
+                { results, fields, format },
+                {
+                    status: 200,
+                    headers
+                },
+            );
         }
 
         throw new Error("Invalid format");
