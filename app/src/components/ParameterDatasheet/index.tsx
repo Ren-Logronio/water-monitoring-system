@@ -18,7 +18,7 @@ import Download from "./Download";
 import Actions from "./Actions";
 import { useParameterDatasheetStore } from "@/store/parameterDatasheetStore";
 
-const autoSizeStrategy = {
+const autoSizeStrategy: any = {
     type: 'fitGridWidth',
     defaultMinWidth: 100,
     columnLimits: [
@@ -40,7 +40,7 @@ export default function ParameterDatasheet({ pond_id }: { pond_id?: string }) {
     const { rowData, setRowData, purgeRowData } = useParameterDatasheetStore();
     const inputFile = useRef<HTMLInputElement | null>(null);
     const [loading, setLoading] = useState(true);
-    const [columnDefs, setColumnDefs] = useState([
+    const [columnDefs, setColumnDefs] = useState<any>([
         { field: "idx", headerName: "#", lockPosition: "left", resizable: false },
         { field: "reading_id", headerName: "reading_id", lockPosition: "left", resizable: false, hide: true },
         { field: "edit_recorded_at", headerName: "edit_recorded_at", lockPosition: "left", resizable: false, hide: true },
