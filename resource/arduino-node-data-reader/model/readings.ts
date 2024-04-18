@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import {connection} from "../lib/mongodb"
 
 export const ReadingSchema = new Schema({
     deviceId: {
@@ -22,4 +23,4 @@ export const ReadingSchema = new Schema({
     }
 });
 
-export const readingModel = mongoose.model("sensor-logs", ReadingSchema);
+export const readingModel = connection.model("sensor-logs", ReadingSchema);

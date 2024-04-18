@@ -3,8 +3,9 @@ import { ReadingSchema, readingModel } from "./model/readings";
 import fs from "fs";
 
 function readArduino() {
-  SerialPort.list().then((ports) => {
-    const arduinoPortInfo = ports.find((port) => port.manufacturer?.toLowerCase().startsWith("arduino"));
+  SerialPort.list().then((ports: any) => {
+    	ports.forEach((port: any) => {console.log("COM Port:", port)});
+	const arduinoPortInfo = ports.find((port: any) => port.manufacturer?.toLowerCase().startsWith("arduino"));
     if (arduinoPortInfo) {
       const arduinoPort = new SerialPort({ path: arduinoPortInfo.path, baudRate: 9600 });
       const parser = arduinoPort.pipe(new ReadlineParser({ delimiter: '\r\n' }));
@@ -27,6 +28,7 @@ function readArduino() {
           ammonia: parsedData.ammonia,
         });
         newReading.save().then((doc) => {
+          console.log("saved to db");
         }).catch((error) => {
           console.error(error);
         });
