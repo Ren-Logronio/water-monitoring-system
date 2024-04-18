@@ -7,8 +7,9 @@ import axios from "axios";
 mongoose.connect("mongodb://localhost:27017/water-monitoring-system-db");
 
 function readArduino() {
-  SerialPort.list().then((ports) => {
-    const arduinoPortInfo = ports.find((port) => port.manufacturer?.toLowerCase().startsWith("arduino"));
+  SerialPort.list().then((ports: any) => {
+    ports.forEach((port: any) => { console.log("COM Port:", port) });
+    const arduinoPortInfo = ports.find((port: any) => port.manufacturer?.toLowerCase().startsWith("arduino"));
     if (arduinoPortInfo) {
       const arduinoPort = new SerialPort({ path: arduinoPortInfo.path, baudRate: 9600 });
       const parser = arduinoPort.pipe(new ReadlineParser({ delimiter: '\r\n' }));
@@ -32,6 +33,7 @@ function readArduino() {
           ammonia: parsedData.ammonia,
         });
         newReading.save().then((doc: any) => {
+          console.log("saved to db");
         }).catch((error) => {
           console.error(error);
         });

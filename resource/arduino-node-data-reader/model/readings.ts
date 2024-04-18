@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import { connection } from "../lib/mongodb"
 
 export const ReadingSchema = new Schema({
     deviceId: {
