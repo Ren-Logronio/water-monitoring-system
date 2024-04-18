@@ -1,5 +1,6 @@
 import { ReadlineParser, SerialPort } from "serialport";
 import { ReadingSchema, readingModel } from "./model/readings";
+import { connection } from "./lib/mongodb";
 import fs from "fs";
 
 function readArduino() {
