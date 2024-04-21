@@ -25,16 +25,10 @@ function readArduino() {
           }
         });
         // create new readings document
-        const newReading = new ReadingModel({
-          deviceId: parsedData.deviceId,
-          temperature: parsedData.temperature,
-          tds: parsedData.tds,
-          ph: parsedData.ph,
-          ammonia: parsedData.ammonia,
-        });
+        const newReading = new ReadingModel(parsedData);
         newReading.save().then((doc: any) => {
           console.log("saved to db");
-        }).catch((error) => {
+        }).catch((error: any) => {
           console.error(error);
         });
       });
@@ -59,13 +53,7 @@ function readArduino() {
             }
           });
           // create new readings document
-          const newReading = new ReadingModel({
-            deviceId: parsedData.deviceId,
-            temperature: parsedData.temperature,
-            tds: parsedData.tds,
-            ph: parsedData.ph,
-            ammonia: parsedData.ammonia,
-          });
+          const newReading = new ReadingModel(parsedData);
           newReading.save().then((doc: any) => {
           }).catch((error) => {
             console.error(error);
@@ -79,10 +67,10 @@ function readArduino() {
       }
     }
   });
-}
+};
 
 function typeOfEachObjectKeys(obj: any) {
   return Object.keys(obj).map((key) => `${key}: ${typeof obj[key]}`);
-}
+};
 
 readArduino();

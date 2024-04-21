@@ -10,6 +10,7 @@
   "author": "reinhart.logronio",
   "license": "MIT",
   "dependencies": {
+    "@types/serialport": "^8.0.5",
     "axios": "^1.6.8",
     "dotenv": "^16.4.5",
     "fs": "^0.0.1-security",
