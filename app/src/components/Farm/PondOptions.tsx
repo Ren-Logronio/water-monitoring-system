@@ -32,7 +32,7 @@ export default function PondOptions({ pond_id, deleteCallback }: { pond_id: numb
                 </svg>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-                <DropdownMenuItem className="cursor-pointer">Edit</DropdownMenuItem>
+                <DropdownMenuItem>Edit</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setOpen(true)}>Delete</DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
