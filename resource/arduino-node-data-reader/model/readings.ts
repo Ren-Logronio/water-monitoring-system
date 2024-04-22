@@ -22,4 +22,4 @@ export const ReadingSchema = new Schema({
     }
 });
 
-export const readingModel = mongoose.model("sensor-logs", ReadingSchema);
+export const ReadingModel = mongoose.model("sensor-logs", ReadingSchema);
