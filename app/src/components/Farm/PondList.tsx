@@ -1,8 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import AddPondDialog from "../ui/dialog/AddPond.dialog";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { NinetyRing } from "react-svg-spinners";
 import { Badge } from "../ui/badge";
 import PondOptions from "./PondOptions";

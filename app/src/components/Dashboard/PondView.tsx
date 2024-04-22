@@ -32,7 +32,7 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
 
 
     return (
-        <div className="py-4 h-full mt-5">
+        <div className="py-4 h-full mt-1">
 
             {/* while fetching data */}
             {loading &&
@@ -45,7 +45,7 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
             {!loading && parameters.length > 0 &&
                 <>
                     {parameters.filter(i => i.hidden).length > 0 &&
-                        <div className="flex flex-row space-x-2 mb-10">
+                        <div className="flex flex-row space-x-2 justify-center mb-10">
                             {parameters
                                 .filter(i => i.hidden)
                                 .map(parameter => (

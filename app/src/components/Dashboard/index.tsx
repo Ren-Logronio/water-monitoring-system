@@ -66,7 +66,7 @@ export default function Dashboard() {
     };
 
     return (
-        <div className="p-4 md:p-[24px] h-screen">
+        <div className="p-4 md:p-[24px] h-fit">
 
             {/* loading spinner */}
             {loading &&
@@ -96,29 +96,60 @@ export default function Dashboard() {
             {/* Farm Details and approved */}
             {!loading && farm.farm_id && farm.is_approved && ponds.ponds.length > 0 &&
                 <>
-                    {/* Dropdown menu for pond names */}
-                    <div className="flex flex-row align-middle items-center space-x-4">
+                    <div className="flex flex-col xl:flex-row xl:columns-2 xl:space-x-5 h-auto select-none">
+
+                        <div className="flex flex-col xl:w-[40%] p-5">
+                            <div className="w-full text-xl font-semibold mb-10">
+                                Test title
+                            </div>
+
+                            {/* quick widgets */}
+                            <div className="grid grid-cols-2 w-full gap-3 gap-y-5">
+                                {/* # of ponds */}
+                                <div className="bg-white border-2 rounded-2xl p-5 flex flex-col">
+                                    <span>Ponds</span>
+
+                                </div>
+
+                                {/* staff */}
+                                <div className="bg-white border-2 rounded-2xl p-5 flex flex-col">
+                                    <span>Staff</span>
+                                </div>
+
+                                {/* # of ponds */}
+                                <div className="bg-white border-2 rounded-2xl p-5 flex flex-col">
+                                    <span>Ponds</span>
+                                </div>
+                            </div>
+                        </div>
 
 
-                        <Select value={selectedPond} onValueChange={handleSelectChange}>
-                            <SelectTrigger className="font-bold text-[#205083] w-[200px] shadow-none border-2 rounded-full border-orange-300 bg-orange-100/40 px-4">
-                                <SelectValue placeholder="Select Pond" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {
-                                    ponds?.ponds.map((pond) =>
-                                        <SelectItem key={pond.pond_id} value={pond.pond_id}>
-                                            {pond.name}
-                                        </SelectItem>
-                                    )
-                                }
+                        {/* pond details */}
+                        <div className=" bg-white w-full p-6 h-screen rounded-2xl border-2">
+                            {/* Dropdown menu for pond names */}
+                            <div className="flex flex-row space-x-5 justify-center items-center">
+                                <div className="text-xl font-regular">
+                                    Select Pond:
+                                </div>
 
-                            </SelectContent>
-                        </Select>
+                                <Select value={selectedPond} onValueChange={handleSelectChange}>
+                                    <SelectTrigger className="font-bold text-[#205083] w-[200px] shadow-none border-2 rounded-full border-orange-300 bg-orange-100/40 px-4">
+                                        <SelectValue placeholder="Select Pond" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {ponds?.ponds.map((pond) =>
+                                            <SelectItem key={pond.pond_id} value={pond.pond_id}>
+                                                {pond.name}
+                                            </SelectItem>)
+                                        }
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            {/* Pond details */}
+                            <PondView pond_id={selectedPond} />
+                        </div>
                     </div>
-
-                    {/* Pond details */}
-                    <PondView pond_id={selectedPond} />
                 </>
             }
 
