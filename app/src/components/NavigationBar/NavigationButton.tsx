@@ -3,7 +3,6 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "../ui/button";
-import { useNavbarSelected } from "@/store/navbarSelected";
 import { set } from "date-fns";
 
 export default function NavigationButton({ disabled, path, imagePath, text, shortcut, className }: Readonly<{ disabled: boolean, path: string, imagePath?: string, text?: string, shortcut?: string, className?: string }>) {
