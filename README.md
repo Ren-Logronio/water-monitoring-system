@@ -16,5 +16,5 @@
 
 ###### Future Paths
 
-* Integration with Prisma
-* Utilization of RPC calls for arduino and the backend
+* ~~Integration with Prisma~~ (Scrapped)
+* ~~Utilization of RPC calls for arduino and the backend~~ (Scrapped)
