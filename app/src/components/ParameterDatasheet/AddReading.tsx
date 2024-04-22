@@ -13,7 +13,7 @@ export default function AddReading({ pond_id }: { pond_id?: string }) {
     const router = useRouter();
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [readingForm, setReadingForm] = useState({ reading: 0.00, date: format(new Date(), "MMM dd, yyyy"), time: format(new Date(), "h:mm a") });
+    const [readingForm, setReadingForm] = useState({ reading: 0.00, date: format(new Date(), "yyyy-MM-dd"), time: format(new Date(), "HH:mm") });
     const [dateTime, setDateTime] = useState<string>("");
 
     useEffect(() => {
