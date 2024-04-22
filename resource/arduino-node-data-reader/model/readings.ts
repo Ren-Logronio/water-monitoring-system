@@ -16,7 +16,7 @@ export const ReadingSchema = new Schema({
     AMN: {
         type: Number,
     },
-    timestamp: {
+    recordedAt: {
         type: Date,
         default: Date.now
     }
