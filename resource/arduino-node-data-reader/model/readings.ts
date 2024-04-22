@@ -18,7 +18,7 @@ export const ReadingSchema = new Schema({
     },
     recordedAt: {
         type: Date,
-        default: Date.now
+        default: () => Date.now()
     }
 });
 
