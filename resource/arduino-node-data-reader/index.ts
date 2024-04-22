@@ -2,8 +2,9 @@ import { ReadlineParser, SerialPort } from "serialport";
 import { ReadingSchema, ReadingModel } from "./model/readings";
 import fs from "fs";
 import mongoose from "mongoose";
+import axios from "axios";
 
-mongoose.connect("mongodb+srv://Ren-logronio:QJcy2TU1Udi9z9oN@cluster0.46h8obk.mongodb.net/water-monitoring-system-db");
+mongoose.connect("mongodb://localhost:27017/water-monitoring-system-db");
 
 function readArduino() {
   SerialPort.list().then((ports: any) => {
@@ -26,8 +27,7 @@ function readArduino() {
         // create new readings document
         const newReading = new ReadingModel(parsedData);
         newReading.save().then((doc: any) => {
-          console.log("saved to db");
-        }).catch((error: any) => {
+        }).catch((error) => {
           console.error(error);
         });
       });
@@ -37,7 +37,7 @@ function readArduino() {
     } else {
       console.error("Arduino not found");
       if (ports.length > 0) {
-        console.log("Opting for the first found port...");
+        console.log("opting for the first found port");
         const arduinoPort = new SerialPort({ path: ports[0].path, baudRate: 9600 });
         const parser = arduinoPort.pipe(new ReadlineParser({ delimiter: '\r\n' }));
         parser.on("data", (data: any) => {
@@ -62,7 +62,7 @@ function readArduino() {
           console.error(error);
         });
       } else {
-        console.error("No ports found");
+        console.error("No other ports found...")
       }
     }
   });
