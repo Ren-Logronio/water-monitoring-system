@@ -1,5 +1,6 @@
 import { ReadlineParser, SerialPort } from "serialport";
 import { ReadingSchema, ReadingModel } from "./model/readings";
+import { connection } from "./lib/mongodb";
 import fs from "fs";
 import mongoose from "mongoose";
 import axios from "axios";
@@ -18,17 +19,20 @@ function readArduino() {
         console.log(typeOfEachObjectKeys(parsedData));
         console.log(data);
         // axios.post("localhost:3000/api/device/reading", parsedData);
+        // axios.post("localhost:3000/api/device/reading", parsedData);
         // write to sensor.log file located at this directory
         fs.appendFile("sensor.log", `${data},\n`, (error: any) => {
-          if (error) {
+          fs.appendFile("sensor.log", `${data},\n`, (error: any) => {
+            if (error) {
+              console.error(error);
+            }
+          });
+          // create new readings document
+          const newReading = new ReadingModel(parsedData);
+          newReading.save().then((doc: any) => {
+          }).catch((error) => {
             console.error(error);
-          }
-        });
-        // create new readings document
-        const newReading = new ReadingModel(parsedData);
-        newReading.save().then((doc: any) => {
-        }).catch((error) => {
-          console.error(error);
+          });
         });
       });
       parser.on("error", (error: any) => {
@@ -44,6 +48,7 @@ function readArduino() {
           const parsedData = JSON.parse(data);
           console.log(typeOfEachObjectKeys(parsedData));
           console.log(data);
+          // axios.post("localhost:3000/api/device/reading", parsedData);
           // write to sensor.log file located at this directory
           fs.appendFile("sensor.log", `${data},\n`, (error: any) => {
             if (error) {
@@ -53,8 +58,7 @@ function readArduino() {
           // create new readings document
           const newReading = new ReadingModel(parsedData);
           newReading.save().then((doc: any) => {
-            console.log("saved to db");
-          }).catch((error: any) => {
+          }).catch((error) => {
             console.error(error);
           });
         });

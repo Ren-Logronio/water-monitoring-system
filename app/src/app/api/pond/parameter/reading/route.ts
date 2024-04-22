@@ -8,8 +8,8 @@ export async function GET(request: NextRequest) {
         const parameter = request.nextUrl.searchParams.get('parameter');
         const connection = await getMySQLConnection();
         const [res, row] = await connection.query(
-            "SELECT * FROM `parameter_list` WHERE `name` = ?",
-            [parameter]
+            "SELECT * FROM `parameter_list` WHERE `name` = ? OR `parameter` = ?",
+            [parameter, parameter]
         );
         const [results, rows]: [results: any[], rows: any[]] = await connection.query(
             "SELECT * FROM `view_pond_parameter_readings` WHERE `pond_id` = ? AND `parameter` = ?",
@@ -39,8 +39,8 @@ export async function POST(request: NextRequest) {
         const { pond_id, parameter, value, date } = await request.json();
         const connection = await getMySQLConnection();
         const [results, rows]: [results: any[], rows: any[]] = await connection.query(
-            "INSERT INTO `readings` (`parameter_id`, `value`, `recorded_at`, `isRecordedBySensor`) VALUES ((SELECT `parameter_id` FROM `view_pond_parameters` WHERE `pond_id` = ? AND `name` = ? LIMIT 1), ?, ?, 0)",
-            [pond_id, parameter, value, date]
+            "INSERT INTO `readings` (`parameter_id`, `value`, `recorded_at`, `isRecordedBySensor`) VALUES ((SELECT `parameter_id` FROM `view_pond_parameters` WHERE `pond_id` = ? AND `name` = ? OR `parameter` = ? LIMIT 1), ?, ?, 0)",
+            [pond_id, parameter, parameter, value, date]
         );
         return NextResponse.json(
             { results },

@@ -2,8 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import AddPondDialog from "../ui/dialog/AddPond.dialog";
-import DeletePond from "./DeletePond";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { NinetyRing } from "react-svg-spinners";
 
 export default function PondList({ farm_id }: { farm_id: number }) {
     const [ponds, setPonds] = useState<any[]>([])
@@ -15,6 +15,7 @@ export default function PondList({ farm_id }: { farm_id: number }) {
                 return;
             }
             setPonds(response.data.results);
+            console.log(response.data.results);
         }).catch(error => {
             console.error(error);
         }).finally(() => {
@@ -26,14 +27,22 @@ export default function PondList({ farm_id }: { farm_id: number }) {
         setPonds(ponds.filter(pond => pond.pond_id !== pond_id));
     };
 
-    return (<div className="py-4">
-        {
-            loading && <div>Loading...</div>
-        }
-        {
-            !loading && <div className=" gap-2 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+
+    return (
+        <div className="py-4">
+
+            {/* loading spinner */}
+            {loading &&
+                <div className="flex flex-row justify-center items-center space-x-2 mt-10">
+                    <NinetyRing width={40} height={40} />
+                </div>
+            }
+
+
+            {!loading && <div className=" gap-2 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
+
                 {ponds.map((pond, idx) => {
-                    return <div key={idx} className="flex flex-col border border-indigo-100 rounded-md p-2 min-h-[100px]">
+                    return <div key={idx} className="flex flex-col border-2 rounded-xl p-4 h-fit select-none align-middle hover:border-orange-300 transition-all ease-in-out duration-100">
                         <div className="flex flex-row justify-between items-center">
                             <TooltipProvider>
                                 <Tooltip>
@@ -48,7 +57,6 @@ export default function PondList({ farm_id }: { farm_id: number }) {
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
-                            <DeletePond pond_id={pond.pond_id} deleteCallback={handleRemovePond} />
                             {/* <DropdownMenu>
                                 <DropdownMenuTrigger>
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4">
@@ -61,13 +69,12 @@ export default function PondList({ farm_id }: { farm_id: number }) {
                                 </DropdownMenuContent>
                             </DropdownMenu> */}
                         </div>
-                        <p className="text-sm">{pond.method.toLowerCase()} pond</p>
                     </div>
                 })}
                 <AddPondDialog farm_id={farm_id} page="farm" />
             </div>
-        }
-    </div>)
+            }
+        </div>)
 }
 /*
 {
