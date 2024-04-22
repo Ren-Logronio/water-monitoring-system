@@ -32,7 +32,7 @@ const PondDetailsProps = {
 }
 
 
-export default function AddPondDialog({ farm_id, page }: { farm_id: number, page: string }) {
+export default function EditPondDialog({ farm_id, page }: { farm_id: number, page: string }) {
     const router = useRouter();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -116,9 +116,12 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
 
             {/* Farm page */}
             {page === "farm" &&
-                <div className="h-full min-h-20 flex flex-col transition-all justify-center items-center border-2 border-dashed border-orange-300 rounded-xl p-2 cursor-pointer hover:bg-orange-300 group">
-                    <div className="flex flex-row items-center">
-                        <p className="text-center py-2 text-sm xl:text-lg font-semibold transition-all ease-in-out duration-200">+ Add New Pond</p>
+                <div className="min-h-[100px] flex flex-col transition-all justify-center items-center border-2 hover:bg-orange-300 border-orange-300 bg-orange-300 rounded-xl p-2 cursor-pointer hover:shadow-lg">
+                    <div className="flex flex-row items-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4">
+                            <path d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z" />
+                        </svg>
+                        <p className="text-center text-sm font-semibold">Add New Pond</p>
                     </div>
                 </div>
             }

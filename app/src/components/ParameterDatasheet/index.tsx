@@ -73,17 +73,22 @@ export default function ParameterDatasheet({ pond_id }: { pond_id?: string }) {
 
     return (
         <>
-            {
-                loading && <div className="flex flex-row justify-center items-center space-x-2">
+            {/* while loading */}
+            {loading &&
+                <div className="flex flex-row justify-center items-center space-x-2">
                     <NinetyRing />
                     <p>Loading {params.parameter} readings..</p>
                 </div>
             }
+
             {
                 !loading && <>
                     <div className="flex flex-row items-center justify-between">
                         <div className="flex flex-row items-center space-x-2">
+
                             <AddReading pond_id={pond_id} />
+
+
                             <Button variant="outline" onClick={handleFileImportPress} className="flex flex-row space-x-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
                                     <path d="M9.25 13.25a.75.75 0 0 0 1.5 0V4.636l2.955 3.129a.75.75 0 0 0 1.09-1.03l-4.25-4.5a.75.75 0 0 0-1.09 0l-4.25 4.5a.75.75 0 1 0 1.09 1.03L9.25 4.636v8.614Z" />

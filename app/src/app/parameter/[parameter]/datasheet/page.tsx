@@ -39,7 +39,7 @@ export default function Datasheet() {
                 {
                     !loading && ponds.length > 0 && <>
                         <Select value={selectedPond} onValueChange={setSelectedPond}>
-                            <SelectTrigger className="w-[180px] bg-white">
+                            <SelectTrigger className="w-[180px] border-2 border-orange-300 bg-orange-50 focus-visible:ring-blue-200/40 focus-visible:ring-4 shadow-none rounded-2xl">
                                 <SelectValue placeholder="Select Pond" />
                             </SelectTrigger>
                             <SelectContent>
@@ -54,15 +54,14 @@ export default function Datasheet() {
                     </>
                 }
             </div>
+
             {
                 loading && <div className="flex flex-row justify-center space-x-2"><NinetyRing /><p>Loading Ponds...</p></div>
             }
             {
                 !loading && ponds.length <= 0 && <p>No Ponds Found</p>
             }
-            {/* {
-                !loading && !selectedPond && <p>No Pond Selected</p>
-            } */}
+
             {
                 !loading && selectedPond && <ParameterDatasheet pond_id={selectedPond} />
             }

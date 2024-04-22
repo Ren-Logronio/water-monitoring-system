@@ -32,7 +32,7 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
 
 
     return (
-        <div className="py-4 h-full">
+        <div className="py-4 h-full mt-5">
 
             {/* while fetching data */}
             {loading &&

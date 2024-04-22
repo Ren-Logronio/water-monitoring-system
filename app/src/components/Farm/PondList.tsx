@@ -39,7 +39,7 @@ export default function PondList({ farm_id }: { farm_id: number }) {
             }
 
 
-            {!loading && <div className=" gap-2 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
+            {!loading && <div className=" gap-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-4">
 
                 {ponds.map((pond, idx) => {
                     return <div key={idx} className="flex flex-col border-2 rounded-xl p-4 h-fit select-none align-middle hover:border-orange-300 transition-all ease-in-out duration-100">

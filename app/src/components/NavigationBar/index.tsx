@@ -62,14 +62,12 @@ export default function NavigationBar({ children }: NavigationBarProps): React.R
                 {/* Icon and Title */}
                 <div className="flex flex-row justify-center items-center pointer-events-none select-none ">
                     <Image src="/logo-orange-cropped.png" alt="Logo" height={32} width={87} className="aspect-auto" />
-                    <div className="flex flex-col items-start justify-center ">
-
+                    <div className="hidden flex-col items-start justify-center md:flex">
                         {/* Water Monitoring System title */}
                         {title.map((text) => (
                             <p key={text} className="transition-all leading-7 text-[24px] font-semibold text-[#FF9B42]">{text}</p>
                         ))
                         }
-
                     </div>
                 </div>
 
@@ -82,7 +80,8 @@ export default function NavigationBar({ children }: NavigationBarProps): React.R
                 </div>
 
                 <Separator className="bg-indigo-100" />
-                <div className="flex flex-col mx-auto md:mx-0">
+
+                <div className="flex flex-col mx-auto md:mx-0 space-y-2">
                     <p className="text-[#205083] hidden md:flex  pb-2 pl-2">Parameters</p>
                     <NavigationButton disabled={navBarLoading || farm.none} shortcut="TMP" path="/parameter/temperature/datasheet" text="Temperature" />
                     <NavigationButton disabled={navBarLoading || farm.none} shortcut="pH" path="/parameter/ph/datasheet" text="pH Level" />
@@ -94,6 +93,8 @@ export default function NavigationBar({ children }: NavigationBarProps): React.R
                     <p>Capstone Project 2023-2024</p>
                 </div>
             </div>
+
+
             <div className="flex-1 flex-grow flex flex-col h-full">
                 <div className="flex-grow min-h-[54px] bg-white shadow-sm flex flex-row items-center justify-end sm:justify-between px-[24px]">
                     {!farm.none ? <div className={`flex-row items-center space-x-[20px] hidden sm:flex transition-all ${path.startsWith("/farm") ? "opacity-0" : "opacity-100"}`}>
