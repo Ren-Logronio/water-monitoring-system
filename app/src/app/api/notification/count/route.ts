@@ -2,10 +2,10 @@ import getMySQLConnection from "@/db/mysql";
 import getUserInfo from "@/utils/User";
 import { NextApiRequest } from "next";
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 
-export async function GET(request: NextApiRequest) {
+export async function GET(request: NextRequest) {
     try {
         const cookieToken = cookies().get('token')?.value;
         const connection = await getMySQLConnection();

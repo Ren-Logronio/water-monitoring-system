@@ -4,7 +4,7 @@ import { NextApiRequest } from "next";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextApiRequest) {
+export async function GET(req: NextRequest) {
   try {
     const cookieToken = cookies().get('token')?.value;
     const connection = await getMySQLConnection();
@@ -30,10 +30,10 @@ export async function GET(req: NextApiRequest) {
   }
 }
 
-export async function POST(req: NextApiRequest) {
+export async function POST(req: NextRequest) {
   try {
     const connection = await getMySQLConnection();
-    const { farm_id, name, width, length, depth, method } = await new Response(req.body).json();
+    const { farm_id, name, width, length, depth, method } = await req.json();
     const pondInsertResult = await connection.query(
       "INSERT INTO `ponds` (`device_id`, `farm_id`, `name`, `width`, `length`, `depth`, `method`) VALUES (?, ?, ?, ?, ?, ?, ?)",
       [null, farm_id, name, width, length, depth, method]

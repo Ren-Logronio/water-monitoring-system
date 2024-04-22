@@ -20,7 +20,7 @@ export default function Staff() {
                 setFarm({ none: true });
                 return;
             }
-            setFarm({...response.data.results[0], none: false});
+            setFarm({ ...response.data.results[0], none: false });
             axios.get(`/api/farm/farmer?farm_id=${response.data.results[0].farm_id}`).then(response => {
                 if (!response.data.results || response.data.results.length <= 0) {
                     setFarmers([]);
@@ -49,10 +49,10 @@ export default function Staff() {
     return (
         <div className="relative p-4 h-[calc(100vh-56px)]">
             {
-                loading && <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-row justify-center space-x-2"><NinetyRing/><p>Loading...</p></div>
+                loading && <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-row justify-center space-x-2"><NinetyRing /><p>Loading...</p></div>
             }
             {
-                !loading && farm.none && <div className="absolute flex flex-col justify-center items-center min-w-[300px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"><div>No farm details</div><FarmDetails/></div>
+                !loading && farm.none && <div className="absolute flex flex-col justify-center items-center min-w-[300px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"><div>No farm details</div><FarmDetails /></div>
             }
             {
                 !loading && !farm.none && <>
@@ -64,12 +64,12 @@ export default function Staff() {
                             farmers.length <= 0 && <div>No staff</div>
                         }
                         {
-                            farmers.length > 0 && farmers.map(i => <div className="flex flex-row items-center space-x-4">
-                                <p key={i.farmer_id} className="">
+                            farmers.length > 0 && farmers.map((i, index) => <div key={index} className="flex flex-row items-center space-x-4">
+                                <p className="">
                                     {i.lastname}, {i.firstname} {i.middlename && i.middlename}
                                 </p>
-                                { me.role === "OWNER" && !i.is_approved && <ApproveStaff staff={i} approveCallback={handleApprove} /> }
-                                { me.role === "OWNER" && <DeleteStaff staff={i} deleteCallback={handleDelete} /> }
+                                {me.role === "OWNER" && !i.is_approved && <ApproveStaff staff={i} approveCallback={handleApprove} />}
+                                {me.role === "OWNER" && <DeleteStaff staff={i} deleteCallback={handleDelete} />}
                             </div>)
                         }
                     </div>

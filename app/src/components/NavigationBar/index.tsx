@@ -86,7 +86,7 @@ export default function NavigationBar({ children }: NavigationBarProps): React.R
                     <NavigationButton disabled={navBarLoading || farm.none} shortcut="TMP" path="/parameter/temperature/datasheet" text="Temperature" />
                     <NavigationButton disabled={navBarLoading || farm.none} shortcut="pH" path="/parameter/ph/datasheet" text="pH Level" />
                     <NavigationButton disabled={navBarLoading || farm.none} shortcut="AMN" path="/parameter/ammonia/datasheet" text="Ammonia" />
-                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="TDS" path="/parameter/total dissolved oxygen/datasheet" text="Total Dissolved Oxygen" />
+                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="TDS" path="/parameter/tds/datasheet" text="Total Dissolved Solids" />
                 </div>
                 <div className="absolute bottom-[28px] left-1/2 -translate-x-1/2 hidden md:flex flex-col text-center text-sm h-fit text-[#205083]">
                     <p>Ternary Operators</p>

@@ -29,8 +29,10 @@ CREATE TABLE IF NOT EXISTS `devices` (
   CONSTRAINT `device_status` FOREIGN KEY (`status`) REFERENCES `device_statuses` (`status`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.devices: ~0 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.devices: ~1 rows (approximately)
 DELETE FROM `devices`;
+INSERT INTO `devices` (`device_id`, `status`, `last_established_connection`) VALUES
+	('6342b0b7-2448-4951-b5d3-70027891f467', 'ACTIVE', '2024-04-21 13:18:27');
 
 -- Dumping structure for table water-monitoring-system-db.device_statuses
 CREATE TABLE IF NOT EXISTS `device_statuses` (
@@ -76,11 +78,10 @@ CREATE TABLE IF NOT EXISTS `farm_farmer` (
   CONSTRAINT `farmer_farm_id` FOREIGN KEY (`farm_id`) REFERENCES `farms` (`farm_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.farm_farmer: ~2 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.farm_farmer: ~1 rows (approximately)
 DELETE FROM `farm_farmer`;
 INSERT INTO `farm_farmer` (`farm_id`, `farmer_id`, `role`, `is_approved`) VALUES
-	(1, 1, 'OWNER', 1),
-	(1, 3, 'STAFF', 0);
+	(1, 1, 'OWNER', 1);
 
 -- Dumping structure for table water-monitoring-system-db.farm_farmer_roles
 CREATE TABLE IF NOT EXISTS `farm_farmer_roles` (
@@ -100,25 +101,19 @@ CREATE TABLE IF NOT EXISTS `parameters` (
   `pond_id` int(11) DEFAULT NULL,
   `parameter` varchar(3) NOT NULL,
   PRIMARY KEY (`parameter_id`),
-  KEY `sensor_parameter` (`parameter`),
   KEY `parameter_pond_id` (`pond_id`),
-  CONSTRAINT `parameter_list` FOREIGN KEY (`parameter`) REFERENCES `parameter_list` (`parameter`) ON UPDATE CASCADE,
-  CONSTRAINT `parameter_pond_id` FOREIGN KEY (`pond_id`) REFERENCES `ponds` (`pond_id`) ON DELETE CASCADE ON UPDATE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  KEY `parameter_parameter` (`parameter`),
+  CONSTRAINT `parameter_parameter` FOREIGN KEY (`parameter`) REFERENCES `parameter_list` (`parameter`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `parameter_pond_id` FOREIGN KEY (`pond_id`) REFERENCES `ponds` (`pond_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=109 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.parameters: ~10 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.parameters: ~4 rows (approximately)
 DELETE FROM `parameters`;
 INSERT INTO `parameters` (`parameter_id`, `pond_id`, `parameter`) VALUES
-	(6, 2, 'TMP'),
-	(7, 2, 'PH'),
-	(8, 2, 'SAL'),
-	(9, 2, 'DOX'),
-	(10, 2, 'AMN'),
-	(11, 3, 'TMP'),
-	(12, 3, 'PH'),
-	(13, 3, 'SAL'),
-	(14, 3, 'DOX'),
-	(15, 3, 'AMN');
+	(105, 19, 'TMP'),
+	(106, 19, 'PH'),
+	(107, 19, 'TDS'),
+	(108, 19, 'AMN');
 
 -- Dumping structure for table water-monitoring-system-db.parameter_default_thresholds
 CREATE TABLE IF NOT EXISTS `parameter_default_thresholds` (
@@ -132,12 +127,12 @@ CREATE TABLE IF NOT EXISTS `parameter_default_thresholds` (
   KEY `default_threshold_parameter` (`parameter`),
   KEY `default_threshold_type` (`type`),
   KEY `default_threshold_action` (`action`),
-  CONSTRAINT `default_threshold_action` FOREIGN KEY (`action`) REFERENCES `parameter_threshold_actions` (`action`),
-  CONSTRAINT `default_threshold_parameter` FOREIGN KEY (`parameter`) REFERENCES `parameter_list` (`parameter`) ON UPDATE CASCADE,
-  CONSTRAINT `default_threshold_type` FOREIGN KEY (`type`) REFERENCES `parameter_threshold_types` (`type`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  CONSTRAINT `default_threshold_action` FOREIGN KEY (`action`) REFERENCES `parameter_threshold_actions` (`action`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `default_threshold_parameter` FOREIGN KEY (`parameter`) REFERENCES `parameter_list` (`parameter`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `default_threshold_type` FOREIGN KEY (`type`) REFERENCES `parameter_threshold_types` (`type`) ON DELETE NO ACTION ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.parameter_default_thresholds: ~9 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.parameter_default_thresholds: ~6 rows (approximately)
 DELETE FROM `parameter_default_thresholds`;
 INSERT INTO `parameter_default_thresholds` (`threshold_id`, `parameter`, `type`, `action`, `target`, `error`) VALUES
 	(1, 'TMP', 'GT', 'WARN', 30, 2),
@@ -145,26 +140,22 @@ INSERT INTO `parameter_default_thresholds` (`threshold_id`, `parameter`, `type`,
 	(3, 'AMN', 'GT', 'ALRT', 1, 0.2),
 	(4, 'PH', 'GT', 'ALRT', 8.5, 0.2),
 	(5, 'PH', 'LT', 'ALRT', 7.5, 0.2),
-	(6, 'DOX', 'GT', 'ALRT', 20, 2),
-	(8, 'DOX', 'LT', 'ALRT', 3, 2),
-	(9, 'SAL', 'GT', 'WARN', 25, 2),
-	(10, 'SAL', 'LT', 'ALRT', 15, 2);
+	(6, 'TDS', 'GT', 'WARN', 600, 50);
 
 -- Dumping structure for table water-monitoring-system-db.parameter_list
 CREATE TABLE IF NOT EXISTS `parameter_list` (
   `parameter` varchar(3) NOT NULL,
-  `name` varchar(16) NOT NULL,
+  `name` varchar(64) NOT NULL,
   `unit` varchar(16) NOT NULL,
   PRIMARY KEY (`parameter`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.parameter_list: ~5 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.parameter_list: ~4 rows (approximately)
 DELETE FROM `parameter_list`;
 INSERT INTO `parameter_list` (`parameter`, `name`, `unit`) VALUES
 	('AMN', 'Ammonia', 'ppm'),
-	('DOX', 'Dissolved Oxygen', 'mg/L'),
 	('PH', 'pH', 'pH'),
-	('SAL', 'Salinity', 'ppt'),
+	('TDS', 'Total Dissolved Solids', 'tds'),
 	('TMP', 'Temperature', '°C');
 
 -- Dumping structure for table water-monitoring-system-db.parameter_thresholds
@@ -179,32 +170,20 @@ CREATE TABLE IF NOT EXISTS `parameter_thresholds` (
   KEY `threshold_type` (`type`),
   KEY `threshold_action` (`action`),
   KEY `threshold_sensor_id` (`parameter_id`) USING BTREE,
-  CONSTRAINT `threshold_action` FOREIGN KEY (`action`) REFERENCES `parameter_threshold_actions` (`action`) ON UPDATE CASCADE,
-  CONSTRAINT `threshold_parameter_id` FOREIGN KEY (`parameter_id`) REFERENCES `parameters` (`parameter_id`) ON DELETE CASCADE,
-  CONSTRAINT `threshold_type` FOREIGN KEY (`type`) REFERENCES `parameter_threshold_types` (`type`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  CONSTRAINT `threshold_action` FOREIGN KEY (`action`) REFERENCES `parameter_threshold_actions` (`action`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  CONSTRAINT `threshold_parameter_id` FOREIGN KEY (`parameter_id`) REFERENCES `parameters` (`parameter_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `threshold_type` FOREIGN KEY (`type`) REFERENCES `parameter_threshold_types` (`type`) ON DELETE NO ACTION ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=158 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.parameter_thresholds: ~18 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.parameter_thresholds: ~6 rows (approximately)
 DELETE FROM `parameter_thresholds`;
 INSERT INTO `parameter_thresholds` (`threshold_id`, `parameter_id`, `type`, `action`, `target`, `error`) VALUES
-	(14, 6, 'GT', 'WARN', 30, 2),
-	(15, 6, 'LT', 'WARN', 20, 2),
-	(17, 7, 'GT', 'ALRT', 8.5, 0.2),
-	(18, 7, 'LT', 'ALRT', 7.5, 0.2),
-	(20, 8, 'GT', 'WARN', 25, 2),
-	(21, 8, 'LT', 'ALRT', 15, 2),
-	(23, 9, 'GT', 'ALRT', 20, 2),
-	(24, 9, 'LT', 'ALRT', 3, 2),
-	(26, 10, 'GT', 'ALRT', 1, 0.2),
-	(27, 11, 'GT', 'WARN', 30, 2),
-	(28, 11, 'LT', 'WARN', 20, 2),
-	(30, 12, 'GT', 'ALRT', 8.5, 0.2),
-	(31, 12, 'LT', 'ALRT', 7.5, 0.2),
-	(33, 13, 'GT', 'WARN', 25, 2),
-	(34, 13, 'LT', 'ALRT', 15, 2),
-	(36, 14, 'GT', 'ALRT', 20, 2),
-	(37, 14, 'LT', 'ALRT', 3, 2),
-	(39, 15, 'GT', 'ALRT', 1, 0.2);
+	(150, 105, 'GT', 'WARN', 30, 2),
+	(151, 105, 'LT', 'WARN', 20, 2),
+	(153, 106, 'GT', 'ALRT', 8.5, 0.2),
+	(154, 106, 'LT', 'ALRT', 7.5, 0.2),
+	(156, 107, 'GT', 'WARN', 600, 50),
+	(157, 108, 'GT', 'ALRT', 1, 0.2);
 
 -- Dumping structure for table water-monitoring-system-db.parameter_threshold_actions
 CREATE TABLE IF NOT EXISTS `parameter_threshold_actions` (
@@ -246,16 +225,15 @@ CREATE TABLE IF NOT EXISTS `ponds` (
   KEY `pond_farm_id` (`farm_id`),
   KEY `pond_method` (`method`),
   KEY `pond_device_id` (`device_id`),
-  CONSTRAINT `pond_device_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`device_id`) ON UPDATE SET NULL,
+  CONSTRAINT `pond_device_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`device_id`) ON DELETE SET NULL ON UPDATE NO ACTION,
   CONSTRAINT `pond_farm_id` FOREIGN KEY (`farm_id`) REFERENCES `farms` (`farm_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `pond_method` FOREIGN KEY (`method`) REFERENCES `pond_methods` (`method`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='INTENSIVE\r\nSEMI-INTENSIVE\r\nTRADITIONAL';
+  CONSTRAINT `pond_method` FOREIGN KEY (`method`) REFERENCES `pond_methods` (`method`) ON DELETE NO ACTION ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='INTENSIVE\r\nSEMI-INTENSIVE\r\nTRADITIONAL';
 
--- Dumping data for table water-monitoring-system-db.ponds: ~2 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.ponds: ~1 rows (approximately)
 DELETE FROM `ponds`;
 INSERT INTO `ponds` (`pond_id`, `device_id`, `farm_id`, `name`, `width`, `length`, `depth`, `method`) VALUES
-	(2, NULL, 1, 'Sector 1', 0, 0, 0, 'SEMI-INTENSIVE'),
-	(3, NULL, 1, 'Sector 2', 0, 0, 0, 'SEMI-INTENSIVE');
+	(19, '6342b0b7-2448-4951-b5d3-70027891f467', 1, 'My Pond', 0, 0, 0, 'NONE');
 
 -- Dumping structure for table water-monitoring-system-db.pond_methods
 CREATE TABLE IF NOT EXISTS `pond_methods` (
@@ -282,28 +260,13 @@ CREATE TABLE IF NOT EXISTS `readings` (
   `isRecordedBySensor` tinyint(4) NOT NULL DEFAULT 1,
   PRIMARY KEY (`reading_id`),
   KEY `reading_parameter_id` (`parameter_id`),
-  CONSTRAINT `reading_parameter_id` FOREIGN KEY (`parameter_id`) REFERENCES `parameters` (`parameter_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  CONSTRAINT `reading_parameter_id` FOREIGN KEY (`parameter_id`) REFERENCES `parameters` (`parameter_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.readings: ~0 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.readings: ~1 rows (approximately)
 DELETE FROM `readings`;
 INSERT INTO `readings` (`reading_id`, `parameter_id`, `value`, `recorded_at`, `modified_at`, `isRecordedBySensor`) VALUES
-	(1, 6, 24.54, '2024-03-01 17:00:00', '2024-03-17 15:03:08', 0),
-	(2, 6, 23.9, '2024-03-02 17:00:00', '2024-03-17 15:03:28', 0),
-	(3, 6, 25.9, '2024-03-03 17:00:00', '2024-03-17 15:03:48', 0),
-	(4, 6, 25.12, '2024-03-04 17:00:00', '2024-03-17 15:06:50', 0),
-	(5, 6, 27.8, '2024-03-05 17:00:00', '2024-03-17 15:30:15', 0),
-	(6, 6, 26.2, '2024-03-06 17:00:00', '2024-03-17 15:36:07', 0),
-	(7, 6, 24.9, '2024-03-07 17:00:00', '2024-03-17 15:36:24', 0),
-	(8, 6, 23.634, '2024-03-08 17:00:00', '2024-03-17 15:37:15', 0),
-	(9, 6, 22.12, '2024-03-09 17:00:00', '2024-03-17 15:37:38', 0),
-	(10, 6, 21.5, '2024-03-10 17:00:00', '2024-03-17 15:39:49', 0),
-	(11, 6, 22.43, '2024-03-11 17:00:00', '2024-03-17 16:14:05', 0),
-	(12, 7, 8.9, '2024-03-01 17:23:00', '2024-03-17 17:23:23', 0),
-	(13, 7, 8.7, '2024-03-02 17:23:00', '2024-03-17 17:23:34', 0),
-	(14, 7, 8.4, '2024-03-03 17:23:00', '2024-03-17 17:23:49', 0),
-	(15, 7, 8.1, '2024-03-04 17:23:00', '2024-03-17 17:24:01', 0),
-	(16, 7, 8.34, '2024-03-05 17:24:00', '2024-03-17 17:24:15', 0);
+	(6, NULL, 23, '2024-04-10 23:03:00', '2024-04-22 15:28:43', 0);
 
 -- Dumping structure for table water-monitoring-system-db.reading_notifications
 CREATE TABLE IF NOT EXISTS `reading_notifications` (
@@ -360,10 +323,12 @@ CREATE TABLE IF NOT EXISTS `user_notifications` (
   KEY `notification_action` (`action`),
   CONSTRAINT `notification_action` FOREIGN KEY (`action`) REFERENCES `parameter_threshold_actions` (`action`) ON UPDATE CASCADE,
   CONSTRAINT `notification_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.user_notifications: ~0 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.user_notifications: ~1 rows (approximately)
 DELETE FROM `user_notifications`;
+INSERT INTO `user_notifications` (`notification_id`, `user_id`, `action`, `message`, `issued_at`, `isRead`, `read_at`) VALUES
+	(1, 3, 'INFO', 'You have been removed from the farm.', '2024-04-22 15:39:37', 0, NULL);
 
 -- Dumping structure for view water-monitoring-system-db.view_dashboard_ponds_monitored
 -- Creating temporary table to overcome VIEW dependency errors
@@ -422,7 +387,7 @@ CREATE TABLE `view_pond_parameters` (
 	`parameter_id` INT(11) NOT NULL,
 	`pond_id` INT(11) NULL,
 	`parameter` VARCHAR(3) NULL COLLATE 'utf8mb4_unicode_ci',
-	`name` VARCHAR(16) NULL COLLATE 'utf8mb4_unicode_ci',
+	`name` VARCHAR(64) NULL COLLATE 'utf8mb4_unicode_ci',
 	`unit` VARCHAR(16) NULL COLLATE 'utf8mb4_unicode_ci',
 	`count` BIGINT(21) NOT NULL
 ) ENGINE=MyISAM;
@@ -434,7 +399,7 @@ CREATE TABLE `view_pond_parameter_readings` (
 	`parameter_id` INT(11) NOT NULL,
 	`reading_id` INT(11) NOT NULL,
 	`parameter` VARCHAR(3) NOT NULL COLLATE 'utf8mb4_unicode_ci',
-	`name` VARCHAR(16) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+	`name` VARCHAR(64) NOT NULL COLLATE 'utf8mb4_unicode_ci',
 	`unit` VARCHAR(16) NOT NULL COLLATE 'utf8mb4_unicode_ci',
 	`value` DOUBLE NOT NULL,
 	`recorded_at` DATETIME NOT NULL,
@@ -450,14 +415,13 @@ CREATE TABLE `view_user_notifications_count` (
 ) ENGINE=MyISAM;
 
 -- Dumping structure for trigger water-monitoring-system-db.parameters_after_pond_insert
-SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
 CREATE TRIGGER `parameters_after_pond_insert` AFTER INSERT ON `ponds` FOR EACH ROW BEGIN
 	INSERT INTO parameters (pond_id, parameter)VALUES
       (NEW.pond_id, 'TMP'),
       (NEW.pond_id, 'PH'),
-      (NEW.pond_id, 'SAL'),
-      (NEW.pond_id, 'DOX'),
+      (NEW.pond_id, 'TDS'),
       (NEW.pond_id, 'AMN');
 END//
 DELIMITER ;
