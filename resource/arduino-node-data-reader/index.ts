@@ -66,10 +66,10 @@ function readArduino() {
       }
     }
   });
-}
+};
 
 function typeOfEachObjectKeys(obj: any) {
   return Object.keys(obj).map((key) => `${key}: ${typeof obj[key]}`);
-}
+};
 
 readArduino();
