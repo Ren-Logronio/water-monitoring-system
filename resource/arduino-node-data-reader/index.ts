@@ -1,5 +1,5 @@
 import { ReadlineParser, SerialPort } from "serialport";
-import { ReadingSchema, readingModel } from "./model/readings";
+import { ReadingSchema, ReadingModel } from "./model/readings";
 import { connection } from "./lib/mongodb";
 import fs from "fs";
 import mongoose from "mongoose";
@@ -34,12 +34,13 @@ function readArduino() {
             console.error(error);
           });
         });
-        parser.on("error", (error: any) => {
-          console.error(error);
-        });
-      } else {
-        console.error("Arduino not found");
-        if(ports.length > 0) {
+      });
+      parser.on("error", (error: any) => {
+        console.error(error);
+      });
+    } else {
+      console.error("Arduino not found");
+      if (ports.length > 0) {
         console.log("opting for the first found port");
         const arduinoPort = new SerialPort({ path: ports[0].path, baudRate: 9600 });
         const parser = arduinoPort.pipe(new ReadlineParser({ delimiter: '\r\n' }));

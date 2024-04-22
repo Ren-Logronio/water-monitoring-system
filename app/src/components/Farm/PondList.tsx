@@ -2,8 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import AddPondDialog from "../ui/dialog/AddPond.dialog";
-import DeletePond from "./DeletePond";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { NinetyRing } from "react-svg-spinners";
 
 export default function PondList({ farm_id }: { farm_id: number }) {
     const [ponds, setPonds] = useState<any[]>([])
@@ -57,7 +57,6 @@ export default function PondList({ farm_id }: { farm_id: number }) {
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
-                            <DeletePond pond_id={pond.pond_id} deleteCallback={handleRemovePond} />
                             {/* <DropdownMenu>
                                 <DropdownMenuTrigger>
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4">
