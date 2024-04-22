@@ -98,10 +98,10 @@ export default function Dashboard() {
                 <>
                     {/* Dropdown menu for pond names */}
                     <div className="flex flex-row align-middle items-center space-x-4">
-                        <span className="font-bold text-[#205083]">Pond: </span>
+
 
                         <Select value={selectedPond} onValueChange={handleSelectChange}>
-                            <SelectTrigger className="font-bold text-[#205083] w-[150px] shadow-none border-0 border-b-2 border-orange-300 rounded-none px-1">
+                            <SelectTrigger className="font-bold text-[#205083] w-[200px] shadow-none border-2 rounded-full border-orange-300 bg-orange-100/40 px-4">
                                 <SelectValue placeholder="Select Pond" />
                             </SelectTrigger>
                             <SelectContent>

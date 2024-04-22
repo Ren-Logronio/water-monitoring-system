@@ -22,6 +22,7 @@ const buttonVariants = cva(
         addBtn_orange_outline: "border-2 border-orange-400 rounded-full hover:bg-orange-400 hover:text-white hover:width-[100px]",
         addBtn_orange_solid: "border-2 border-orange-400 bg-orange-400 rounded-full hover:shadow-md hover:text-white hover:width-[100px]",
         addBtn_blue: "border-2 border-blue-500 bg-blue-500 rounded-full hover:shadow-md hover:text-white hover:width-[100px]",
+        deleteBtn: "border-2 border-destructive bg-destructive text-destructive-foreground rounded-full hover:shadow-md hover:text-white hover:width-[100px]"
       },
       size: {
         default: "h-9 px-4 py-2",

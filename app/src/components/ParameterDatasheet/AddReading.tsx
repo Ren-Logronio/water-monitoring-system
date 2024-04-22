@@ -41,13 +41,15 @@ export default function AddReading({ pond_id }: { pond_id?: string }) {
 
     return <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-            <Button>Add</Button>
+            <Button variant={"addBtn_blue"} className="text-white">
+                Add
+            </Button>
         </DialogTrigger>
         <DialogContent onInteractOutside={(e: any) => { e.preventDefault() }} className="sm:max-w-lg">
             <DialogHeader>
-                <DialogTitle>Add Reading</DialogTitle>
+                <DialogTitle>Add Record</DialogTitle>
             </DialogHeader>
-            <div className="flex flex-row space-x-2">
+            <div className="flex flex-row space-x-2 mt-4 mb-4">
                 <div className="flex flex-col space-y-2">
                     <Label>Reading</Label>
                     <Input type="number" value={readingForm.reading} step={0.01} onChange={e => setReadingForm({ ...readingForm, reading: parseFloat(e.target.value) })} />
@@ -63,11 +65,11 @@ export default function AddReading({ pond_id }: { pond_id?: string }) {
             </div>
             <DialogFooter className="justify-end">
                 <DialogClose asChild>
-                    <Button disabled={loading} type="button" variant="secondary">
+                    <Button disabled={loading} type="button" variant="ghost">
                         Cancel
                     </Button>
                 </DialogClose>
-                <Button onClick={handleFormSubmit} disabled={loading} className="flex flex-row space-x-2" type="submit">
+                <Button onClick={handleFormSubmit} disabled={loading} variant="addBtn_orange_solid" className="text-white flex flex-row space-x-2" type="submit">
                     {loading ? <div className="flex flex-row space-x-2"><NinetyRing color="currentColor" /><p>Adding..</p></div> : "Add"}
                 </Button>
             </DialogFooter>
