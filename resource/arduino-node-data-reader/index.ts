@@ -5,7 +5,7 @@ import fs from "fs";
 import mongoose from "mongoose";
 import axios from "axios";
 
-mongoose.connect("mongodb://localhost:27017/water-monitoring-system-db");
+mongoose.connect("mongodb+srv://Ren-logronio:QJcy2TU1Udi9z9oN@cluster0.46h8obk.mongodb.net/water-monitoring-system-db");
 
 function readArduino() {
   SerialPort.list().then((ports: any) => {
