@@ -24,13 +24,7 @@ function readArduino() {
           }
         });
         // create new readings document
-        const newReading = new ReadingModel({
-          deviceId: parsedData.deviceId,
-          temperature: parsedData.temperature,
-          tds: parsedData.tds,
-          ph: parsedData.ph,
-          ammonia: parsedData.ammonia,
-        });
+        const newReading = new ReadingModel(parsedData);
         newReading.save().then((doc: any) => {
           console.log("saved to db");
         }).catch((error: any) => {
@@ -57,13 +51,7 @@ function readArduino() {
             }
           });
           // create new readings document
-          const newReading = new readingModel({
-            deviceId: parsedData.deviceId,
-            temperature: parsedData.temperature,
-            tds: parsedData.tds,
-            ph: parsedData.ph,
-            ammonia: parsedData.ammonia,
-          });
+          const newReading = new ReadingModel(parsedData);
           newReading.save().then((doc: any) => {
             console.log("saved to db");
           }).catch((error: any) => {
