@@ -46,15 +46,17 @@ export default function PondOptions({ pond_id, deleteCallback }: { pond_id: numb
                 <p>Are you sure you want to delete this pond?</p>
             </div>
             <DialogFooter>
-                <Button disabled={loading} onClick={handleDelete} variant="destructive" className="flex flex-row space-x-2">
+
+                <DialogClose asChild>
+                    <Button disabled={loading} variant="ghost">Cancel</Button>
+                </DialogClose>
+                <Button disabled={loading} onClick={handleDelete} variant="deleteBtn" className="flex flex-row space-x-2">
                     {loading ?
                         <><NinetyRing color="currentColor" /><p>Deleting..</p></>
                         :
                         "Delete"}
                 </Button>
-                <DialogClose asChild>
-                    <Button disabled={loading} variant="outline">Cancel</Button>
-                </DialogClose>
+
             </DialogFooter>
         </DialogContent>
     </Dialog>
