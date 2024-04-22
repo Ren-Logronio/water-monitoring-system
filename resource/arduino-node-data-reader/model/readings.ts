@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
 export const ReadingSchema = new Schema({
-    deviceId: {
+    device_id: {
         type: String,
     },
     TMP: {

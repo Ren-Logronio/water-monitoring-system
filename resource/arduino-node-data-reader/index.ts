@@ -1,5 +1,6 @@
 import { ReadlineParser, SerialPort } from "serialport";
-import { ReadingSchema, ReadingModel } from "./model/readings";
+import { ReadingSchema, readingModel } from "./model/readings";
+import { connection } from "./lib/mongodb";
 import fs from "fs";
 import mongoose from "mongoose";
 import axios from "axios";
@@ -18,26 +19,27 @@ function readArduino() {
         console.log(typeOfEachObjectKeys(parsedData));
         console.log(data);
         // axios.post("localhost:3000/api/device/reading", parsedData);
+        // axios.post("localhost:3000/api/device/reading", parsedData);
         // write to sensor.log file located at this directory
         fs.appendFile("sensor.log", `${data},\n`, (error: any) => {
-          if (error) {
+          fs.appendFile("sensor.log", `${data},\n`, (error: any) => {
+            if (error) {
+              console.error(error);
+            }
+          });
+          // create new readings document
+          const newReading = new ReadingModel(parsedData);
+          newReading.save().then((doc: any) => {
+          }).catch((error) => {
             console.error(error);
-          }
+          });
         });
-        // create new readings document
-        const newReading = new ReadingModel(parsedData);
-        newReading.save().then((doc: any) => {
-          console.log("saved to db");
-        }).catch((error: any) => {
+        parser.on("error", (error: any) => {
           console.error(error);
         });
-      });
-      parser.on("error", (error: any) => {
-        console.error(error);
-      });
-    } else {
-      console.error("Arduino not found");
-      if (ports.length > 0) {
+      } else {
+        console.error("Arduino not found");
+        if(ports.length > 0) {
         console.log("opting for the first found port");
         const arduinoPort = new SerialPort({ path: ports[0].path, baudRate: 9600 });
         const parser = arduinoPort.pipe(new ReadlineParser({ delimiter: '\r\n' }));
