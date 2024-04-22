@@ -1,19 +1,19 @@
 import mongoose, { Schema } from "mongoose";
 
 export const ReadingSchema = new Schema({
-    deviceId: {
+    device_id: {
         type: String,
     },
-    temperature: {
+    TMP: {
         type: Number,
     },
-    tds: {
+    TDS: {
         type: Number,
     },
-    ph: {
+    PH: {
         type: Number,
     },
-    ammonia: {
+    AMN: {
         type: Number,
     },
     timestamp: {
