@@ -50,7 +50,7 @@ export default function PondList({ farm_id }: { farm_id: number }) {
                             </div>
 
                             {/* dropdown options */}
-                            <PondOptions pond_id={pond.pond_id} deleteCallback={handleRemovePond} />
+                            <PondOptions pond_id={pond.pond_id} deleteCallback={handleRemovePond} pond_data={ponds} />
                         </div>
 
                         <div className="flex flex-col mt-1">
