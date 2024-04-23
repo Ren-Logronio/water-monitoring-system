@@ -20,41 +20,49 @@ export async function POST(request: NextRequest) {
             console.log("DEVICE: device is idle");
             return NextResponse.json({ message: "no pond assignment, saving to logs" }, { status: 200 });
         }
-        let pondId;
-        {
-            console.log("Getting Ponds");
-            const [results, rows] = await connection.query("SELECT * FROM `ponds` WHERE `device_id` = ?", [device_id]);
-            pondId = results[0].pond_id;
-        }
-        {
-            console.log("Getting parameters");
-            const [results, rows]: [results: any[], rows: any[]] = await connection.query(
-                "SELECT * FROM `view_pond_parameters` WHERE `pond_id` = ?",
-                [pondId]
-            );
-            results.forEach(async (param: any) => {
-                const [results, rows] = await connection.query("SELECT * FROM `parameter_thresholds` WHERE `parameter_id` = ?", [param.parameter_id]);
-                console.log("Checking param thresholds")
-                results.forEach((threshold: any) => {
-                    if (threshold.type === "GT") {
-                        if (Number(parameters[param.parameter]) > threshold.target) {
-                            console.log("Parameter is exceeding limits")
-                        }
-                    } else if (threshold.type === "LT") {
-                        if (Number(parameters[param.parameter] < threshold.target)) {
-                            console.log("Parameter is under")
-                        }
-                    } else if (threshold.type === "EQ") {
-                        if (Number(parameters[param.parameter]) >= (threshold.target - threshold.error) && Number(parameters[param.parameter]) <= (threshold.target + threshold.error)) {
-                            console.log("Parameter is reaching threshold")
-                        }
+        console.log("Getting Ponds");
+
+        const [ponds]: any = await connection.query("SELECT * FROM `ponds` WHERE `device_id` = ?", [device_id]);
+        const pondId = ponds[0].pond_id;
+
+        console.log("Getting parameters");
+        const [pondParameters]: [results: any[], rows: any[]] = await connection.query(
+            "SELECT * FROM `view_pond_parameters` WHERE `pond_id` = ?",
+            [pondId]
+        );
+        const [thresholds]: any = await connection.query("SELECT * FROM `parameter_thresholds`");
+        pondParameters.forEach(async (param: any) => {
+            console.log("Inserting:", param, parameters[param.parameter]);
+            connection.query("INSERT INTO `readings` (`parameter_id`, `value`) VALUES (?, ?)", [param.parameter_id, Number(parameters[param.parameter])]);
+
+            console.log("Checking param thresholds");
+            thresholds
+                .filter((threshold: any) => threshold.parameter === param.parameter)
+                .forEach((threshold: any) => {
+                    switch (threshold.type) {
+                        case "LT":
+                            if (Number(parameters[param.parameter]) < (threshold.value + threshold.error)) {
+                                console.log("Threshold LT breached:", param, parameters[param.parameter]);
+                            }
+                            break;
+                        case "GT":
+                            if (Number(parameters[param.parameter]) > (threshold.target - threshold.error)) {
+                                console.log("Threshold GT breached:", param, parameters[param.parameter]);
+                            }
+                            break;
+                        case "EQ":
+                            if (Number(parameters[param.parameter]) > (threshold.target - threshold.error) && Number(parameters[param.parameter]) < (threshold.value + threshold.error)) {
+                                console.log("Threshold EQ breached:", param, parameters[param.parameter]);
+                            }
+                            break;
+                        default:
+                            break;
                     }
-                    console.log("Parameter value is nominal");
                 });
-                console.log("Inserting:", param, parameters[param.parameter]);
-                connection.query("INSERT INTO `readings` (`parameter_id`, `value`) VALUES (?, ?)", [param.parameter_id, Number(parameters[param.parameter])]);
-            });
-        }
+        });
+            
+        
+
         return NextResponse.json({ message: "responded" }, { status: 200 });
     } catch (error: any) {
         return NextResponse.json({ message: error.message }, { status: 500 })

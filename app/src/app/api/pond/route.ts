@@ -38,6 +38,7 @@ export async function POST(req: NextRequest) {
       "INSERT INTO `ponds` (`device_id`, `farm_id`, `name`, `width`, `length`, `depth`, `method`) VALUES (?, ?, ?, ?, ?, ?, ?)",
       [null, farm_id, name, width, length, depth, method]
     );
+    console.log("POND INSERT RESULT:", pondInsertResult);
     return NextResponse.json(
       { message: "Pond inserted successfully" },
       {
