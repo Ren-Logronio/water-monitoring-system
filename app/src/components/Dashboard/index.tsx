@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 import PondView from "./PondView";
 import { NinetyRing } from "react-svg-spinners";
-
+import Image from "next/image"
 import axios from "axios";
 import FarmDetails from "./FarmDetails";
 import { useRouter } from "next/navigation";
@@ -98,22 +98,30 @@ export default function Dashboard() {
                 <>
                     <div className="flex flex-col xl:flex-row xl:columns-2 xl:space-x-5 h-auto select-none">
 
-                        <div className="flex flex-col xl:w-[40%] p-5">
+                        <div className="flex flex-col xl:w-[40%] mb-5 xl:mb-0">
                             <div className="w-full text-xl font-semibold mb-10">
                                 Test title
                             </div>
 
                             {/* quick widgets */}
                             <div className="grid grid-cols-2 w-full gap-3 gap-y-5">
-                                {/* # of ponds */}
-                                <div className="bg-white border-2 rounded-2xl p-5 flex flex-col">
-                                    <span>Ponds</span>
 
+                                {/* # of ponds */}
+                                <div className="bg-white border-2 rounded-2xl p-5 flex flex-row justify-center space-x-5 xl:space-x-0 xl:space-y-5 xl:flex-col items-center">
+                                    <Image alt="shrimp-ponds" src="/widget-shrimp.png" width={40} height={40}></Image>
+                                    <div className="flex flex-row space-x-1">
+                                        <span className="font-bold">23</span>
+                                        <span>Shrimp Ponds</span>
+                                    </div>
                                 </div>
 
                                 {/* staff */}
-                                <div className="bg-white border-2 rounded-2xl p-5 flex flex-col">
-                                    <span>Staff</span>
+                                <div className="bg-white border-2 rounded-2xl p-5 flex flex-row justify-center space-x-5 xl:space-x-0 xl:space-y-5 xl:flex-col items-center">
+                                    <Image alt="shrimp-ponds" src="/widget-staff.png" width={50} height={40}></Image>
+                                    <div className="flex flex-row space-x-1">
+                                        <span className="font-bold">23</span>
+                                        <span>Staff</span>
+                                    </div>
                                 </div>
 
                                 {/* # of ponds */}
@@ -125,11 +133,11 @@ export default function Dashboard() {
 
 
                         {/* pond details */}
-                        <div className=" bg-white w-full p-6 h-screen rounded-2xl border-2">
+                        <div className="bg-white w-full h-fit rounded-2xl border-2">
                             {/* Dropdown menu for pond names */}
-                            <div className="flex flex-row space-x-5 justify-center items-center">
+                            <div className="flex flex-row space-x-5 justify-between xl:justify-start items-center border-0 p-5 border-b-2">
                                 <div className="text-xl font-regular">
-                                    Select Pond:
+                                    Pond:
                                 </div>
 
                                 <Select value={selectedPond} onValueChange={handleSelectChange}>
@@ -147,7 +155,9 @@ export default function Dashboard() {
                             </div>
 
                             {/* Pond details */}
-                            <PondView pond_id={selectedPond} />
+                            <div className="p-6">
+                                <PondView pond_id={selectedPond} />
+                            </div>
                         </div>
                     </div>
                 </>
