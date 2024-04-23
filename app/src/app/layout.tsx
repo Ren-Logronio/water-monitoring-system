@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import NavigationBar from "@/components/NavigationBar";
 import { Suspense } from "react";
+import Loading from "@/components/Loading";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,7 +26,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <NavigationBar>
-            <Suspense fallback={<>Loading...</>}>
+            <Suspense fallback={<Loading />}>
               {children}
             </Suspense>
           </NavigationBar>
