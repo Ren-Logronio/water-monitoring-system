@@ -15,7 +15,8 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
     const [loading, setLoading] = useState<boolean>(false);
     const [active, setActive] = useState<boolean>(false);
     const [poller, setPoller] = useState<any>(null);
-    const [notifications, setNotifications] = useState<any>([]);
+    const [userNotifications, setUserNotifications] = useState<any>([]);
+    const [notificationToggle, setNotificationToggle] = useState<"reading"|"all">("reading");
 
     useEffect(() => {
         if (pathIsSignIn(path)) {
@@ -30,7 +31,7 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
 
     useEffect(() => {
         if (!active) {
-            setNotifications([]);
+            setUserNotifications([]);
         };
     }, [active]);
 
@@ -38,25 +39,25 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
         if (pathIsSignIn(path)) { setNotificationCount(0); return; };
         axios.get("/api/notification/count").then(response => {
             console.log("Notification Count:", response.data.results);
-            if (response.data.results.length <= 0) {
+            if (response.data.count <= 0) {
                 setNotificationCount(0);
                 return;
             };
-            setNotificationCount(response.data.results[0].count);
+            setNotificationCount(response.data.count);
         }).catch(error => {
             console.error(error);
         });
         const updateCount = setInterval(() => {
             axios.get("/api/notification/count").then(response => {
-                if (response.data.results.length <= 0) {
+                if (response.data.count <= 0) {
                     setNotificationCount(0);
                     return;
                 };
-                setNotificationCount(response.data.results[0].count);
+                setNotificationCount(response.data.count);
             }).catch(error => {
                 console.error(error);
             });
-        }, 5000);
+        }, 60000);
         return () => clearInterval(updateCount);
     }, [])
 
@@ -66,7 +67,7 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
 
     const handleOpen = (open: boolean) => {
         if (open) {
-            if (notifications.length) return;
+            if (userNotifications.length) return;
             setLoading(true);
             const fetchNotifications = () => {
                 console.log("fetching notification");
@@ -81,7 +82,7 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
                                 dateIssued: format(notification.issued_at, "MMM dd, yyyy"),
                             }
                         });
-                        setNotifications(parsedNotifications);
+                        setUserNotifications(parsedNotifications);
                     })
                     .catch((error) => {
                         console.error(error);
@@ -97,6 +98,12 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
         }
     }
 
+    const handleNotificationToggle = (value: "reading"|"all") => {
+        return () => {
+            setNotificationToggle(value);
+        }
+    } 
+
     return (
         <DropdownMenu onOpenChange={handleOpen}>
             <DropdownMenuTrigger asChild>
@@ -109,7 +116,10 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
             </DropdownMenuTrigger>
             <DropdownMenuContent className="min-w-[416px]">
                 <DropdownMenuLabel className="text-center">Notifications</DropdownMenuLabel>
-                <DropdownMenuSeparator />
+                <div className="flex flex-row pl-4">
+                    <Button variant={ notificationToggle === "reading" ? "outline" : "ghost" } onClick={handleNotificationToggle("reading")}>Readings</Button>
+                    <Button variant={ notificationToggle === "all" ? "outline" : "ghost" } onClick={handleNotificationToggle("all")}>All</Button>
+                </div>
                 {
                     loading &&
                     <div className="min-h-[200px] flex flex-col items-center justify-center text-slate-500">
@@ -117,18 +127,17 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
                         <p className="text-center text-sm py-2">Loading Notifications...</p>
                     </div>
                 }
-                {
-                    !loading && !notifications.length &&
+                {/* {
+                    !loading && !userNotifications.length &&
                     <div className="min-h-[200px] flex flex-col items-center justify-center text-slate-500">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m6 4.125 2.25 2.25m0 0 2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
                         </svg>
                         <p className="text-center text-sm py-2">No notifications</p>
                     </div>
-
-                }
+                } */}
                 {
-                    !!notifications.length && notifications.map((notification: any, index: any) => {
+                    !loading && userNotifications.map((notification: any, index: any) => {
                         return (
                             <a href={notification.target} key={index} className={`flex flex-row items-center justify-between transition-all hover:bg-slate-50 p-2 ${notification.action === "DANGER" && "bg-red-50"}`}>
                                 <div className="flex flex-row items-center">

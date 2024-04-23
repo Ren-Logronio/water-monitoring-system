@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
         let pondId;
         {
             console.log("Getting Ponds");
-            const [results, rows] = await connection.query("SELECT * FROM `ponds` WHERE `device_id` = ?", [device_id]);
+            const [results]: any = await connection.query("SELECT * FROM `ponds` WHERE `device_id` = ?", [device_id]);
             pondId = results[0].pond_id;
         }
         {
@@ -33,20 +33,20 @@ export async function POST(request: NextRequest) {
                 [pondId]
             );
             results.forEach(async (param: any) => {
-                const [results, rows] = await connection.query("SELECT * FROM `parameter_thresholds` WHERE `parameter_id` = ?", [param.parameter_id]);
+                const [results]: any[] = await connection.query("SELECT * FROM `parameter_thresholds` WHERE `parameter_id` = ?", [param.parameter_id]);
                 console.log("Checking param thresholds")
                 results.forEach((threshold: any) => {
                     if (threshold.type === "GT") {
                         if (Number(parameters[param.parameter]) > threshold.target) {
-                            console.log("Parameter is exceeding limits")
+                            console.log("Parameter is exceeding limits");
                         }
                     } else if (threshold.type === "LT") {
                         if (Number(parameters[param.parameter] < threshold.target)) {
-                            console.log("Parameter is under")
+                            console.log("Parameter is under");
                         }
                     } else if (threshold.type === "EQ") {
                         if (Number(parameters[param.parameter]) >= (threshold.target - threshold.error) && Number(parameters[param.parameter]) <= (threshold.target + threshold.error)) {
-                            console.log("Parameter is reaching threshold")
+                            console.log("Parameter is reaching threshold"); 
                         }
                     }
                     console.log("Parameter value is nominal");
