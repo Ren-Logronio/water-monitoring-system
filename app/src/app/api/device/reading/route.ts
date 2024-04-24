@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import getMySQLConnection from "@/db/mysql";
 import axios from "axios";
+import { ResultSetHeader, RowDataPacket } from "mysql2";
 
 export async function POST(request: NextRequest) {
     try {
         const { device_id, ...parameters } = await request.json();
+        if (!device_id) return NextResponse.json({ message: "missing device id" }, { status: 400 });
         const connection = await getMySQLConnection();
         console.log("GEtting device");
         const [results, rows]: [results: any[], rows: any[]] = await connection.query(
@@ -33,9 +35,11 @@ export async function POST(request: NextRequest) {
         const [thresholds]: any = await connection.query("SELECT * FROM `parameter_thresholds`");
         pondParameters.forEach(async (param: any) => {
             console.log("Inserting:", param, parameters[param.parameter]);
-            connection.query("INSERT INTO `readings` (`parameter_id`, `value`) VALUES (?, ?)", [param.parameter_id, Number(parameters[param.parameter])]);
-
+            const [readingsResultHeader] = await connection.query("INSERT INTO `readings` (`parameter_id`, `value`) VALUES (?, ?)", [param.parameter_id, Number(parameters[param.parameter])]);
+            const readingId = (readingsResultHeader as ResultSetHeader).insertId;
             console.log("Checking param thresholds");
+            const [farmers]: any = await connection.query("SELECT * FROM `farm_farmer` WHERE `farm_id` = ?", [ponds[0].farm_id]);
+            console.log("FARMERS:", farmers);
             thresholds
                 .filter((threshold: any) => threshold.parameter === param.parameter)
                 .forEach((threshold: any) => {
@@ -43,16 +47,28 @@ export async function POST(request: NextRequest) {
                         case "LT":
                             if (Number(parameters[param.parameter]) < (threshold.value + threshold.error)) {
                                 console.log("Threshold LT breached:", param, parameters[param.parameter]);
+                                farmers.forEach(async (farmer: any) => {
+                                    // user threshold reading id
+                                    await connection.query("INSERT INTO `reading_notifications` (`user_id`, `threshold_id`, `reading_id`) VALUES (?, ?, ?)", [farmer.farmer_id, threshold.threshold_id, readingId]);
+                                });
                             }
                             break;
                         case "GT":
                             if (Number(parameters[param.parameter]) > (threshold.target - threshold.error)) {
                                 console.log("Threshold GT breached:", param, parameters[param.parameter]);
+                                farmers.forEach(async (farmer: any) => {
+                                    // user threshold reading id
+                                    await connection.query("INSERT INTO `reading_notifications` (`user_id`, `threshold_id`, `reading_id`) VALUES (?, ?, ?)", [farmer.farmer_id, threshold.threshold_id, readingId]);
+                                });
                             }
                             break;
                         case "EQ":
                             if (Number(parameters[param.parameter]) > (threshold.target - threshold.error) && Number(parameters[param.parameter]) < (threshold.value + threshold.error)) {
                                 console.log("Threshold EQ breached:", param, parameters[param.parameter]);
+                                farmers.forEach(async (farmer: any) => {
+                                    // user threshold reading id
+                                    await connection.query("INSERT INTO `reading_notifications` (`user_id`, `threshold_id`, `reading_id`) VALUES (?, ?, ?)", [farmer.farmer_id, threshold.threshold_id, readingId]);
+                                });
                             }
                             break;
                         default:
