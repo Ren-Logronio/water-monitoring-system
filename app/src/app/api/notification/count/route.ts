@@ -1,5 +1,6 @@
 import getMySQLConnection from "@/db/mysql";
 import getUserInfo from "@/utils/User";
+import { count } from "console";
 import { NextApiRequest } from "next";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
@@ -10,12 +11,16 @@ export async function GET(request: NextRequest) {
         const cookieToken = cookies().get('token')?.value;
         const connection = await getMySQLConnection();
         const { user_id } = await getUserInfo(cookieToken);
-        const [results, rows]: [results: any[], rows: any[]] = await connection.query(
+        const [user_notifs]: any = await connection.query(
             "SELECT * FROM `view_user_notifications_count` WHERE `user_id` = ? LIMIT 1",
             [user_id]
         );
+        const [reading_notifs]: any = await connection.query("SELECT * FROM `view_reading_notifications_count` WHERE `user_id` = ? LIMIT 1", 
+            [user_id]
+        );
+        const totalCount: number = user_notifs[0].count + reading_notifs[0].count;
         return NextResponse.json(
-            { results },
+            { count: totalCount },
             {
                 status: 200,
             },
