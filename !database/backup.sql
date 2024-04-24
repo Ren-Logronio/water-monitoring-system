@@ -23,7 +23,7 @@ USE `water-monitoring-system-db`;
 CREATE TABLE IF NOT EXISTS `devices` (
   `device_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `status` varchar(8) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'IDLE',
-  `last_established_connection` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `last_established_connection` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`device_id`),
   KEY `device_status` (`status`),
   CONSTRAINT `device_status` FOREIGN KEY (`status`) REFERENCES `device_statuses` (`status`) ON UPDATE CASCADE
@@ -31,8 +31,6 @@ CREATE TABLE IF NOT EXISTS `devices` (
 
 -- Dumping data for table water-monitoring-system-db.devices: ~0 rows (approximately)
 DELETE FROM `devices`;
-INSERT INTO `devices` (`device_id`, `status`, `last_established_connection`) VALUES
-	('6342b0b7-2448-4951-b5d3-70027891f467', 'ACTIVE', '2024-04-21 13:18:27');
 
 -- Dumping structure for table water-monitoring-system-db.device_statuses
 CREATE TABLE IF NOT EXISTS `device_statuses` (
@@ -54,14 +52,13 @@ CREATE TABLE IF NOT EXISTS `farms` (
   `address_street` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
   `address_city` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
   `address_province` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `wallpaper` mediumblob,
   PRIMARY KEY (`farm_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table water-monitoring-system-db.farms: ~0 rows (approximately)
 DELETE FROM `farms`;
-INSERT INTO `farms` (`farm_id`, `name`, `address_street`, `address_city`, `address_province`, `wallpaper`) VALUES
-	(1, 'RD Farm', 'Jungle Street', 'General Santos City', 'South Cotabato', NULL);
+INSERT INTO `farms` (`farm_id`, `name`, `address_street`, `address_city`, `address_province`) VALUES
+	(1, 'RD Farm', 'Jungle Street', 'General Santos City', 'South Cotabato');
 
 -- Dumping structure for table water-monitoring-system-db.farm_farmer
 CREATE TABLE IF NOT EXISTS `farm_farmer` (
@@ -107,17 +104,13 @@ CREATE TABLE IF NOT EXISTS `parameters` (
   CONSTRAINT `parameter_pond_id` FOREIGN KEY (`pond_id`) REFERENCES `ponds` (`pond_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.parameters: ~4 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.parameters: ~8 rows (approximately)
 DELETE FROM `parameters`;
 INSERT INTO `parameters` (`parameter_id`, `pond_id`, `parameter`) VALUES
-	(105, 19, 'TMP'),
-	(106, 19, 'PH'),
-	(107, 19, 'TDS'),
-	(108, 19, 'AMN'),
-	(109, 20, 'TMP'),
-	(110, 20, 'PH'),
-	(111, 20, 'TDS'),
-	(112, 20, 'AMN');
+	(117, 22, 'TMP'),
+	(118, 22, 'PH'),
+	(119, 22, 'TDS'),
+	(120, 22, 'AMN');
 
 -- Dumping structure for table water-monitoring-system-db.parameter_list
 CREATE TABLE IF NOT EXISTS `parameter_list` (
@@ -210,8 +203,7 @@ CREATE TABLE IF NOT EXISTS `ponds` (
 -- Dumping data for table water-monitoring-system-db.ponds: ~0 rows (approximately)
 DELETE FROM `ponds`;
 INSERT INTO `ponds` (`pond_id`, `device_id`, `farm_id`, `name`, `width`, `length`, `depth`, `method`) VALUES
-	(19, '6342b0b7-2448-4951-b5d3-70027891f467', 1, 'My Pond', 0, 0, 0, 'NONE'),
-	(20, NULL, 1, 'wewe', 0, 0, 0, 'SEMI-INTENSIVE');
+	(22, NULL, 1, 'My Pond test', 0, 0, 0, 'SEMI-INTENSIVE');
 
 -- Dumping structure for table water-monitoring-system-db.pond_methods
 CREATE TABLE IF NOT EXISTS `pond_methods` (
@@ -233,8 +225,8 @@ CREATE TABLE IF NOT EXISTS `readings` (
   `reading_id` int NOT NULL AUTO_INCREMENT,
   `parameter_id` int DEFAULT NULL,
   `value` double NOT NULL DEFAULT '0',
-  `recorded_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `modified_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `recorded_at` timestamp NOT NULL DEFAULT (now()),
+  `modified_at` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
   `isRecordedBySensor` tinyint NOT NULL DEFAULT '1',
   PRIMARY KEY (`reading_id`),
   KEY `reading_parameter_id` (`parameter_id`),
@@ -244,7 +236,7 @@ CREATE TABLE IF NOT EXISTS `readings` (
 -- Dumping data for table water-monitoring-system-db.readings: ~1 rows (approximately)
 DELETE FROM `readings`;
 INSERT INTO `readings` (`reading_id`, `parameter_id`, `value`, `recorded_at`, `modified_at`, `isRecordedBySensor`) VALUES
-	(6, NULL, 23, '2024-04-10 23:03:00', '2024-04-22 15:28:43', 0);
+	(26, 120, 1.5, '2024-04-24 23:12:17', '2024-04-24 23:12:17', 1);
 
 -- Dumping structure for table water-monitoring-system-db.reading_notifications
 CREATE TABLE IF NOT EXISTS `reading_notifications` (
@@ -252,15 +244,15 @@ CREATE TABLE IF NOT EXISTS `reading_notifications` (
   `user_id` int NOT NULL,
   `reading_id` int NOT NULL,
   `threshold_id` int NOT NULL,
-  `issued_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `issued_at` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
   `isRead` tinyint DEFAULT '0',
-  `read_at` datetime DEFAULT NULL,
+  `read_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`reading_notification_id`) USING BTREE,
   KEY `sensor_notification_threshold_id` (`threshold_id`),
   KEY `sensor_notification_reading_id` (`reading_id`),
   KEY `sensor_notification_user_id` (`user_id`),
   CONSTRAINT `FK_reading_notifications_parameter_thresholds` FOREIGN KEY (`threshold_id`) REFERENCES `parameter_thresholds` (`threshold_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `sensor_notification_reading_id` FOREIGN KEY (`reading_id`) REFERENCES `readings` (`reading_id`) ON UPDATE CASCADE,
+  CONSTRAINT `sensor_notification_reading_id` FOREIGN KEY (`reading_id`) REFERENCES `readings` (`reading_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `sensor_notification_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -303,12 +295,8 @@ CREATE TABLE IF NOT EXISTS `user_notifications` (
   CONSTRAINT `notification_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.user_notifications: ~0 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.user_notifications: ~3 rows (approximately)
 DELETE FROM `user_notifications`;
-INSERT INTO `user_notifications` (`notification_id`, `user_id`, `action`, `message`, `issued_at`, `isRead`, `read_at`) VALUES
-	(2, 1, 'WARN', 'Warning User Notif', '2024-04-23 11:33:32', 0, NULL),
-	(3, 1, 'INFO', 'Info User Notif', '2024-04-23 11:33:46', 0, NULL),
-	(4, 1, 'ALRT', 'Alert Info Message', '2024-04-23 11:34:03', 0, NULL);
 
 -- Dumping structure for view water-monitoring-system-db.view_dashboard_ponds_monitored
 -- Creating temporary table to overcome VIEW dependency errors
@@ -338,7 +326,7 @@ CREATE TABLE `view_farmer_ponds` (
 	`pond_id` INT(10) NOT NULL,
 	`device_id` CHAR(36) NULL COLLATE 'utf8mb4_unicode_ci',
 	`status` VARCHAR(8) NULL COLLATE 'utf8mb4_unicode_ci',
-	`last_established_connection` DATETIME NULL,
+	`last_established_connection` TIMESTAMP NULL,
 	`name` VARCHAR(32) NOT NULL COLLATE 'utf8mb4_unicode_ci',
 	`width` DOUBLE NULL,
 	`length` DOUBLE NULL,
@@ -382,8 +370,8 @@ CREATE TABLE `view_pond_parameter_readings` (
 	`name` VARCHAR(64) NOT NULL COLLATE 'utf8mb4_unicode_ci',
 	`unit` VARCHAR(16) NOT NULL COLLATE 'utf8mb4_unicode_ci',
 	`value` DOUBLE NOT NULL,
-	`recorded_at` DATETIME NOT NULL,
-	`modified_at` DATETIME NOT NULL,
+	`recorded_at` TIMESTAMP NOT NULL,
+	`modified_at` TIMESTAMP NOT NULL,
 	`isRecordedBySensor` TINYINT(3) NOT NULL
 ) ENGINE=MyISAM;
 
