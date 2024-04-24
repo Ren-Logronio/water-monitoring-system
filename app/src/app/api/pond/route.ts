@@ -1,5 +1,6 @@
 import getMySQLConnection from "@/db/mysql";
 import getUserInfo from "@/utils/User";
+import { ResultSetHeader } from "mysql2";
 import { NextApiRequest } from "next";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
@@ -33,10 +34,10 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const connection = await getMySQLConnection();
-    const { farm_id, name, width, length, depth, method } = await req.json();
-    const pondInsertResult = await connection.query(
+    const {device_id, farm_id, name, width, length, depth, method } = await req.json();
+    await connection.query(
       "INSERT INTO `ponds` (`device_id`, `farm_id`, `name`, `width`, `length`, `depth`, `method`) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [null, farm_id, name, width, length, depth, method]
+      [(device_id || null), farm_id, name, width, length, depth, method]
     );
     return NextResponse.json(
       { message: "Pond inserted successfully" },

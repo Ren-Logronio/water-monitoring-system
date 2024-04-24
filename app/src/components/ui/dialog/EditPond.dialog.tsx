@@ -110,7 +110,7 @@ export default function EditPondDialog({ farm_id, page }: { farm_id: number, pag
             {/* Dashboard page */}
             {page === "dashboard" &&
                 <Button variant="addBtn_orange_outline">
-                    + Add new pond
+                    +  Edit pond
                 </Button>
             }
 
