@@ -60,12 +60,19 @@ const ParameterGraph: FC<Props> = ({ readings, parameter, hover, thresholds }) =
                 <ReferenceArea y1={undefined} />
                 {
                     thresholds?.map((threshold: any) => {
-                        return <ReferenceArea 
-                        label="threshold"
-                        y1={threshold.type === "GT" ? Number(threshold.target) : undefined} 
-                        y2={threshold.type === "LT" ? Number(threshold.target) : undefined} 
-                        fill={`${threshold.action === "ALRT" ? "#ff0000" : threshold.action === "WARN" ? "#e8a72e" : "#293447"}`} 
-                        opacity={0.25} />
+                        return <>
+                            <ReferenceLine 
+                                y={Number(threshold.target)} 
+                                fontSize={1}
+                                label={threshold.action === "ALRT" ? "Alert" : threshold.action === "WARN" ? "Warning" : undefined} 
+                                stroke={threshold.action === "ALRT" ? "#ff0000" : threshold.action === "WARN" ? "#e8a72e" : "#293447"}
+                                strokeDasharray="3 3" />
+                            <ReferenceArea 
+                            y1={threshold.type === "GT" ? Number(threshold.target) : undefined} 
+                            y2={threshold.type === "LT" ? Number(threshold.target) : undefined} 
+                            fill={`${threshold.action === "ALRT" ? "#ff0000" : threshold.action === "WARN" ? "#e8a72e" : "#293447"}`} 
+                            opacity={0.25} />
+                        </>
                     })
                 }
                 {/* Add ReferenceLine for threshold
