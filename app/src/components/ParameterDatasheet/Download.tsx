@@ -1,6 +1,6 @@
 import { useParams } from "next/navigation";
 import { Button } from "../ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { useState } from "react";
 import { useParameterDatasheetStore } from "@/store/parameterDatasheetStore";
 import axios from "axios";
@@ -11,7 +11,7 @@ export default function Download({ pond_id }: { pond_id?: string }) {
     const { rowData } = useParameterDatasheetStore();
     const { parameter } = useParams();
 
-    const handleDownload = (format: string) => {
+    const handleDownload = (format: string, all: boolean | undefined = false) => {
         return () => {
             setLoading(true);
             axios.get(`/api/download?format=${format}&pond_id=${pond_id}&parameter=${parameter}`).then(res => {
@@ -34,10 +34,15 @@ export default function Download({ pond_id }: { pond_id?: string }) {
                     <p>{loading ? "Downloading.." : "Download"}</p>
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
+            <DropdownMenuContent className="w-56 mr-4">
                 <DropdownMenuItem onClick={handleDownload("csv")} className=" cursor-pointer">CSV</DropdownMenuItem>
                 <DropdownMenuItem onClick={handleDownload("pdf")} className=" cursor-pointer">PDF</DropdownMenuItem>
                 <DropdownMenuItem onClick={handleDownload("spreadsheet")} className=" cursor-pointer">Spreadsheet</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuLabel className="text-xs">All Parameters</DropdownMenuLabel>
+                <DropdownMenuItem onClick={handleDownload("csv", true)} className=" cursor-pointer">CSV</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleDownload("pdf", true)} className=" cursor-pointer">PDF</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleDownload("spreadsheet", true)} className=" cursor-pointer">Spreadsheet</DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     )

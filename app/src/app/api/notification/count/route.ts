@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
         const [reading_notifs]: any = await connection.query("SELECT * FROM `view_reading_notifications_count` WHERE `user_id` = ? LIMIT 1", 
             [user_id]
         );
-        const totalCount: number = user_notifs[0].count + reading_notifs[0].count;
+        const totalCount: number = (user_notifs[0]?.count || 0) + (reading_notifs[0]?.count || 0);
         return NextResponse.json(
             { count: totalCount },
             {

@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { verify } from "@/utils/Jwt";
-import getMySQLConnection from "@/db/mysql";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers)
   const cookieToken = request.cookies.get("token")?.value;
 
@@ -12,7 +11,7 @@ export function middleware(request: NextRequest) {
   }
   
   if (cookieToken) {
-    verify(cookieToken).then(res => {
+    verify(cookieToken).then(async (res) => {
       if(!res) {
         return NextResponse.redirect(new URL("/signin?signout", request.url));
       }
@@ -32,5 +31,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/signin", "/api/user/:path", "/dashboard", "/dashboard/:path"],
+  matcher: ["/:path", "/signin", "/api/user/:path", "/dashboard", "/dashboard/:path"],
 };

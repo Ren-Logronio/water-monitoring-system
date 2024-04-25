@@ -2,7 +2,7 @@
 
 import { useParams, useSearchParams } from "next/navigation";
 import { format } from "date-fns";
-import { use, useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, use, useEffect, useRef, useState } from "react";
 import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-material.css";
@@ -34,7 +34,7 @@ const autoSizeStrategy: any = {
 };
 
 
-export default function ParameterDatasheet({ pond_id }: { pond_id?: string }) {
+export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, pondsLoading }: { pond_id?: string, ponds?: any[], pondsLoading: boolean, setSelectedPond: Dispatch<SetStateAction<string>>}) {
     // get parameter from the url
     const params = useParams();
     const { rowData, setRowData, purgeRowData } = useParameterDatasheetStore();
@@ -85,17 +85,31 @@ export default function ParameterDatasheet({ pond_id }: { pond_id?: string }) {
                 !loading && <>
                     <div className="flex flex-row items-center justify-between">
                         <div className="flex flex-row items-center space-x-2">
-
+                            {
+                                !loading && !!ponds && ponds.length > 0 && <>
+                                    <Select value={pond_id} onValueChange={setSelectedPond}>
+                                        <SelectTrigger className="w-[180px] border-2 border-orange-300 bg-orange-50 focus-visible:ring-blue-200/40 focus-visible:ring-4 shadow-none rounded-2xl">
+                                            <SelectValue placeholder="Select Pond" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {
+                                                ponds.map(
+                                                    (pond) => <SelectItem key={pond.pond_id} value={pond.pond_id}>{pond.name}</SelectItem>
+                                                )
+                                            }
+                                            {/* <SelectItem value="light">Light</SelectItem> */}
+                                        </SelectContent>
+                                    </Select>
+                                </>
+                            }
                             <AddReading pond_id={pond_id} />
-
-
-                            <Button variant="outline" onClick={handleFileImportPress} className="flex flex-row space-x-2">
+                            {/* <Button variant="outline" onClick={handleFileImportPress} className="flex flex-row space-x-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
                                     <path d="M9.25 13.25a.75.75 0 0 0 1.5 0V4.636l2.955 3.129a.75.75 0 0 0 1.09-1.03l-4.25-4.5a.75.75 0 0 0-1.09 0l-4.25 4.5a.75.75 0 1 0 1.09 1.03L9.25 4.636v8.614Z" />
                                     <path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z" />
                                 </svg>
                                 <p>Import file</p>
-                            </Button>
+                            </Button> */}
                             <Input type="file" ref={inputFile} accept=".csv" className="hidden" />
                         </div>
                         <div className="flex flex-row space-x-2">
