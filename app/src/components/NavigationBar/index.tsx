@@ -76,7 +76,7 @@ export default function NavigationBar({ children }: NavigationBarProps): React.R
                     <NavigationButton disabled={navBarLoading || farm.none} path="/dashboard" imagePath="/dashboard.png" text="Dashboard" />
                     <NavigationButton disabled={navBarLoading || farm.none} path="/farm" imagePath="/farm.png" text="Farm" />
                     <NavigationButton disabled={navBarLoading || farm.none} path="/staff" imagePath="/staff.png" text="Staff" />
-                    <NavigationButton disabled={navBarLoading || farm.none} path="/preferences" imagePath="/preferences.png" text="Preferences" />
+                    {/* <NavigationButton disabled={navBarLoading || farm.none} path="/preferences" imagePath="/preferences.png" text="Preferences" /> */}
                 </div>
 
                 <Separator className="bg-indigo-100" />
