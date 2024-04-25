@@ -89,8 +89,13 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
                     }
 
                     {/* if all parameters have no data */}
-                    {parameters.filter(i => i.hidden).length === parameters.length &&
+                    {   parameters.filter(i => i.hidden && i.unshowable).length === parameters.length &&
                         <p className="text-xl text-center m-auto">This pond has no data readings yet</p>
+                    }
+
+                    {/** if all params are hidden but have data */}
+                    {   parameters.filter(i => i.hidden).length === parameters.length &&
+                        <p className="text-xl text-center m-auto">No parameters visible, try showing the parameters above</p>
                     }
                 </>
             }

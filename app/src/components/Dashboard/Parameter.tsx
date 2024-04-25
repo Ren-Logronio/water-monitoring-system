@@ -35,6 +35,8 @@ export default function Parameter({ parameter, hideCallback }: { parameter: any,
     const [loading, setLoading] = useState(true);
     const [thresholds, setThresholds] = useState<any[]>([]);
     const containingDiv = createRef<HTMLDivElement>();
+    const [aggregation, setAggregation] = useState<"realtime" | "hour" | "day" | "week" | "month">("hour");
+    const [action, setAction] = useState<"ALRT" | "WARN" | "INFO" | "NONE">("NONE");
     const router = useRouter();
     // const chartDimensions = useDimensions(containingDiv);
 
@@ -55,11 +57,29 @@ export default function Parameter({ parameter, hideCallback }: { parameter: any,
         });
     }, [parameter]);
 
+    useEffect(() => {
+        if (loading) return;
+        const triggeredThresholdActions = thresholds.filter((threshold) => {
+            if (threshold.type === "GT") {
+                return readings.some((reading) => reading.value > threshold.target);
+            } else if (threshold.type === "LT") {
+                return readings.some((reading) => reading.value < threshold.target);
+            }
+        });
+        if(triggeredThresholdActions.find(threshold => threshold.action === "INFO")) setAction("INFO");
+        if(triggeredThresholdActions.find(threshold => threshold.action === "WARN")) setAction("WARN");
+        if(triggeredThresholdActions.find(threshold => threshold.action === "ALRT")) setAction("ALRT");
+    }, [readings, thresholds, loading]);
+
+    useEffect(() => {
+        console.log("action", action);
+    }, [action]);
 
     // update the hover state when mouse enters and leaves the div
     const handleMouseEnter = () => {
         setHover(true);
     }
+    
     const handleMouseLeave = () => {
         setHover(false);
     }
@@ -75,7 +95,7 @@ export default function Parameter({ parameter, hideCallback }: { parameter: any,
             {!loading && readings.length > 0 &&
                 <>
                     <div className={`absolute z-40 size-full flex flex-col justify-end transition-all ${hover ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-                        <div className="text-blue-900 mx-7 mb-4">
+                        <div className={`${action === "ALRT" ? `text-red-900` : action === "WARN" ? `text-orange-900` : "text-blue-900"} mx-7 mb-4`}>
                             <h1 className="text-[20px] leading-[28px] font-medium">{parameter.name}</h1>
                             <div className="flex flex-row items-center space-x-2">
                                 <p className="text-[40px] leading-[32px] m-0 font-semibold">{readings[readings.length - 1].value}</p>
@@ -84,12 +104,12 @@ export default function Parameter({ parameter, hideCallback }: { parameter: any,
                             <p className="text-[14px] font-normal m-0">Last recorded reading</p>
                         </div>
                     </div>
-                    <img src="./gradient-blue.png" className={`absolute bottom-0 left-0 z-30 ${hover ? 'opacity-0 pointer-events-none' : 'opacity-100'}`} />
+                    <img src={action === "ALRT" ? `./gradient-red.png` : action === "WARN" ? `./gradient-yellow.png` : `./gradient-blue.png`} className={`absolute bottom-0 left-0 z-30 ${hover ? 'opacity-0 pointer-events-none' : 'opacity-100'}`} />
 
                     {/* Graph action buttons */}
                     <div className={`absolute z-40 top-0 left-0 min-w-full min-h-[20px] flex flex-row justify-end pt-2 pr-2`}>
                         <Button onClick={() => hideCallback(parameter)} variant="ghost" className="p-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#354f94" className="w-6 h-6">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                             </svg>
