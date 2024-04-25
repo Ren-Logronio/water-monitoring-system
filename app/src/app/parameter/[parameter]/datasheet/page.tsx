@@ -30,28 +30,28 @@ export default function Datasheet() {
         }).catch(error => {
             console.error(error);
         })
-    }, [])
+    }, []);
 
     return (
         <div className="flex flex-col p-4 space-y-4">
             <div className="flex flex-row items-center space-x-4">
-                <p className="text-xl font-semibold m-0 p-0">Datasheet</p>
+                {/* <p className="text-xl font-semibold m-0 p-0"></p> */}
                 {
-                    !loading && ponds.length > 0 && <>
-                        <Select value={selectedPond} onValueChange={setSelectedPond}>
-                            <SelectTrigger className="w-[180px] border-2 border-orange-300 bg-orange-50 focus-visible:ring-blue-200/40 focus-visible:ring-4 shadow-none rounded-2xl">
-                                <SelectValue placeholder="Select Pond" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {
-                                    ponds.map(
-                                        (pond) => <SelectItem key={pond.pond_id} value={pond.pond_id}>{pond.name}</SelectItem>
-                                    )
-                                }
-                                {/* <SelectItem value="light">Light</SelectItem> */}
-                            </SelectContent>
-                        </Select>
-                    </>
+                    // !loading && ponds.length > 0 && <>
+                    //     <Select value={selectedPond} onValueChange={setSelectedPond}>
+                    //         <SelectTrigger className="w-[180px] border-2 border-orange-300 bg-orange-50 focus-visible:ring-blue-200/40 focus-visible:ring-4 shadow-none rounded-2xl">
+                    //             <SelectValue placeholder="Select Pond" />
+                    //         </SelectTrigger>
+                    //         <SelectContent>
+                    //             {
+                    //                 ponds.map(
+                    //                     (pond) => <SelectItem key={pond.pond_id} value={pond.pond_id}>{pond.name}</SelectItem>
+                    //                 )
+                    //             }
+                    //             {/* <SelectItem value="light">Light</SelectItem> */}
+                    //         </SelectContent>
+                    //     </Select>
+                    // </>
                 }
             </div>
 
@@ -63,7 +63,7 @@ export default function Datasheet() {
             }
 
             {
-                !loading && selectedPond && <ParameterDatasheet pond_id={selectedPond} />
+                !loading && selectedPond && <ParameterDatasheet pondsLoading={loading} ponds={ponds} pond_id={selectedPond} setSelectedPond={setSelectedPond} />
             }
         </div>
     )

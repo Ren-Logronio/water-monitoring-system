@@ -7,6 +7,7 @@ import { NinetyRing } from "react-svg-spinners";
 import { Button } from "../ui/button";
 import moment from "moment";
 import ParameterGraph from "./Parameter/Parameter.graph";
+import { useRouter } from "next/navigation";
 
 
 // const useDimensions = (containingDiv: any) => { 
@@ -33,13 +34,13 @@ export default function Parameter({ parameter, hideCallback }: { parameter: any,
     const [hover, setHover] = useState<boolean>(false);
     const [loading, setLoading] = useState(true);
     const containingDiv = createRef<HTMLDivElement>();
+    const router = useRouter();
     // const chartDimensions = useDimensions(containingDiv);
 
     useEffect(() => {
         axios.get(`/api/reading?parameter_id=${parameter.parameter_id}`).then((response) => {
             if (response.data.results && response.data.results.length > 0) {
                 setReadings(response.data.results.sort((a: any, b: any) => moment(a.recorded_at).diff(b.recorded_at)));
-
             }
         }).catch((error) => {
             console.error(error);
@@ -81,15 +82,15 @@ export default function Parameter({ parameter, hideCallback }: { parameter: any,
 
                     {/* Graph action buttons */}
                     <div className={`absolute z-40 top-0 left-0 min-w-full min-h-[20px] flex flex-row justify-end pt-2 pr-2`}>
-                        <Button variant="ghost" className="p-2">
+                        <Button onClick={() => router.push(`/parameter/${parameter.name.toLowerCase()}/datasheet`)} variant="ghost" className="p-2">
                             <img src="./edit-logo.png" className="size-5" />
                         </Button>
-                        <Button variant="ghost" className="p-2">
+                        {/* <Button variant="ghost" className="p-2">
                             <img src="./print-logo.png" className="size-5" />
                         </Button>
                         <Button variant="ghost" className="p-2">
                             <img src="./gear-logo.png" className="size-5" />
-                        </Button>
+                        </Button> */}
                     </div>
 
                     {/* Parameter graphs */}
