@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useEffect } from "react";
+import { FC, useEffect, useMemo } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, ReferenceArea } from 'recharts';
 import { format } from "date-fns";
 
@@ -14,6 +14,23 @@ interface Props {
 }
 
 const ParameterGraph: FC<Props> = ({ readings, parameter, hover, thresholds }) => {
+    const peakReading = useMemo(() => {
+        return readings.reduce((prev, current) => (prev.value > current.value) ? prev : current);
+    }, [readings]);
+    const throughReading = useMemo(() => {
+        return readings.reduce((prev, current) => (prev.value < current.value) ? prev : current);
+    }, [readings]);
+    const minDomain = useMemo(() => {
+        return (thresholds && thresholds.length && thresholds.find(threshold => threshold.type === "LT") && thresholds.find(threshold => threshold.type === "LT").target - 5) || 0;
+    }, [thresholds]);
+    const maxDomain = useMemo(() => {
+        return (thresholds && thresholds.length && thresholds.find(threshold => threshold.type === "GT") && thresholds.find(threshold => threshold.type === "GT").target + 5) || 50
+    }, [thresholds])
+
+    useEffect(() => {
+        console.log("PEAK", peakReading);
+        console.log("THROUGH", throughReading);
+    }, [peakReading, throughReading]);
 
     // format readings to be used in the graph
     const data = readings.map((reading) => {
@@ -37,12 +54,9 @@ const ParameterGraph: FC<Props> = ({ readings, parameter, hover, thresholds }) =
             >
                 <CartesianGrid strokeDasharray="1 1" />
                 <XAxis dataKey="date" color="#aaaaaa" />
-                <YAxis dataKey={parameter.name} color="#aaaaaa"  domain={[ 
-                    (thresholds && thresholds.length && thresholds.find(threshold => threshold.type === "LT") && thresholds.find(threshold => threshold.type === "LT").target - 5) || 0,
-                    (thresholds && thresholds.length && thresholds.find(threshold => threshold.type === "GT") && thresholds.find(threshold => threshold.type === "GT").target + 5) || 50
-                    ]}/>
+                <YAxis dataKey={parameter.name} color="#aaaaaa"  domain={[minDomain, maxDomain]}/>
                 <Tooltip />
-                <Line type="monotone" dataKey={parameter.name} stroke="#8884d8" activeDot={{ r: 5 }} />
+                <Line type="monotone" dataKey={parameter.name} stroke="#205083" strokeLinecap="round" activeDot={{ r: 5 }} />
                 <ReferenceArea y1={undefined} />
                 {
                     thresholds?.map((threshold: any) => {
@@ -51,7 +65,7 @@ const ParameterGraph: FC<Props> = ({ readings, parameter, hover, thresholds }) =
                         y1={threshold.type === "GT" ? Number(threshold.target) : undefined} 
                         y2={threshold.type === "LT" ? Number(threshold.target) : undefined} 
                         fill={`${threshold.action === "ALRT" ? "#ff0000" : threshold.action === "WARN" ? "#e8a72e" : "#293447"}`} 
-                        fillOpacity={0.2} />
+                        opacity={0.25} />
                     })
                 }
                 {/* Add ReferenceLine for threshold
