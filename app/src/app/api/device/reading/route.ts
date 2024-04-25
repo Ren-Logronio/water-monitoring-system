@@ -25,8 +25,12 @@ export async function POST(request: NextRequest) {
         console.log("Getting Ponds");
 
         const [ponds]: any = await connection.query("SELECT * FROM `ponds` WHERE `device_id` = ?", [device_id]);
+        if(!ponds || !ponds.length) {
+            console.log("POND: not found");
+            return NextResponse.json({ message: "no pond found" }, { status: 200 });
+        };
         const pondId = ponds[0].pond_id;
-
+    
         console.log("Getting parameters");
         const [pondParameters]: [results: any[], rows: any[]] = await connection.query(
             "SELECT * FROM `view_pond_parameters` WHERE `pond_id` = ?",
