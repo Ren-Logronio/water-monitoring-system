@@ -33,6 +33,7 @@ export default function Parameter({ parameter, hideCallback }: { parameter: any,
     const [readings, setReadings] = useState<any[]>([]);
     const [hover, setHover] = useState<boolean>(false);
     const [loading, setLoading] = useState(true);
+    const [thresholds, setThresholds] = useState<any[]>([]);
     const containingDiv = createRef<HTMLDivElement>();
     const router = useRouter();
     // const chartDimensions = useDimensions(containingDiv);
@@ -42,10 +43,15 @@ export default function Parameter({ parameter, hideCallback }: { parameter: any,
             if (response.data.results && response.data.results.length > 0) {
                 setReadings(response.data.results.sort((a: any, b: any) => moment(a.recorded_at).diff(b.recorded_at)));
             }
+            axios.get(`/api/threshold?parameter=${parameter.parameter}`).then((response) => {
+                setThresholds(response.data.results);
+            }).catch((error) => {
+                console.log(error);
+            }).finally(() => {
+                setLoading(false);
+            });
         }).catch((error) => {
             console.error(error);
-        }).finally(() => {
-            setLoading(false);
         });
     }, [parameter]);
 
@@ -94,7 +100,7 @@ export default function Parameter({ parameter, hideCallback }: { parameter: any,
                     </div>
 
                     {/* Parameter graphs */}
-                    <ParameterGraph readings={readings} parameter={parameter} hover={hover} />
+                    <ParameterGraph readings={readings} parameter={parameter} hover={hover} thresholds={thresholds} />
                 </>
             }
 
