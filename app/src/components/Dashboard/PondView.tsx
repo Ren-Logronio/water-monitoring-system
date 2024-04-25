@@ -30,6 +30,17 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
         });
     }, [pond_id]);
 
+    const handleHideParameter = (parameter: any) => {
+        setParameters(parameters.map((i: any) => {
+            return i.parameter_id === parameter.parameter_id ? { ...i, hidden: true } : i;
+        }));
+    };
+
+    const handleShowParameter = (parameter: any) => {
+        setParameters(parameters.map((i: any) => {
+            return i.parameter_id === parameter.parameter_id ? { ...i, hidden: false } : i;
+        }));
+    };
 
     return (
         <div className="py-4 h-full mt-5">
@@ -48,10 +59,13 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
                         <div className="flex flex-row space-x-2 mb-10">
                             {parameters
                                 .filter(i => i.hidden)
+                                .sort((a, b) => Number(a.unshowable))
                                 .map(parameter => (
-                                    <Badge key={parameter.parameter_id} variant={"default"}>
-                                        {parameter.name}
-                                        &nbsp; --
+                                    <Badge key={parameter.parameter_id} 
+                                        variant={parameter.unshowable ? "secondary" : "default"}
+                                        className={`${!parameter.unshowable && "cursor-pointer"}`}
+                                        onClick={!parameter.unshowable ? () => {handleShowParameter(parameter)} : () => {}}>
+                                        {!parameter.unshowable && <>Show</>} {parameter.name} {parameter.unshowable && <>&nbsp; --</>}
                                     </Badge>
                                 )
                                 )}
@@ -67,7 +81,7 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
                                     <Parameter
                                         key={parameter.parameter_id}
                                         parameter={parameter}
-                                        hideCallback={(sensor: any) => { }} />
+                                        hideCallback={handleHideParameter} />
                                 )
                                 }
                             </div>
