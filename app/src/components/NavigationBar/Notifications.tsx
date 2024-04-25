@@ -171,7 +171,7 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
                 {
                     !loading && <>
                     <DropdownMenuSeparator></DropdownMenuSeparator>
-                    <div className="text-sm text-center">Reading Notifications</div>
+                    <div className="text-sm text-start px-4 pt-2">Readings</div>
                     {
                         readingNotification.map((notification: any, index: any) => <a 
                             onClick={handleMarkReadingNotificationAsRead(notification.reading_notification_id)}
@@ -227,7 +227,7 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
                 {
                     !loading && notificationToggle === "all" && userNotifications.length > 0 && <>
                     <DropdownMenuSeparator></DropdownMenuSeparator>
-                    <div className="text-sm text-center">Other notifications</div>
+                    <div className="text-sm text-center">Others</div>
                     <div className="flex flex-row justify-end">
                         <Button variant="ghost" className="text-[#205083] text-xs">Mark all as read</Button>
                     </div>
