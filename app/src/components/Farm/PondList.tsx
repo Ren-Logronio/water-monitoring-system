@@ -1,8 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import AddPondDialog from "../ui/dialog/AddPond.dialog";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { NinetyRing } from "react-svg-spinners";
 import { Badge } from "../ui/badge";
 import PondOptions from "./PondOptions";
@@ -52,7 +50,7 @@ export default function PondList({ farm_id }: { farm_id: number }) {
                             </div>
 
                             {/* dropdown options */}
-                            <PondOptions pond_id={pond.pond_id} deleteCallback={handleRemovePond} />
+                            <PondOptions pond_id={pond.pond_id} deleteCallback={handleRemovePond} pond_data={ponds} />
                         </div>
 
                         <div className="flex flex-col mt-1">
