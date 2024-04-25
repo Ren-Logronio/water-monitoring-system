@@ -415,7 +415,7 @@ CREATE TABLE `view_user_notifications_count` (
 ) ENGINE=MyISAM;
 
 -- Dumping structure for trigger water-monitoring-system-db.parameters_after_pond_insert
-SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
 CREATE TRIGGER `parameters_after_pond_insert` AFTER INSERT ON `ponds` FOR EACH ROW BEGIN
 	INSERT INTO parameters (pond_id, parameter)VALUES

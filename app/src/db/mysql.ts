@@ -2,7 +2,7 @@ import mysql from "mysql2/promise";
 
 let connection: any; 
 
-export default async function getMySQLConnection() {
+export default async function getMySQLConnection(): Promise<mysql.Connection> {
   if(!connection) { 
     connection = await mysql.createConnection({
       host: process.env.MYSQL_DB_HOST,
