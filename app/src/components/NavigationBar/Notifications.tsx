@@ -59,7 +59,7 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
             }).catch(error => {
                 console.error(error);
             });
-        }, 10000);
+        }, 1000);
         return () => clearInterval(updateCount);
     }, [])
 
@@ -87,6 +87,15 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
         console.log("NOTIFICATION TOGGLE", notificationToggle);
         if (!notificationToggle || !open) return;
         setLoading(true);
+        axios.get("/api/notification/count").then(response => {
+            if (response.data.count <= 0) {
+                setNotificationCount(0);
+                return;
+            };
+            setNotificationCount(response.data.count);
+        }).catch(error => {
+            console.error(error);
+        });
         if (notificationToggle === "all") {
             console.log("fetching notification");
             axios.get("/api/notification/reading")
@@ -175,9 +184,10 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
                     {
                         readingNotification.map((notification: any, index: any) => <a 
                             onClick={handleMarkReadingNotificationAsRead(notification.reading_notification_id)}
-                            href={`/reading?notification_id=${notification.reading_notification_id}`} 
-                            target="_blank" key={index} 
-                            className={`${notification.isRead && "opacity-50"} flex flex-row items-center justify-between transition-all hover:bg-slate-50 p-2 ${notification.action === "DANGER" && "bg-red-50"}`}>
+                            // href={`/reading?notification_id=${notification.reading_notification_id}`} 
+                            // target="_blank" 
+                            key={index} 
+                            className={`${notification.isRead && "opacity-80"} flex flex-row items-center justify-between transition-all hover:bg-slate-50 p-2 ${notification.action === "DANGER" && "bg-red-50"}`}>
                             <div className="flex flex-row items-center">
                                     <div className="flex min-w-6">
                                         {
