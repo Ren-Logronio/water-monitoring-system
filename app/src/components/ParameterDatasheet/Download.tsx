@@ -14,8 +14,17 @@ export default function Download({ pond_id }: { pond_id?: string }) {
     const handleDownload = (format: string, all: boolean | undefined = false) => {
         return () => {
             setLoading(true);
-            axios.get(`/api/download?format=${format}&pond_id=${pond_id}&parameter=${parameter}`).then(res => {
+            axios.get(`/api/download?format=${format}&pond_id=${pond_id}&parameter=${parameter}`, { responseType: "blob" }).then(res => {
                 console.log(res);
+                const blob = new Blob([res.data], { type: res.headers['content-type'] });
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', `downloaded-file.${format === 'spreadsheet' ? 'xlsx' : format}`);
+                document.body.appendChild(link);
+                link.click();
+                link?.parentNode?.removeChild(link);
+                window.URL.revokeObjectURL(url);
                 setLoading(false);
             }).catch(err => {
                 console.log(err);
