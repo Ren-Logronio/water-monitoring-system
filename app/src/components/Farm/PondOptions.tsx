@@ -27,15 +27,14 @@ interface Pond {
     message: string;
 }
 
-
-export default function PondOptions({ pond_id, deleteCallback, pond_data }: { pond_id: number, deleteCallback: (pond_id: number) => void, pond_data: any }) {
+export default function PondOptions({ pond_id, updateCallback, deleteCallback, pond_data }: { pond_id: number, updateCallback: (pond: Pond) => void, deleteCallback: (pond_id: number) => void, pond_data: any }) {
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
     const [openEditDialog, setOpenEditDialog] = useState(false);
 
     const [loading, setLoading] = useState(false);
-    const [currentPond, setCurrentPond] = useState<Pond | null>(null);
-    const ponds = pond_data;
+    const [currentPond, setCurrentPond] = useState<any>(null);
 
+    const ponds = pond_data;
 
     // function to handle delete pond
     const handleDelete = () => {
@@ -53,25 +52,7 @@ export default function PondOptions({ pond_id, deleteCallback, pond_data }: { po
     // function to handle input field updates
     const handleInputChange = (e: any) => {
         // switch case to handle input change
-        switch (e.target.name) {
-            case "name":
-                setCurrentPond({ ...currentPond as Pond, name: e.target.value });
-                break;
-            case "width":
-                setCurrentPond({ ...currentPond as Pond, width: e.target.value });
-                break;
-            case "length":
-                setCurrentPond({ ...currentPond as Pond, length: e.target.value });
-                break;
-            case "depth":
-                setCurrentPond({ ...currentPond as Pond, depth: e.target.value });
-                break;
-            case "device_id":
-                setCurrentPond({ ...currentPond as Pond, device_id: e.target.value });
-                break;
-            default:
-                break;
-        }
+        setCurrentPond({ ...currentPond, [e.target.name]: e.target.value });
 
     }
 
@@ -82,7 +63,7 @@ export default function PondOptions({ pond_id, deleteCallback, pond_data }: { po
 
     // for <Switch /> component
     const handleSwitchChange = (value: boolean) => {
-        setCurrentPond({ ...currentPond as Pond, device_id: value ? "" : null });
+        setCurrentPond({ ...currentPond as Pond, enter_device_id: value, device_id: value ? "" : null });
     }
 
 
@@ -117,15 +98,42 @@ export default function PondOptions({ pond_id, deleteCallback, pond_data }: { po
             return;
         }
 
-        // pakiayos ko sa axios request dria Rein
-        // me dont know how to do it
-        axios.put(`/api/pond?pond_id=${pond_id}`, currentPond).then(res => {
-            setLoading(false);
-            setOpenEditDialog(false);
-        }).catch(err => {
-            console.log(err);
-            setLoading(false);
-        })
+        if (currentPond.enter_device_id) {
+            console.log("device id:", currentPond.device_id);
+            axios.get(`/api/device?device_id=${currentPond.device_id}`).then(response => {
+                if (response.data.results && response.data.results.length <= 0) {
+                    setCurrentPond({ ...currentPond, status: "red", message: "This device id may not exists, or had not established a connection with the system" });
+                    setLoading(false);
+                    return;
+                }
+                setCurrentPond({ ...currentPond, message: `Device (${currentPond.device_id}) found`, status: "green" });
+                setTimeout(() => {
+                    const { device_id, name, width, length, depth, method } = currentPond;
+                    axios.patch("/api/device", { device_id: currentPond.device_id, status: "ACTIVE" }).then(response => {
+                        axios.patch("/api/pond", { pond_id, device_id, name, width, length, depth, method }).then(response => {
+                            setLoading(false);
+                            updateCallback({...currentPond, device_id: currentPond.device_id, status: "ACTIVE"});
+                            setOpenEditDialog(false);
+                        }).catch(err => {
+                            console.error(err);
+                        });
+                    }).catch(err => {
+                        console.error(err);
+                    });
+                }, 2000)
+            });
+        } else {
+            setTimeout(() => {
+                const { name, width, length, depth, method } = currentPond;
+                axios.patch("/api/pond", { pond_id, name, width, length, depth, method }).then(response => {
+                    setLoading(false);
+                    updateCallback({ ...currentPond, name, width, length, depth, method });
+                    setOpenEditDialog(false);
+                }).catch(err => {
+                    console.error(err);
+                });
+            }, 2000)
+        }
     }
 
     return (

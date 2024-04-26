@@ -27,6 +27,14 @@ export default function PondList({ farm_id }: { farm_id: number }) {
         setPonds(ponds.filter(pond => pond.pond_id !== pond_id));
     };
 
+    const handleEditPond = (pond: any) => {
+        setPonds(ponds.map(p => {
+            if (p.pond_id === pond.pond_id) {
+                return pond;
+            }
+            return p;
+        }));
+    }
 
     return (
         <div className="py-4">
@@ -50,7 +58,7 @@ export default function PondList({ farm_id }: { farm_id: number }) {
                             </div>
 
                             {/* dropdown options */}
-                            <PondOptions pond_id={pond.pond_id} deleteCallback={handleRemovePond} pond_data={ponds} />
+                            <PondOptions pond_id={pond.pond_id} updateCallback={handleEditPond} deleteCallback={handleRemovePond} pond_data={ponds} />
                         </div>
 
                         <div className="flex flex-col mt-1">
