@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
                 .forEach((threshold: any) => {
                     switch (threshold.type) {
                         case "LT":
-                            if (Number(parameters[param.parameter]) < (threshold.value + threshold.error)) {
+                            if (Number(parameters[param.parameter]) < (threshold.target + threshold.error)) {
                                 console.log("Threshold LT breached:", param, parameters[param.parameter]);
                                 farmers.forEach(async (farmer: any) => {
                                     // user threshold reading id
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
                             }
                             break;
                         case "EQ":
-                            if (Number(parameters[param.parameter]) > (threshold.target - threshold.error) && Number(parameters[param.parameter]) < (threshold.value + threshold.error)) {
+                            if (Number(parameters[param.parameter]) > (threshold.target - threshold.error) && Number(parameters[param.parameter]) < (threshold.target + threshold.error)) {
                                 console.log("Threshold EQ breached:", param, parameters[param.parameter]);
                                 farmers.forEach(async (farmer: any) => {
                                     // user threshold reading id
