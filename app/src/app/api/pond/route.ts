@@ -56,6 +56,31 @@ export async function POST(req: NextRequest) {
   }
 }
 
+export async function PATCH(request: NextRequest) {
+  try {
+    const {pond_id, device_id, name, width, length, depth, method } = await request.json();
+    const connection = await getMySQLConnection();
+    const pondUpdateResult = await connection.query(
+      "UPDATE `ponds` SET `device_id` = ?, `name` = ?, `width` = ?, `length` = ?, `depth` = ?, `method` = ? WHERE `pond_id` = ?",
+      [device_id, name, width, length, depth, method, pond_id]
+    );
+    return NextResponse.json(
+      { message: "Pond updated successfully" },
+      {
+        status: 200,
+      },
+    );
+  } catch (error: any) {
+    console.log(error);
+    return NextResponse.json(
+      { message: error.message || "Something went wrong while deleting the pond" },
+      {
+        status: 500,
+      },
+    );
+  }
+}
+
 export async function DELETE(request: NextRequest) {
   try {
     const pond_id = request.nextUrl.searchParams.get('pond_id');
