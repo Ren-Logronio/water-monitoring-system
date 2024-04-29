@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `farms` (
   PRIMARY KEY (`farm_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.farms: ~2 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.farms: ~1 rows (approximately)
 DELETE FROM `farms`;
 INSERT INTO `farms` (`farm_id`, `name`, `address_street`, `address_city`, `address_province`) VALUES
 	(1, 'R&D Shrimps Inc.', 'Siguel Road', 'General Santos City', 'South Cotabato');
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `farm_farmer` (
   CONSTRAINT `farmer_farm_id` FOREIGN KEY (`farm_id`) REFERENCES `farms` (`farm_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.farm_farmer: ~2 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.farm_farmer: ~1 rows (approximately)
 DELETE FROM `farm_farmer`;
 INSERT INTO `farm_farmer` (`farm_id`, `farmer_id`, `role`, `is_approved`) VALUES
 	(1, 1, 'OWNER', 1);
@@ -110,7 +110,11 @@ INSERT INTO `parameters` (`parameter_id`, `pond_id`, `parameter`) VALUES
 	(13, 1, 'TMP'),
 	(14, 1, 'PH'),
 	(15, 1, 'TDS'),
-	(16, 1, 'AMN');
+	(16, 1, 'AMN'),
+	(21, 3, 'TMP'),
+	(22, 3, 'PH'),
+	(23, 3, 'TDS'),
+	(24, 3, 'AMN');
 
 -- Dumping structure for table water-monitoring-system-db.parameter_list
 CREATE TABLE IF NOT EXISTS `parameter_list` (
@@ -148,12 +152,12 @@ CREATE TABLE IF NOT EXISTS `parameter_thresholds` (
 -- Dumping data for table water-monitoring-system-db.parameter_thresholds: ~6 rows (approximately)
 DELETE FROM `parameter_thresholds`;
 INSERT INTO `parameter_thresholds` (`threshold_id`, `parameter`, `type`, `action`, `target`, `error`) VALUES
-	(1, 'TMP', 'GT', 'WARN', 30, 2),
-	(2, 'TMP', 'LT', 'WARN', 20, 2),
+	(1, 'TMP', 'GT', 'WARN', 30, 0.5),
+	(2, 'TMP', 'LT', 'WARN', 20, 0.5),
 	(3, 'AMN', 'GT', 'ALRT', 1, 0.2),
 	(4, 'PH', 'GT', 'ALRT', 9, 0.2),
 	(5, 'PH', 'LT', 'ALRT', 6, 0.2),
-	(6, 'TDS', 'GT', 'WARN', 500, 50);
+	(6, 'TDS', 'GT', 'WARN', 500, 10);
 
 -- Dumping structure for table water-monitoring-system-db.parameter_threshold_actions
 CREATE TABLE IF NOT EXISTS `parameter_threshold_actions` (
@@ -203,7 +207,8 @@ CREATE TABLE IF NOT EXISTS `ponds` (
 -- Dumping data for table water-monitoring-system-db.ponds: ~2 rows (approximately)
 DELETE FROM `ponds`;
 INSERT INTO `ponds` (`pond_id`, `device_id`, `farm_id`, `name`, `width`, `length`, `depth`, `method`) VALUES
-	(1, NULL, 1, 'Sample Pond', 0, 0, 0, 'SEMI-INTENSIVE');
+	(1, NULL, 1, 'Sample Pond', 0, 0, 0, 'SEMI-INTENSIVE'),
+	(3, NULL, 1, 'Pond 1', 0, 0, 0, 'SEMI-INTENSIVE');
 
 -- Dumping structure for table water-monitoring-system-db.pond_methods
 CREATE TABLE IF NOT EXISTS `pond_methods` (
@@ -233,8 +238,40 @@ CREATE TABLE IF NOT EXISTS `readings` (
   CONSTRAINT `reading_parameter_id` FOREIGN KEY (`parameter_id`) REFERENCES `parameters` (`parameter_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.readings: ~6 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.readings: ~31 rows (approximately)
 DELETE FROM `readings`;
+INSERT INTO `readings` (`reading_id`, `parameter_id`, `value`, `recorded_at`, `modified_at`, `isRecordedBySensor`) VALUES
+	(6, 13, 26, '2024-03-31 23:45:00', '2024-04-26 11:45:53', 0),
+	(7, 13, 25.9, '2024-04-01 23:45:00', '2024-04-26 11:45:58', 0),
+	(8, 13, 23.8, '2024-04-03 11:45:00', '2024-04-26 11:46:10', 0),
+	(9, 13, 26.9, '2024-04-04 11:46:00', '2024-04-26 11:46:25', 0),
+	(10, 13, 29.7, '2024-04-05 11:46:00', '2024-04-26 11:46:35', 0),
+	(11, 13, 24.9, '2024-04-06 11:46:00', '2024-04-26 11:46:46', 0),
+	(12, 13, 23.4, '2024-04-07 11:46:00', '2024-04-26 11:46:59', 0),
+	(13, 13, 23.25, '2024-04-08 11:47:00', '2024-04-26 11:47:07', 0),
+	(14, 13, 24, '2024-04-09 11:47:00', '2024-04-26 11:47:13', 0),
+	(15, 13, 21.99, '2024-04-10 11:47:00', '2024-04-26 11:47:26', 0),
+	(16, 13, 25.9, '2024-04-11 11:47:00', '2024-04-26 11:47:38', 0),
+	(17, 13, 23.4, '2024-04-12 11:47:00', '2024-04-26 11:47:59', 0),
+	(18, 13, 23.87, '2024-04-13 11:48:00', '2024-04-26 11:48:11', 0),
+	(19, 13, 24.9, '2024-04-14 11:48:00', '2024-04-26 11:48:56', 0),
+	(20, 13, 23.78, '2024-04-15 11:48:00', '2024-04-26 11:49:05', 0),
+	(21, 13, 22.1, '2024-04-16 11:49:00', '2024-04-26 11:49:19', 0),
+	(22, 13, 22.9, '2024-04-17 11:49:00', '2024-04-26 11:49:33', 0),
+	(23, 13, 24.36, '2024-04-18 11:49:00', '2024-04-26 11:49:53', 0),
+	(24, 13, 26.89, '2024-04-19 11:54:00', '2024-04-26 11:54:18', 0),
+	(25, 13, 27.45, '2024-04-20 11:54:00', '2024-04-26 11:54:29', 0),
+	(26, 13, 28, '2024-04-21 11:54:00', '2024-04-26 11:54:37', 0),
+	(27, 13, 28.1, '2024-04-22 11:54:00', '2024-04-26 11:54:46', 0),
+	(28, 13, 29.49, '2024-04-23 11:54:00', '2024-04-26 11:54:54', 0),
+	(29, 13, 29.02, '2024-04-24 11:54:00', '2024-04-26 11:55:10', 0),
+	(30, 13, 28.97, '2024-04-25 11:56:00', '2024-04-26 11:56:53', 0),
+	(31, 13, 28.675, '2024-04-26 11:56:00', '2024-04-26 11:57:03', 0),
+	(33, 14, 7.1, '2024-04-21 11:59:00', '2024-04-26 12:00:14', 0),
+	(34, 14, 7.6, '2024-04-22 12:00:00', '2024-04-26 12:00:21', 0),
+	(35, 14, 7.4, '2024-04-23 12:00:00', '2024-04-26 12:00:27', 0),
+	(36, 14, 7.33, '2024-04-24 12:00:00', '2024-04-26 12:00:35', 0),
+	(37, 14, 7.8, '2024-04-25 12:00:00', '2024-04-26 12:00:43', 0);
 
 -- Dumping structure for table water-monitoring-system-db.reading_notifications
 CREATE TABLE IF NOT EXISTS `reading_notifications` (
