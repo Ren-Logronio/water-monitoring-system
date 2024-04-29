@@ -8,6 +8,7 @@ import { Button } from "../ui/button";
 import moment from "moment";
 import ParameterGraph from "./Parameter/Parameter.graph";
 import { useRouter } from "next/navigation";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
 
 // const useDimensions = (containingDiv: any) => { 
@@ -35,7 +36,7 @@ export default function Parameter({ parameter, hideCallback }: { parameter: any,
     const [loading, setLoading] = useState(true);
     const [thresholds, setThresholds] = useState<any[]>([]);
     const containingDiv = createRef<HTMLDivElement>();
-    const [aggregation, setAggregation] = useState<"realtime" | "hour" | "day" | "week" | "month">("hour");
+    const [aggregation, setAggregation] = useState<"minutes" | "hour" | "day" | "week" | "month">("hour");
     const [action, setAction] = useState<"ALRT" | "WARN" | "INFO" | "NONE">("NONE");
     const router = useRouter();
     // const chartDimensions = useDimensions(containingDiv);
@@ -108,6 +109,25 @@ export default function Parameter({ parameter, hideCallback }: { parameter: any,
 
                     {/* Graph action buttons */}
                     <div className={`absolute z-40 top-0 left-0 min-w-full min-h-[20px] flex flex-row justify-end pt-2 pr-2`}>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#354f94" className="w-6 h-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
+                                </svg>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-56">
+                                <DropdownMenuLabel>Grouping</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuRadioGroup value={aggregation} onValueChange={(value: any) => setAggregation(value)}>
+                                    <DropdownMenuRadioItem value="minutes">Minutes</DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="hour">Hourly</DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="day">Daily</DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="week">Weekly</DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="month">Monthly</DropdownMenuRadioItem>
+                                </DropdownMenuRadioGroup>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                        
                         <Button onClick={() => hideCallback(parameter)} variant="ghost" className="p-2">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#354f94" className="w-6 h-6">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
@@ -127,7 +147,7 @@ export default function Parameter({ parameter, hideCallback }: { parameter: any,
                     </div>
 
                     {/* Parameter graphs */}
-                    <ParameterGraph readings={readings} parameter={parameter} hover={hover} thresholds={thresholds} />
+                    <ParameterGraph readings={readings} parameter={parameter} hover={hover} thresholds={thresholds} aggregation={aggregation} />
                 </>
             }
 

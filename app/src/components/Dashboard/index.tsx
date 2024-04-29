@@ -23,10 +23,10 @@ export default function Dashboard() {
     const [timezone, setTimezone] = useState<string>("");
 
     useEffect(() => {
-        setDatetime(moment().format("h:mm a, MMM dd, yyyy"));
+        setDatetime(moment().format("h:mm a, MMM D, yyyy"));
         setTimezone(moment.tz.guess());
         const intervs = setInterval(() => {
-            setDatetime(moment().format("h:mm a, MMM dd, yyyy"));
+            setDatetime(moment().format("h:mm a, MMM D, yyyy"));
         });
         return () => clearInterval(intervs);
     }, []);
@@ -136,9 +136,9 @@ export default function Dashboard() {
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-[40px] h-[40px]">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                     </svg>
-                                    <div className="flex flex-col space-x-1">
+                                    <div className="flex flex-col items-center space-x-1">
                                         <span>{datetime}</span>
-                                        <span>@ {timezone}</span>
+                                        <span>{timezone} Timezone</span>
                                     </div>
                                 </div>
 
