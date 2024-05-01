@@ -197,7 +197,6 @@ CREATE TABLE IF NOT EXISTS `ponds` (
   `depth` double DEFAULT '0',
   `method` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT 'NONE',
   PRIMARY KEY (`pond_id`) USING BTREE,
-  UNIQUE KEY `name` (`name`),
   KEY `pond_farm_id` (`farm_id`),
   KEY `pond_method` (`method`),
   KEY `pond_device_id` (`device_id`),
