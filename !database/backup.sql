@@ -52,7 +52,8 @@ CREATE TABLE IF NOT EXISTS `farms` (
   `address_street` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
   `address_city` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
   `address_province` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`farm_id`)
+  PRIMARY KEY (`farm_id`),
+  UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table water-monitoring-system-db.farms: ~1 rows (approximately)
@@ -196,6 +197,7 @@ CREATE TABLE IF NOT EXISTS `ponds` (
   `depth` double DEFAULT '0',
   `method` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT 'NONE',
   PRIMARY KEY (`pond_id`) USING BTREE,
+  UNIQUE KEY `name` (`name`),
   KEY `pond_farm_id` (`farm_id`),
   KEY `pond_method` (`method`),
   KEY `pond_device_id` (`device_id`),
