@@ -11,7 +11,6 @@ export async function GET(req: NextRequest) {
     const connection = await getMySQLConnection();
     const { user_id } = await getUserInfo(cookieToken);
     const farm_id = req.nextUrl.searchParams.has("farm_id") ? req.nextUrl.searchParams.get("farm_id") : null;
-    console.log("farm_id:", farm_id);
     const [results, rows]: [results: any[], rows: any[]] = farm_id ?
       await connection.query(
         "SELECT * FROM `view_farmer_ponds` WHERE `user_id` = ? AND `farm_id` = ?",
@@ -22,7 +21,6 @@ export async function GET(req: NextRequest) {
         "SELECT * FROM `view_farmer_ponds` WHERE `user_id` = ?",
         [user_id]
       );
-      console.log("results:", results);
     return NextResponse.json(
       { results },
       {

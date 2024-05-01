@@ -24,6 +24,7 @@ import {
     DropdownMenuItem
   } from "@/components/ui/dropdown-menu"
 import useFarm from "@/hooks/useFarm";
+import FarmDetails from "../Dashboard/FarmDetails";
 
 interface NavigationBarProps {
     children?: React.ReactNode;
@@ -137,7 +138,9 @@ export default function NavigationBar({ children }: NavigationBarProps): React.R
                             </DropdownMenuRadioGroup>
                             <DropdownMenuSeparator />
                             <DropdownMenuGroup>
-                                <DropdownMenuItem>Create New Farm</DropdownMenuItem>
+                                <DropdownMenuItem>
+                                    Add New Farm
+                                </DropdownMenuItem>
                             </DropdownMenuGroup>
                         </DropdownMenuContent>
                     </DropdownMenu>
