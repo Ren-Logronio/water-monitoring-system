@@ -10,7 +10,7 @@ import { Separator } from "../ui/separator";
 import axios from "axios";
 import { format } from "date-fns";
 import Notifications from "./Notifications";
-import { pathIsSignIn } from "@/utils/PathChecker";
+import { pathIsSignIn, pathIsSignUp } from "@/utils/PathChecker";
 import Account from "./Account";
 
 interface NavigationBarProps {
@@ -24,7 +24,7 @@ export default function NavigationBar({ children }: NavigationBarProps): React.R
     const title = ["Water", "Monitoring", "System"];
 
     useEffect(() => {
-        if (pathIsSignIn(path)) {
+        if (pathIsSignIn(path) || pathIsSignUp(path)) {
             setFarm({ name: "", none: false });
             setNavBarLoading(true);
             console.log("Nav fetch disabled");
@@ -51,7 +51,7 @@ export default function NavigationBar({ children }: NavigationBarProps): React.R
 
     const nav = !!path && path.split('/')[1] && path.split('/').slice(1).map((i, idx) => idx === path.split('/').slice(1).length - 1 ? convertToTitleCase(i) : `${convertToTitleCase(i)} > `);
 
-    if (["/signin", "/"].includes(path) || path.startsWith("/pdf")) {
+    if (["/signin", "/", "/signup"].includes(path) || path.startsWith("/pdf")) {
         return <>{children}</>;
     }
 
