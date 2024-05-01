@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import NavigationBar from "@/components/NavigationBar";
 import { Suspense } from "react";
 import Loading from "@/components/Loading";
+import FarmProvider from "@/providers/FarmProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,11 +26,13 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <NavigationBar>
-            <Suspense fallback={<Loading />}>
-              {children}
-            </Suspense>
-          </NavigationBar>
+          <FarmProvider>
+            <NavigationBar>
+              <Suspense fallback={<Loading />}>
+                {children}
+              </Suspense>
+            </NavigationBar>
+          </FarmProvider>
         </ThemeProvider>
       </body>
     </html>

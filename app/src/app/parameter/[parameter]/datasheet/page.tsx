@@ -2,6 +2,7 @@
 
 import ParameterDatasheet from "@/components/ParameterDatasheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import useFarm from "@/hooks/useFarm";
 import axios from "axios";
 import { notFound, useParams } from "next/navigation";
 import { useEffect, useState } from "react"
@@ -9,6 +10,7 @@ import { NinetyRing } from "react-svg-spinners";
 
 export default function Datasheet() {
     const param = useParams();
+    const { selectedFarm, farmsLoading } = useFarm();
 
     if (!["temperature", "ph", "tds", "ammonia"].includes(param.parameter as string)) {
         notFound();
@@ -19,18 +21,28 @@ export default function Datasheet() {
     const [selectedPond, setSelectedPond] = useState<string>("");
 
     useEffect(() => {
-        axios.get("/api/pond").then(response => {
+        if (farmsLoading) return;
+        axios.get(`/api/pond`).then(response => {
             if (!response.data.results || response.data.results.length <= 0) {
-                setLoading(false);
+                setLoading(false); 
                 return;
             }
             setPonds(response.data.results);
-            setSelectedPond(response.data.results[0].pond_id);
+            setSelectedPond(response.data.results.filter((pond: any) => pond.farm_id === selectedFarm.farm_id)[0]?.pond_id);
             setLoading(false);
         }).catch(error => {
             console.error(error);
-        })
-    }, []);
+        });
+        return () => {
+            setPonds([]);
+            setSelectedPond("");
+        }
+    }, [farmsLoading]);
+
+    useEffect(() => {
+        if(farmsLoading) return;
+        setSelectedPond(ponds.filter(pond => pond.farm_id === selectedFarm.farm_id)[0]?.pond_id);
+    }, [selectedFarm, farmsLoading])
 
     return (
         <div className="flex flex-col p-4 space-y-4">
@@ -59,7 +71,7 @@ export default function Datasheet() {
                 loading && <div className="flex flex-row justify-center space-x-2"><NinetyRing /><p>Loading Ponds...</p></div>
             }
             {
-                !loading && ponds.length <= 0 && <p>No Ponds Found</p>
+                !loading && ponds.filter(pond => pond.farm_id === selectedFarm.farm_id).length <= 0 && <p>No Ponds Found</p>
             }
 
             {

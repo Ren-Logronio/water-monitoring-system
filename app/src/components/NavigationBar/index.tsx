@@ -12,16 +12,29 @@ import { format } from "date-fns";
 import Notifications from "./Notifications";
 import { pathIsSignIn, pathIsSignUp } from "@/utils/PathChecker";
 import Account from "./Account";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuLabel,
+    DropdownMenuRadioGroup,
+    DropdownMenuRadioItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+    DropdownMenuItem
+  } from "@/components/ui/dropdown-menu"
+import useFarm from "@/hooks/useFarm";
 
 interface NavigationBarProps {
     children?: React.ReactNode;
 };
 
 export default function NavigationBar({ children }: NavigationBarProps): React.ReactNode {
-    const [farm, setFarm] = useState({ name: "", none: false });
+    const [farm, setFarm] = useState<any>({});
+    const { farms, selectedFarm, setSelectedFarm, farmsLoading } = useFarm();
     const [navBarLoading, setNavBarLoading] = useState(true);
     const path = usePathname();
-    const title = ["Water", "Monitoring", "System"];
+    const title = ["Water Quality", "Monitoring", "System"];
 
     useEffect(() => {
         if (pathIsSignIn(path) || pathIsSignUp(path)) {
@@ -31,19 +44,27 @@ export default function NavigationBar({ children }: NavigationBarProps): React.R
             return;
         };
 
-        axios.get("/api/farm").then(response => {
-            if (!response.data.results || response.data.results.length <= 0) {
-                setFarm({ ...farm, none: true });
-                return;
-            }
-            setFarm({ ...response.data.results[0], none: false });
-        }).catch(error => {
-            console.error(error);
-        }).finally(() => {
-            setNavBarLoading(false);
-        });
+        farms.length && setFarm(selectedFarm);
+        !farms.length && setFarm({ ...selectedFarm, none: true });
+        setNavBarLoading(farmsLoading);
+    
+        // axios.get("/api/farm").then(response => {
+        //     if (!response.data.results || response.data.results.length <= 0) {
+        //         setFarm({ ...farm, none: true });
+        //         return;
+        //     }
+        //     setFarm({ ...response.data.results[0], none: false });
+        // }).catch(error => {
+        //     console.error(error);
+        // }).finally(() => {
+        //     setNavBarLoading(false);
+        // });
 
-    }, [path]);
+    }, [path, selectedFarm, farmsLoading]);
+
+    useEffect(() => {
+        console.log("FARM:", farm)
+    }, [farm]);
 
     const convertToTitleCase = (str: string) => {
         return str.split(' ').map((word) => word[0].toUpperCase() + word.slice(1)).join(' ');
@@ -97,12 +118,31 @@ export default function NavigationBar({ children }: NavigationBarProps): React.R
 
             <div className="flex-1 flex-grow flex flex-col h-full">
                 <div className="flex-grow min-h-[54px] bg-white shadow-sm flex flex-row items-center justify-end sm:justify-between px-[24px]">
-                    {!farm.none ? <div className={`flex-row items-center space-x-[20px] hidden sm:flex transition-all ${path.startsWith("/farm") ? "opacity-0" : "opacity-100"}`}>
-                        {farm.name ?
-                            <h5 className={`text-blue-800 font-bold transition-all`}>
-                                {farm.name}
-                            </h5> : <div className="w-[80px] h-[32px] bg-gray-500 animate-pulse"></div>}
-                        <Separator orientation="vertical" className="bg-indigo-100 h-7" />
+                    {!farm.none ? <div className={`flex-row items-center space-x-[20px] hidden sm:flex transition-all ${path.startsWith("/farm") ? "opacity-100" : "opacity-100"}`}>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger>
+                            {farm.name ?
+                                <h5 className={`flex flex-row text-blue-800 font-bold transition-all space-x-2`}>
+                                    <span>{farm.name}</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                                    </svg>
+                                </h5> : <div className="w-[80px] h-[32px] bg-gray-500 animate-pulse"></div>}
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56">
+                            <DropdownMenuRadioGroup value={JSON.stringify(farm)} onValueChange={(value: string) => setSelectedFarm(JSON.parse(value))}>
+                                {
+                                    farms.map((currentFarm: any) => <DropdownMenuRadioItem key={String(currentFarm.farm_id)} value={JSON.stringify(currentFarm)}>{currentFarm.name}</DropdownMenuRadioItem>)
+                                }
+                            </DropdownMenuRadioGroup>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuGroup>
+                                <DropdownMenuItem>Create New Farm</DropdownMenuItem>
+                            </DropdownMenuGroup>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+
+                        {!path.startsWith("/farm") && <Separator orientation="vertical" className="bg-indigo-100 h-7" />}
                         <p className=" text-[12px] text-neutral-500">{!path.startsWith("/farm") && nav}</p>
                     </div>
                         : <div>No Farm</div>

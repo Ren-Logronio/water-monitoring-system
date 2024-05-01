@@ -10,6 +10,7 @@ import FarmDetails from "./FarmDetails";
 import { useRouter } from "next/navigation";
 import AddPondDialog from "../ui/dialog/AddPond.dialog";
 import moment from "moment-timezone";
+import useFarm from "@/hooks/useFarm";
 
 export default function Dashboard() {
     const router = useRouter();
@@ -21,6 +22,7 @@ export default function Dashboard() {
     const [readingCount, setReadingCount] = useState<number>(0);
     const [datetime, setDatetime] = useState<string>("");
     const [timezone, setTimezone] = useState<string>("");
+    const {selectedFarm} = useFarm();
 
     useEffect(() => {
         setDatetime(moment().format("h:mm a, MMM D, yyyy"));
@@ -32,47 +34,38 @@ export default function Dashboard() {
     }, []);
 
     useEffect(() => {
-        axios.get("/api/farm").then(response => {
-            if (!response.data.results || response.data.results.length <= 0) {
-                setLoading(false);
-                return;
+        setFarm(selectedFarm);
+        if (!selectedFarm.is_approved) {
+            setLoading(false);
+            return;
+        }
+        axios.get(`/api/farm/pond?farm_id=${selectedFarm.farm_id}`).then(response => {
+            if (!response.data.results && response.data.results.length <= 0) {
+                setPonds({ ponds: [], noPonds: true });
+            } else {
+                setPonds({ ponds: response.data.results, noPonds: false });
+                setSelectedPond(response.data.results[0] && response.data.results[0].pond_id ? response.data.results[0].pond_id : "");
             }
-            setFarm(response.data.results[0]);
-            if (!response.data.results[0].is_approved) {
-                setLoading(false);
-                return;
-            }
-            axios.get(`/api/farm/pond?farm_id=${response.data.results[0].farm_id}`).then(response => {
-                if (!response.data.results && response.data.results.length <= 0) {
-                    setPonds({ ponds: [], noPonds: true });
-                } else {
-                    setPonds({ ponds: response.data.results, noPonds: false });
-                    setSelectedPond(response.data.results[0] && response.data.results[0].pond_id ? response.data.results[0].pond_id : "");
-                }
-                axios.get(`/api/farm/farmer?farm_id=${response.data.results[0].farm_id}`).then(response => {
+            axios.get(`/api/farm/farmer?farm_id=${response.data.results[0].farm_id}`).then(response => {
+                if (!response.data.results || response.data.results.length <= 0) {
+                    return;
+                };
+                setFarmerCount(response.data.results.length);
+                axios.get(`/api/farm/reading/count?farm_id=${response.data.results[0].farm_id}`).then(response => {
                     if (!response.data.results || response.data.results.length <= 0) {
                         return;
-                    };
-                    setFarmerCount(response.data.results.length);
-                    axios.get(`/api/farm/reading/count?farm_id=${response.data.results[0].farm_id}`).then(response => {
-                        if (!response.data.results || response.data.results.length <= 0) {
-                            return;
-                        }
-                        setReadingCount(response.data.results[0].count);
-                    }).catch(error => {
-                        console.error(error);
-                    }).finally(() => {
-                        setLoading(false);
-                    });
+                    }
+                    setReadingCount(response.data.results[0].count);
+                }).catch(error => {
+                    console.error(error);
+                }).finally(() => {
+                    setLoading(false);
                 });
-            }).catch(error => {
-                console.error(error);
-            })
+            });
         }).catch(error => {
-            setLoading(false);
             console.error(error);
         })
-    }, []);
+    }, [selectedFarm]);
 
     useEffect(() => {
         const reloadForUpdates: any = {};

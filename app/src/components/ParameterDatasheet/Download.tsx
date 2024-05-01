@@ -55,6 +55,7 @@ export default function Download({ pond_id }: { pond_id?: string }) {
                         PDF
                     </Link>
                 </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleDownload("spreadsheet")} className=" cursor-pointer">Spreadsheet</DropdownMenuItem>
                 {/* <DropdownMenuItem onClick={handleDownload("spreadsheet")} className=" cursor-pointer">Spreadsheet</DropdownMenuItem> */}
                 {/* <DropdownMenuSeparator />
                 <DropdownMenuLabel className="text-xs">All Parameters</DropdownMenuLabel>
