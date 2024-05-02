@@ -91,7 +91,7 @@ export default function Staff() {
                                         <TableCell className="text-center">
                                             {i.role ? i.role.toLowerCase() : "none"}
                                         </TableCell>
-                                        <TableCell className="flex flex-row justify-center space-x-2">
+                                        <TableCell className="flex flex-row justify-end space-x-2">
                                             {me.role === "OWNER" && !i.is_approved && <ApproveStaff staff={i} approveCallback={handleApprove} />}
                                             {me.role === "OWNER" && <DeleteStaff staff={i} deleteCallback={handleDelete} />}
                                         </TableCell>
