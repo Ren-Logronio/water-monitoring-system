@@ -79,7 +79,7 @@ export default function Staff() {
                                         {me.lastname}, {me.firstname} {me.middlename && me.middlename} (You)
                                     </TableCell>
                                     <TableCell className="text-center">
-                                        {me.role}
+                                        {me.role ? me.role.toLowerCase() : "none"}
                                     </TableCell>
                                     <TableCell></TableCell>
                                 </TableRow>
@@ -89,7 +89,7 @@ export default function Staff() {
                                             {i.lastname}, {i.firstname} {i.middlename && i.middlename}
                                         </TableCell>
                                         <TableCell className="text-center">
-                                            {i.role}
+                                            {i.role ? i.role.toLowerCase() : "none"}
                                         </TableCell>
                                         <TableCell className="flex flex-row justify-center space-x-2">
                                             {me.role === "OWNER" && !i.is_approved && <ApproveStaff staff={i} approveCallback={handleApprove} />}
