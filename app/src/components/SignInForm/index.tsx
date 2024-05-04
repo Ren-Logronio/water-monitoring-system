@@ -2,12 +2,13 @@
 
 import { useAuthStore } from "@/store/authStore";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { NinetyRing } from "react-svg-spinners"
 import { Separator } from "../ui/separator";
+import useAuth from "@/hooks/useAuth";
 
 type SignInFormType = {
   email: string;
@@ -16,7 +17,9 @@ type SignInFormType = {
 };
 
 export default function SignInForm() {
-  const { status, message, signIn, signOut, clearStatus } = useAuthStore();
+  // const { status, message, signIn, signOut, clearStatus } = useAuthStore();
+  const { user, signIn, signOut, clearStatus } = useAuth();
+  const { status, message } = useMemo(() => user ? user : {status: "idle", message: ""}, [user]);
   const [signInForm, setSignInForm] = useState<SignInFormType>({
     email: "",
     password: "",
