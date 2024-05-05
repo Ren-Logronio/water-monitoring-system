@@ -31,7 +31,7 @@ export const MapView: React.FC = () => {
                     preload: Infinity,
                     visible: true,
                     source: new BingMaps({
-                        key: BING_API_KEY,
+                        key: BING_API_KEY!,
                         imagerySet: "Aerial",
                         maxZoom: 19,
                     }),
