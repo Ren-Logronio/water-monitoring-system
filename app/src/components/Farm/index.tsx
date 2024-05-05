@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import FarmDetails from "../Dashboard/FarmDetails";
 import PondList from "./PondList";
-import axios from "axios";
 import { NinetyRing } from "react-svg-spinners";
 import useFarm from "@/hooks/useFarm";
+
+import { MapView } from "../Openlayers/map";
 
 export default function Farm() {
     const { selectedFarm, farmsLoading } = useFarm();
@@ -28,8 +29,10 @@ export default function Farm() {
             {
                 !loading && farm.none && <><div>No farm details</div><FarmDetails /></>
             }
-            {
-                !loading && !farm.none && <div>
+
+            {/* farm details + ponds */}
+            {!loading && !farm.none &&
+                <div>
                     <div className="flex flex-col">
                         <p className="text-[#205083] text-2xl font-semibold">{farm.name}</p>
                         <div className="flex flex-row">
@@ -43,8 +46,15 @@ export default function Farm() {
                         Ponds
                     </div>
 
-                    {/* Ponds */}
-                    <PondList farm_id={farm.farm_id} />
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 w-full p-3">
+                        {/* map */}
+                        <div className="w-full h-[350px] xl:h-[600px]">
+                            <MapView />
+                        </div>
+
+                        {/* Ponds */}
+                        <PondList farm_id={farm.farm_id} />
+                    </div>
                 </div>
             }
         </div>
