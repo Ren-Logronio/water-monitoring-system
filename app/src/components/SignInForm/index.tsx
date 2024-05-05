@@ -2,12 +2,13 @@
 
 import { useAuthStore } from "@/store/authStore";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { NinetyRing } from "react-svg-spinners"
 import { Separator } from "../ui/separator";
+import useAuth from "@/hooks/useAuth";
 
 type SignInFormType = {
   email: string;
@@ -16,7 +17,9 @@ type SignInFormType = {
 };
 
 export default function SignInForm() {
-  const { status, message, signIn, signOut, clearStatus } = useAuthStore();
+  // const { status, message, signIn, signOut, clearStatus } = useAuthStore();
+  const { user, signIn, signOut, clearStatus } = useAuth();
+  const { status, message } = useMemo(() => user ? user : {status: "idle", message: ""}, [user]);
   const [signInForm, setSignInForm] = useState<SignInFormType>({
     email: "",
     password: "",
@@ -48,7 +51,7 @@ export default function SignInForm() {
 
   useEffect(() => {
     if (searchParams.has("signout")) signOut();
-  }, [searchParams])
+  }, [searchParams]);
 
   return (
     <div className="flex min-w-full flex-col justify-center md:min-w-[400px]">
@@ -85,16 +88,10 @@ export default function SignInForm() {
       >
         { signInForm.loading ? <div className="flex flex-row items-center space-x-2"><NinetyRing color="#ffffff"/><p>Signing In...</p></div> : <>Sign In</> }
       </Button>
-      {/* <div className="flex flex-row items-center">
-        <Separator className="w-auto flex-1 mx-[10px]" orientation="horizontal" />
-        <p className="m-[10px] text-neutral-400">or</p>
-        <Separator className="w-auto flex-1 mx-[10px]" orientation="horizontal" />
-      </div> */}
-      {/* <Button variant="outline" className="flex flex-row border-sky-600 text-sky-600 hover:text-sky-900 justify-center items-center space-x-2">
-        <img src="./devicon_google.png" />
-        <p>Sign up with Google</p>
-      </Button> */}
-      <p className="mt-[24px] text-center text-[16px] text-neutral-400">No Account Yet? <Button variant="link" className="m-0 p-0 text-sky-600 text-[16px]">Sign up</Button></p>
+      <p className="flex flex-row items-center justify-center space-x-2 mt-[24px] text-center text-[16px] text-neutral-400">
+        <span>No Account Yet?</span> 
+        <Button onClick={() => router.replace("/signup")} variant="link" className="m-0 p-0 text-sky-600 text-[16px]">Sign up</Button>
+      </p>
     </div>
   );
 }

@@ -1,28 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import FarmDetails from "../Dashboard/FarmDetails";
 import PondList from "./PondList";
 import axios from "axios";
 import { NinetyRing } from "react-svg-spinners";
+import useFarm from "@/hooks/useFarm";
 
 export default function Farm() {
-    const [farm, setFarm] = useState<any>({});
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        axios.get("/api/farm").then(response => {
-            if (!response.data.results || response.data.results.length <= 0) {
-                setFarm({ none: true });
-                return;
-            }
-            setFarm({ ...response.data.results[0], none: false });
-        }).catch(error => {
-            console.error(error);
-        }).finally(() => {
-            setLoading(false);
-        });
-    }, [])
+    const { selectedFarm, farmsLoading } = useFarm();
+    const loading = useMemo(() => {
+        return farmsLoading;
+    }, [farmsLoading]);
+    const farm = useMemo(() => {
+        return selectedFarm;
+    }, [selectedFarm]);
 
     return (
         <div className="relative p-4">

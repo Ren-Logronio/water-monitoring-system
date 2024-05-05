@@ -10,10 +10,17 @@ export async function GET(req: NextRequest) {
     const cookieToken = cookies().get('token')?.value;
     const connection = await getMySQLConnection();
     const { user_id } = await getUserInfo(cookieToken);
-    const [results, rows]: [results: any[], rows: any[]] = await connection.query(
-      "SELECT * FROM `view_farmer_ponds` WHERE `user_id` = ?",
-      [user_id]
-    );
+    const farm_id = req.nextUrl.searchParams.has("farm_id") ? req.nextUrl.searchParams.get("farm_id") : null;
+    const [results, rows]: [results: any[], rows: any[]] = farm_id ?
+      await connection.query(
+        "SELECT * FROM `view_farmer_ponds` WHERE `user_id` = ? AND `farm_id` = ?",
+        [user_id, farm_id]
+      )
+      :
+      await connection.query(
+        "SELECT * FROM `view_farmer_ponds` WHERE `user_id` = ?",
+        [user_id]
+      );
     return NextResponse.json(
       { results },
       {
@@ -49,6 +56,31 @@ export async function POST(req: NextRequest) {
     console.log(error);
     return NextResponse.json(
       { message: "Something went wrong while updating the pond" },
+      {
+        status: 500,
+      },
+    );
+  }
+}
+
+export async function PATCH(request: NextRequest) {
+  try {
+    const {pond_id, device_id, name, width, length, depth, method } = await request.json();
+    const connection = await getMySQLConnection();
+    const pondUpdateResult = await connection.query(
+      "UPDATE `ponds` SET `device_id` = ?, `name` = ?, `width` = ?, `length` = ?, `depth` = ?, `method` = ? WHERE `pond_id` = ?",
+      [device_id, name, width, length, depth, method, pond_id]
+    );
+    return NextResponse.json(
+      { message: "Pond updated successfully" },
+      {
+        status: 200,
+      },
+    );
+  } catch (error: any) {
+    console.log(error);
+    return NextResponse.json(
+      { message: error.message || "Something went wrong while deleting the pond" },
       {
         status: 500,
       },

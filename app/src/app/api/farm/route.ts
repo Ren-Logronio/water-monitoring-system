@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     } catch (err: any) {
         console.log(err)
         return NextResponse.json(
-            { message: "Something went wrong while getting the farm info" },
+            { message: err.message || "Something went wrong while getting the farm info" },
             {
                 status: 500,
             },

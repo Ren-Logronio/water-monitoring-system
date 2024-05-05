@@ -3,6 +3,7 @@
 import { FC, useEffect, useMemo } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, ReferenceArea } from 'recharts';
 import { format } from "date-fns";
+import moment from "moment";
 
 
 // define interface for the props
@@ -11,9 +12,10 @@ interface Props {
     parameter: any;
     hover: boolean;
     thresholds?: any[];
+    aggregation?: "minutes" | "hour" | "day" | "week" | "month";
 }
 
-const ParameterGraph: FC<Props> = ({ readings, parameter, hover, thresholds }) => {
+const ParameterGraph: FC<Props> = ({ readings, parameter, hover, thresholds, aggregation = "minutes" }) => {
     const peakReading = useMemo(() => {
         return readings.reduce((prev, current) => (prev.value > current.value) ? prev : current);
     }, [readings]);
@@ -32,18 +34,28 @@ const ParameterGraph: FC<Props> = ({ readings, parameter, hover, thresholds }) =
         console.log("THROUGH", throughReading);
     }, [peakReading, throughReading]);
 
+    const aggReadings = useMemo(() => {
+        // round of the time to the nearest aggregation
+        const nearestAggregation = readings.map((reading) => ({ ...reading, recorded_at: moment(reading.recorded_at).startOf(aggregation).toDate() }));
+        // return unique recorded at
+        const uniqueTimes = nearestAggregation.filter((reading, index, self) => self.findIndex((r) => moment(r.recorded_at).isSame(reading.recorded_at)) === index);
+        // for each uniqueTimes get the average value from nearestAggregation
+        const aggregatedReadings = uniqueTimes.map((time) => {
+            const values = nearestAggregation.filter((reading) => moment(reading.recorded_at).isSame(time.recorded_at));
+            const average = Math.round((values.reduce((acc, curr) => acc + curr.value, 0) / values.length) * 100) / 100;
+            return { recorded_at: time.recorded_at, value: average };
+        });
+        return aggregatedReadings;
+    }, [aggregation, readings]);
+
     // format readings to be used in the graph
-    const data = readings.map((reading) => {
+    const data = useMemo(() => aggReadings.map((reading) => {
         const init: any = {
-            date: format(reading.recorded_at, "MMM dd"),
+            date: format(reading.recorded_at, "MMM dd, yyyy"),
         }
         init[parameter.name] = reading.value.toString();
         return init
-    });
-
-    useEffect(() => {
-        console.log("thresholdsxx", thresholds);
-    }, [thresholds]);
+    }), [aggReadings]);
 
     return (
         <ResponsiveContainer width="100%" height="100%" className="p-3">

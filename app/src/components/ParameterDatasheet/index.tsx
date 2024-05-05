@@ -30,7 +30,7 @@ const autoSizeStrategy: any = {
             colId: "actions",
             maxWidth: 0
         }
-    ]
+    ],
 };
 
 
@@ -45,7 +45,7 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
         { field: "reading_id", headerName: "reading_id", lockPosition: "left", resizable: false, hide: true },
         { field: "edit_recorded_at", headerName: "edit_recorded_at", lockPosition: "left", resizable: false, hide: true },
         { field: "edit_time", headerName: "edit_time", lockPosition: "left", resizable: false, hide: true },
-        { field: "reading", headerName: "Reading", lockPosition: "left", resizable: false },
+        { field: "reading", headerName: (params.parameter && `${params.parameter[0].toUpperCase()}${params.parameter.slice(1)}`) || "Reading", lockPosition: "left", resizable: false },
         { field: "date", headerName: "Date", lockPosition: "left", resizable: false },
         { field: "time", headerName: "Time", lockPosition: "left", resizable: false },
         { field: "recorded_by", headerName: "Recorded By", lockPosition: "left", resizable: false },
@@ -58,7 +58,7 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
         axios.get(`/api/pond/parameter/reading?pond_id=${pond_id}&parameter=${params.parameter}`).then(response => {
             if (response.data.results && response.data.results.length > 0) {
                 console.log("response.data.results:", response.data.results);
-                setRowData(response.data.results.sort((a: any, b: any) => b.reading_id - a.reading_id).map((row: any, idx: number) => ({ idx, reading_id: row.reading_id, edit_recorded_at: format(row.recorded_at, "yyyy-MM-dd"), edit_time: format(row.recorded_at, "hh:mm"), reading: row.value, date: format(new Date(row.recorded_at), "MMM dd, yyyy"), time: format(new Date(row.recorded_at), "h:mm a"), recorded_by: row.isRecordedBySensor ? "sensor" : "farmer" })));
+                setRowData(response.data.results.sort((a: any, b: any) => b.reading_id - a.reading_id).map((row: any, idx: number) => ({ idx: idx + 1, reading_id: row.reading_id, edit_recorded_at: format(row.recorded_at, "yyyy-MM-dd"), edit_time: format(row.recorded_at, "hh:mm"), reading: `${row.value} ${row.unit}`, date: format(new Date(row.recorded_at), "MMM dd, yyyy"), time: format(new Date(row.recorded_at), "h:mm a"), recorded_by: row.isRecordedBySensor ? "sensor" : "farmer" })));
             }
         }).catch(error => {
             console.error(error);
@@ -123,7 +123,7 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
                         </div>
                     </div>
                     <div className="ag-theme-material h-[calc(100vh-200px)]">
-                        <AgGridReact rowData={rowData} columnDefs={columnDefs} autoSizeStrategy={autoSizeStrategy} />
+                        <AgGridReact rowData={rowData} columnDefs={columnDefs} autoSizeStrategy={autoSizeStrategy}/>
                     </div>
                 </>
             }

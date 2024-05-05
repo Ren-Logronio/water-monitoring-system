@@ -22,7 +22,7 @@ export default function ApproveStaff({ staff, approveCallback }: { staff: any, a
 
     return <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-            <Button disabled={loading} variant="outline" className="cursor-pointer">Approve</Button>
+            <Button disabled={loading} variant="outline" className="cursor-pointer">Accept</Button>
         </DialogTrigger>
         <DialogContent onInteractOutside={(e: any) => { e.preventDefault() }}>
             <DialogHeader>

@@ -74,7 +74,7 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
                         axios.post("/api/pond", {
                             device_id, farm_id, name, width, length, depth, method
                         }).then(response => {
-                            router.replace('/redirect?w=/dashboard');
+                            router.replace(`/redirect?w=/${page}`);
                         }).catch(err => {
                             console.error(err);
                         })
@@ -89,7 +89,7 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
                 axios.post("/api/pond", {
                     farm_id, device_id: null, name, width, length, depth, method
                 }).then(response => {
-                    router.replace('/redirect?w=/dashboard');
+                    router.replace(`/redirect?w=/${page}`);
                 }).catch(err => {
                     console.error(err);
                 })

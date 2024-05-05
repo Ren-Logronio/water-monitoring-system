@@ -59,7 +59,7 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
                         <div className="flex flex-row space-x-2 justify-center mb-10">
                             {parameters
                                 .filter(i => i.hidden)
-                                .sort((a, b) => Number(a.unshowable))
+                                .sort((a, b) => a.unshowable ? 1 : -1)
                                 .map(parameter => (
                                     <Badge key={parameter.parameter_id} 
                                         variant={parameter.unshowable ? "secondary" : "default"}
@@ -94,7 +94,7 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
                     }
 
                     {/** if all params are hidden but have data */}
-                    {   parameters.filter(i => i.hidden).length === parameters.length &&
+                    {   parameters.filter(i => i.hidden).length === parameters.length && !(parameters.filter(i => i.hidden && i.unshowable).length === parameters.length) &&
                         <p className="text-xl text-center m-auto">No parameters visible, try showing the parameters above</p>
                     }
                 </>

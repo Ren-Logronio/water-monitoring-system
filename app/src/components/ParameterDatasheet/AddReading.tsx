@@ -42,7 +42,7 @@ export default function AddReading({ pond_id }: { pond_id?: string }) {
     return <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
             <Button variant={"addBtn_blue"} className="text-white">
-                Add
+                Add Reading
             </Button>
         </DialogTrigger>
         <DialogContent onInteractOutside={(e: any) => { e.preventDefault() }} className="sm:max-w-lg">
