@@ -48,10 +48,27 @@ const ParameterGraph: FC<Props> = ({ readings, parameter, hover, thresholds, agg
         return aggregatedReadings;
     }, [aggregation, readings]);
 
+    const getProperDateTimeFormat = () => {
+        switch (aggregation) {
+            case "minutes":
+                return "MMM dd - hh:mm a";
+            case "hour":
+                return "MMM dd - hh a";
+            case "day":
+                return "MMM dd, yyyy";
+            case "week":
+                return "MMM dd, yyyy";
+            case "month":
+                return "MMM dd, yyyy";
+            default:
+                return "MMM dd, yyyy - hh:mm a";
+        }
+    }
+
     // format readings to be used in the graph
     const data = useMemo(() => aggReadings.map((reading) => {
         const init: any = {
-            date: format(reading.recorded_at, "MMM dd, yyyy"),
+            date: format(reading.recorded_at, getProperDateTimeFormat()),
         }
         init[parameter.name] = reading.value.toString();
         return init

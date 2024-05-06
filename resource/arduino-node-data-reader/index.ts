@@ -15,11 +15,15 @@ function readArduino() {
       const arduinoPort = new SerialPort({ path: arduinoPortInfo.path, baudRate: 9600 });
       const parser = arduinoPort.pipe(new ReadlineParser({ delimiter: '\r\n' }));
       parser.on("data", (data: any) => {
+        console.log("DATA:", data);
+        if (!(/^\{.*\}$/.test(data))) return; 
         const parsedData = JSON.parse(data);
         console.log(typeOfEachObjectKeys(parsedData));
         console.log(data);
-        // axios.post("localhost:3000/api/device/reading", parsedData);
-        // axios.post("localhost:3000/api/device/reading", parsedData);
+        axios.post("http://localhost:3000/api/device/reading", parsedData).catch((error: any) => {
+          console.log(error.message);
+        });
+        // axios.post("http://localhost:3000/api/device/reading", parsedData);
         // write to sensor.log file located at this directory
         fs.appendFile("sensor.log", `${data},\n`, (error: any) => {
           fs.appendFile("sensor.log", `${data},\n`, (error: any) => {
@@ -48,7 +52,7 @@ function readArduino() {
           const parsedData = JSON.parse(data);
           console.log(typeOfEachObjectKeys(parsedData));
           console.log(data);
-          // axios.post("localhost:3000/api/device/reading", parsedData);
+          axios.post("localhost:3000/api/device/reading", parsedData);
           // write to sensor.log file located at this directory
           fs.appendFile("sensor.log", `${data},\n`, (error: any) => {
             if (error) {

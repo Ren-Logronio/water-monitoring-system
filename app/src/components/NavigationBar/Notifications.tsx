@@ -8,6 +8,7 @@ import axios from "axios";
 import { usePathname } from "next/navigation";
 import { pathIsSignIn } from "@/utils/PathChecker";
 import { NinetyRing } from "react-svg-spinners";
+import moment from "moment";
 
 export default function Notifications({ disabled = false }: Readonly<{ disabled: boolean }>) {
     const path = usePathname();
@@ -101,7 +102,24 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
             axios.get("/api/notification/reading")
                 .then((response) => {
                     console.log(response.data);
-                    setReadingNotification(response.data.results);
+                    const uniqueNotifications: any[] = [];
+                    response.data.results.forEach((notification: any) => {
+                        const existingIndex = uniqueNotifications.findIndex((item: any) => item.parameter_id === notification.parameter_id && item.threshold_id === notification.threshold_id);
+                        if (existingIndex === -1) {
+                            uniqueNotifications.push(notification);
+                        } else {
+                            const existingItem = uniqueNotifications[existingIndex];
+                            if (moment(existingItem.issued_at).isBefore(moment(notification.issued_at))) {
+                                uniqueNotifications[existingIndex] = notification;
+                            }
+                        }
+                    });
+                    const latestNotifications = uniqueNotifications.map((notification: any) => {
+                        return response.data.results.filter((item: any) => item.parameter_id === notification.parameter_id && item.threshold_id === notification.threshold_id)
+                        // sort by latest issued_at to get the latest notification
+                        .sort((a: any, b: any) => moment(b.issued_at).diff(moment(a.issued_at)))[0];
+                    });
+                    setReadingNotification(latestNotifications);
                     axios.get("/api/notification")
                         .then((response) => {
                             console.log(response.data);
@@ -127,8 +145,24 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
         } else {
             axios.get("/api/notification/reading")
                 .then((response) => {
-                    console.log(response.data);
-                    setReadingNotification(response.data.results);
+                    const uniqueNotifications: any[] = [];
+                    response.data.results.forEach((notification: any) => {
+                        const existingIndex = uniqueNotifications.findIndex((item: any) => item.parameter_id === notification.parameter_id && item.threshold_id === notification.threshold_id);
+                        if (existingIndex === -1) {
+                            uniqueNotifications.push(notification);
+                        } else {
+                            const existingItem = uniqueNotifications[existingIndex];
+                            if (moment(existingItem.issued_at).isBefore(moment(notification.issued_at))) {
+                                uniqueNotifications[existingIndex] = notification;
+                            }
+                        }
+                    });
+                    const latestNotifications = uniqueNotifications.map((notification: any) => {
+                        return response.data.results.filter((item: any) => item.parameter_id === notification.parameter_id && item.threshold_id === notification.threshold_id)
+                        // sort by latest issued_at to get the latest notification
+                        .sort((a: any, b: any) => moment(b.issued_at).diff(moment(a.issued_at)))[0];
+                    });
+                    setReadingNotification(latestNotifications);
                 })
                 .catch((error) => {
                     console.error(error);

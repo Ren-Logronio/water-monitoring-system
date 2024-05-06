@@ -36,7 +36,7 @@ export default function Parameter({ parameter, hideCallback }: { parameter: any,
     const [loading, setLoading] = useState(true);
     const [thresholds, setThresholds] = useState<any[]>([]);
     const containingDiv = createRef<HTMLDivElement>();
-    const [aggregation, setAggregation] = useState<"minutes" | "hour" | "day" | "week" | "month">("hour");
+    const [aggregation, setAggregation] = useState<"minutes" | "hour" | "day" | "week" | "month">("minutes");
     const [action, setAction] = useState<"ALRT" | "WARN" | "INFO" | "NONE">("NONE");
     const router = useRouter();
     // const chartDimensions = useDimensions(containingDiv);
@@ -56,20 +56,49 @@ export default function Parameter({ parameter, hideCallback }: { parameter: any,
         }).catch((error) => {
             console.error(error);
         });
+        const readingsInterval = setInterval(() => {
+            axios.get(`/api/reading?parameter_id=${parameter.parameter_id}`).then((response) => {
+                if (response.data.results && response.data.results.length > 0) {
+                    setReadings(response.data.results.sort((a: any, b: any) => moment(a.recorded_at).diff(b.recorded_at)));
+                }
+                axios.get(`/api/threshold?parameter=${parameter.parameter}`).then((response) => {
+                    setThresholds(response.data.results);
+                }).catch((error) => {
+                    console.log(error);
+                }).finally(() => {
+                    setLoading(false);
+                });
+            }).catch((error) => {
+                console.error(error);
+            });
+        }, 10000);
+        return () => clearInterval(readingsInterval);
     }, [parameter]);
 
     useEffect(() => {
         if (loading) return;
         const triggeredThresholdActions = thresholds.filter((threshold) => {
             if (threshold.type === "GT") {
-                return readings.some((reading) => reading.value > threshold.target);
+                //return readings.some((reading) => reading.value > threshold.target);
+                return readings[readings.length - 1].value > threshold.target;
             } else if (threshold.type === "LT") {
-                return readings.some((reading) => reading.value < threshold.target);
+                //return readings.some((reading) => reading.value < threshold.target);
+                return readings[readings.length - 1].value < threshold.target;
             }
         });
-        if(triggeredThresholdActions.find(threshold => threshold.action === "INFO")) setAction("INFO");
-        if(triggeredThresholdActions.find(threshold => threshold.action === "WARN")) setAction("WARN");
-        if(triggeredThresholdActions.find(threshold => threshold.action === "ALRT")) setAction("ALRT");
+        if(triggeredThresholdActions.find(threshold => threshold.action === "INFO")) {
+            setAction("INFO");
+            return;
+        }
+        if(triggeredThresholdActions.find(threshold => threshold.action === "WARN")) {
+            setAction("WARN");
+            return;
+        };
+        if(triggeredThresholdActions.find(threshold => threshold.action === "ALRT")) { 
+            setAction("ALRT");
+            return;
+        };
+        setAction("NONE");
     }, [readings, thresholds, loading]);
 
     useEffect(() => {

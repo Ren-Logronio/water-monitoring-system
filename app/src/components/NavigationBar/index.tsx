@@ -94,16 +94,16 @@ export default function NavigationBar({ children }: NavigationBarProps): React.R
                 </div>
 
                 {/* Navigation Buttons */}
-                <div className="flex flex-col space-y-2">
+                <div className="flex flex-col space-y-1">
                     <NavigationButton disabled={navBarLoading || farm.none} path="/dashboard" imagePath="/dashboard.png" text="Dashboard" />
                     <NavigationButton disabled={navBarLoading || farm.none} path="/farm" imagePath="/farm.png" text="Farm" />
                     <NavigationButton disabled={navBarLoading || farm.none} path="/staff" imagePath="/staff.png" text="Staff" />
-                    {/* <NavigationButton disabled={navBarLoading || farm.none} path="/preferences" imagePath="/preferences.png" text="Preferences" /> */}
+                    <NavigationButton disabled={navBarLoading || farm.none} path="/preferences" imagePath="/preferences.png" text="Preferences" /> 
                 </div>
 
                 <Separator className="bg-indigo-100" />
 
-                <div className="flex flex-col mx-auto md:mx-0 space-y-2">
+                <div className="flex flex-col mx-auto md:mx-0 space-y-1">
                     <p className="text-[#205083] hidden md:flex  pb-2 pl-2">Parameters</p>
                     <NavigationButton disabled={navBarLoading || farm.none} shortcut="TMP" path="/parameter/temperature/datasheet" text="Temperature" />
                     <NavigationButton disabled={navBarLoading || farm.none} shortcut="pH" path="/parameter/ph/datasheet" text="pH Level" />
