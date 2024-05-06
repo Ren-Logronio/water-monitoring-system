@@ -9,6 +9,7 @@ import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Switch } from "../ui/switch";
 import { set } from "date-fns";
+import { MapView } from "../Openlayers/map";
 
 
 // Pond Interface
@@ -112,7 +113,7 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
                     axios.patch("/api/device", { device_id: currentPond.device_id, status: "ACTIVE" }).then(response => {
                         axios.patch("/api/pond", { pond_id, device_id, name, width, length, depth, method }).then(response => {
                             setLoading(false);
-                            updateCallback({...currentPond, device_id: currentPond.device_id, status: "ACTIVE"});
+                            updateCallback({ ...currentPond, device_id: currentPond.device_id, status: "ACTIVE" });
                             setOpenEditDialog(false);
                         }).catch(err => {
                             console.error(err);
@@ -163,78 +164,93 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
 
             {/* Edit Dialog */}
             <Dialog open={openEditDialog} onOpenChange={setOpenEditDialog}>
-                <DialogContent onInteractOutside={(e) => e.preventDefault()} className="sm:max-w-[625px] select-none">
+                <DialogContent onInteractOutside={(e) => e.preventDefault()} className="sm:max-w-[625px] xl:max-w-[1100px] select-none">
                     <DialogHeader>
                         <DialogTitle className="font-semibold text-xl text-neutral-800 px-2">Edit Pond</DialogTitle>
                     </DialogHeader>
-                    <div className="px-2">
 
-                        {/* Row 1 */}
-                        <div className="flex flex-row justify-between space-x-5 my-5">
-                            {/* Pond name */}
-                            <div className="flex flex-col space-y-2 my-1 w-full">
-                                <Label className="text-md">Pond Name</Label>
-                                <Input disabled={loading} name="name" autoComplete="false" spellCheck="false" value={currentPond?.name} onChange={handleInputChange} />
-                            </div>
+                    <div className="flex flex-col xl:flex-row xl:space-x-2 space-y-3 xl:space-y-0">
 
-                            {/* Type of farming */}
-                            <div className="flex flex-col space-y-2 my-1">
-                                <Label className="text-md">Type of Farming</Label>
-                                <Select disabled={loading} name="method" value={currentPond?.method} onValueChange={handleSelectChange} >
-                                    <SelectTrigger className="w-[180px] border-2 border-blue-400 bg-blue-50 focus-visible:ring-blue-200/40 focus-visible:ring-4 shadow-none rounded-2xl">
-                                        <SelectValue placeholder="Select..." />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="SEMI-INTENSIVE">Semi-Intensive</SelectItem>
-                                        <SelectItem value="INTENSIVE">Intensive</SelectItem>
-                                        <SelectItem value="TRADITIONAL">Traditional</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        </div>
-
-                        {/* Pond dimensions */}
-                        <div className="flex flex-col space-y-[12px] my-5">
-                            <Label className="text-md">
-                                Dimensions of Pond
-                                <span className="text-sm"> (Optional)</span>
-                            </Label>
-
-                            {/* Input fields */}
-                            <div className="flex flex-row justify-between">
-                                <div className="flex flex-row items-center space-x-2">
-                                    <Label>Width</Label>
-                                    <Input disabled={loading} min={0} max={10000} maxLength={5} type="number" name="width" step={1.0} value={currentPond?.width} onChange={handleInputChange} />
-                                    <p className="hidden text-sm text-red-600"></p>
+                        {/* Pond details */}
+                        <div className="px-2 xl:w-[600px]">
+                            {/* Row 1 */}
+                            <div className="flex flex-row justify-between space-x-5 my-5 xl:my-0">
+                                {/* Pond name */}
+                                <div className="flex flex-col space-y-2 my-1 xl:my-0 w-full">
+                                    <Label className="text-md">Pond Name</Label>
+                                    <Input disabled={loading} name="name" autoComplete="false" spellCheck="false" value={currentPond?.name} onChange={handleInputChange} />
                                 </div>
-                                <div className="flex flex-row items-center space-x-2">
-                                    <Label>Length</Label>
-                                    <Input disabled={loading} min={0} max={10000} maxLength={5} type="number" name="length" step={1.0} value={currentPond?.length} onChange={handleInputChange} />
-                                    <p className="hidden text-sm text-red-600"></p>
-                                </div>
-                                <div className="flex flex-row items-center space-x-2">
-                                    <Label>Depth</Label>
-                                    <Input disabled={loading} min={0} max={10000} maxLength={5} type="number" name="depth" step={1.0} value={currentPond?.depth} onChange={handleInputChange} />
-                                    <p className="hidden text-sm text-red-600"></p>
+
+                                {/* Type of farming */}
+                                <div className="flex flex-col space-y-2 my-1 xl:my-0">
+                                    <Label className="text-md">Type of Farming</Label>
+                                    <Select disabled={loading} name="method" value={currentPond?.method} onValueChange={handleSelectChange} >
+                                        <SelectTrigger className="w-[180px] border-2 border-blue-400 bg-blue-50 focus-visible:ring-blue-200/40 focus-visible:ring-4 shadow-none rounded-2xl">
+                                            <SelectValue placeholder="Select..." />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="SEMI-INTENSIVE">Semi-Intensive</SelectItem>
+                                            <SelectItem value="INTENSIVE">Intensive</SelectItem>
+                                            <SelectItem value="TRADITIONAL">Traditional</SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                             </div>
-                        </div>
 
-                        {/* Device */}
-                        <div className={`flex flex-row space-x-5 border-2 p-3 rounded-2xl mt-10 mb-3 ${0 ? "border-blue-400 bg-blue-100/30" : ""}`}>
-                            <div className="flex flex-row space-x-2 items-center w-2/5">
-                                <Switch disabled={loading} onCheckedChange={handleSwitchChange} name="has_device" />
-                                <Label>Has device?</Label>
+                            {/* Pond dimensions */}
+                            <div className="flex flex-col space-y-[12px] my-5">
+                                <Label className="text-md">
+                                    Dimensions of Pond
+                                    <span className="text-sm"> (Optional)</span>
+                                </Label>
+
+                                {/* Input fields */}
+                                <div className="flex flex-row justify-between">
+                                    <div className="flex flex-row items-center space-x-2">
+                                        <Label>Width</Label>
+                                        <Input disabled={loading} min={0} max={10000} maxLength={5} type="number" name="width" step={1.0} value={currentPond?.width} onChange={handleInputChange} />
+                                        <p className="hidden text-sm text-red-600"></p>
+                                    </div>
+                                    <div className="flex flex-row items-center space-x-2">
+                                        <Label>Length</Label>
+                                        <Input disabled={loading} min={0} max={10000} maxLength={5} type="number" name="length" step={1.0} value={currentPond?.length} onChange={handleInputChange} />
+                                        <p className="hidden text-sm text-red-600"></p>
+                                    </div>
+                                    <div className="flex flex-row items-center space-x-2">
+                                        <Label>Depth</Label>
+                                        <Input disabled={loading} min={0} max={10000} maxLength={5} type="number" name="depth" step={1.0} value={currentPond?.depth} onChange={handleInputChange} />
+                                        <p className="hidden text-sm text-red-600"></p>
+                                    </div>
+                                </div>
                             </div>
 
-                            <Input onChange={handleInputChange} value={currentPond?.device_id! || ""} name="device_id" placeholder="Device ID" disabled={currentPond?.device_id === null || loading}
-                                className={`bg-white ${!!currentPond?.message ? "border-red-300" : "border-slate-200"}`} autoComplete="false" spellCheck="false" />
+                            {/* Device */}
+                            <div className={`flex flex-row space-x-5 border-2 p-3 rounded-2xl mt-10 mb-3 ${0 ? "border-blue-400 bg-blue-100/30" : ""}`}>
+                                <div className="flex flex-row space-x-2 items-center w-2/5">
+                                    <Switch disabled={loading} onCheckedChange={handleSwitchChange} name="has_device" />
+                                    <Label>Has device?</Label>
+                                </div>
+
+                                <Input onChange={handleInputChange} value={currentPond?.device_id! || ""} name="device_id" placeholder="Device ID" disabled={currentPond?.device_id === null || loading}
+                                    className={`bg-white ${!!currentPond?.message ? "border-red-300" : "border-slate-200"}`} autoComplete="false" spellCheck="false" />
+                            </div>
+
+                            {/* Error Message */}
+                            {!!currentPond?.message && <p className={` text-sm text-center ${currentPond?.status === "red" ? 'text-red-600' : 'text-green-500'}`}>{currentPond?.message}</p>}
+
                         </div>
 
-                        {/* Error Message */}
-                        {!!currentPond?.message && <p className={` text-sm text-center ${currentPond?.status === "red" ? 'text-red-600' : 'text-green-500'}`}>{currentPond?.message}</p>}
+                        {/* Map */}
+                        <div className="px-2 space-y-2 xl:space-y-2">
+                            <Label className="text-md xl:text:lg">Select Pond</Label>
 
+                            <MapView
+                                classname={"h-[250px] w-full xl:w-[426px]"}
+                                zoom={17.8}
+                            />
+                        </div>
                     </div>
+
                     <DialogFooter>
                         <DialogClose asChild>
                             <Button disabled={loading} variant="ghost">Cancel</Button>
