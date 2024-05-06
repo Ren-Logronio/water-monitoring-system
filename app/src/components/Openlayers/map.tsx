@@ -1,6 +1,6 @@
 //'use client';
 
-import { useEffect, useRef } from "react";
+import { HTMLProps, useEffect, useRef, useState } from "react";
 import { BING_API_KEY } from "./utils/bingmaps.key";
 
 import { useGeographic } from "ol/proj";
@@ -11,10 +11,15 @@ import BingMaps from "ol/source/BingMaps";
 
 import { vectorLayer } from "./utils/vectorSource";
 import { selectInteraction } from "./utils/select";
+import { Select } from "ol/interaction";
 
 
-export const MapView: React.FC = () => {
+export const MapView = (
+    { classname, zoom }: { classname: HTMLProps<HTMLElement>["className"], zoom?: number }
+
+) => {
     const mapRef = useRef<HTMLDivElement>(null);
+    const [select, setSelect] = useState<Select | null>(null);
 
     // for geographic projection
     useGeographic();
@@ -23,6 +28,7 @@ export const MapView: React.FC = () => {
     useEffect(() => {
         // do nothing if mapRef is not yet initialized
         if (!mapRef.current) return;
+
 
         // create the map
         const map = new Map({
@@ -40,7 +46,7 @@ export const MapView: React.FC = () => {
             ],
             view: new View({
                 center: [125.106098, 5.959807],
-                zoom: 18.5,
+                zoom: !zoom ? 18.5 : zoom,
                 extent: [125.102278, 5.956575, 125.108819, 5.962964],
             }),
             controls: [],
@@ -52,16 +58,23 @@ export const MapView: React.FC = () => {
         }
 
         // add the select interaction to the map
-        map.addInteraction(selectInteraction());
+        const select = selectInteraction();
+        map.addInteraction(select);
+        setSelect(select);
 
         // on component unmount remove the map refrences to avoid unexpected behaviour
         return () => {
             // remove the map when the component is unmounted
             map.setTarget(undefined);
+
+            if (select) {
+                map.removeInteraction(select);
+                setSelect(null);
+            }
         };
 
-    }, [])
+    }, [zoom])
 
     // return the map
-    return <div ref={mapRef} className="w-full h-full overflow-hidden rounded-3xl"></div>
+    return <div ref={mapRef} className={`overflow-hidden rounded-3xl ${classname}`}></div>
 }

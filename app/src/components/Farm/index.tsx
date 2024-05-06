@@ -48,9 +48,7 @@ export default function Farm() {
 
                     <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 w-full p-3">
                         {/* map */}
-                        <div className="w-full h-[350px] xl:h-[600px]">
-                            <MapView />
-                        </div>
+                        <MapView classname={"h-[350px] xl:h-[600px]"} />
 
                         {/* Ponds */}
                         <PondList farm_id={farm.farm_id} />
