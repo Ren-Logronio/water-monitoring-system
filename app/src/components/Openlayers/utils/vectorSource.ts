@@ -4,7 +4,8 @@ import Feature from "ol/Feature";
 import Polygon from "ol/geom/Polygon";
 
 import { vector_data } from "./vectorData";
-import { styleNormal, styleSelected } from "./vectorStyle";
+import { styleNormal } from "./vectorStyle";
+import { usePondGeometryStore } from "@/store/pondGeometryStore";
 
 
 
@@ -36,6 +37,9 @@ vector_data.forEach((data) => {
 
     // add the feature to the vector source
     vectorSource.addFeature(feature);
+
+    // add the feature to the pond geometry store
+    usePondGeometryStore.getState().storePonds([feature]);
 });
 
 

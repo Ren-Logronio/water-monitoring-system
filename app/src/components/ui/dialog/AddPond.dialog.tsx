@@ -116,9 +116,9 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
 
             {/* Farm page */}
             {page === "farm" &&
-                <div className="h-full min-h-20 flex flex-col transition-all justify-center items-center border-2 border-dashed border-orange-300 rounded-xl p-2 cursor-pointer hover:bg-orange-300 group">
+                <div className="h-fit flex flex-col transition-all justify-center items-center border-2 border-collapse border-orange-300 bg-orange-300/20 rounded-xl p-2 cursor-pointer hover:bg-orange-300 group">
                     <div className="flex flex-row items-center">
-                        <p className="text-center py-2 text-sm xl:text-lg font-semibold transition-all ease-in-out duration-200">+ Add New Pond</p>
+                        <p className="text-center py-2 text-md font-semibold transition-all ease-in-out duration-200">+ Add New Pond</p>
                     </div>
                 </div>
             }

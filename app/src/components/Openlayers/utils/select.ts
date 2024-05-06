@@ -4,8 +4,7 @@ import { click } from 'ol/events/condition';
 import { vectorLayer } from './vectorSource';
 
 // style for selected/unselected feature
-import { styleSelected } from './vectorStyle';
-import { styleNormal } from './vectorStyle';
+import { styleSelected, styleNormal } from './vectorStyle';
 
 
 export const selectInteraction = () => {
