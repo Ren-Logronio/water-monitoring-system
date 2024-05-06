@@ -10,6 +10,7 @@ import TileLayer from "ol/layer/Tile";
 import BingMaps from "ol/source/BingMaps";
 
 import { vectorLayer } from "./utils/vectorSource";
+import { selectInteraction } from "./utils/select";
 
 
 export const MapView: React.FC = () => {
@@ -49,6 +50,9 @@ export const MapView: React.FC = () => {
         if (vectorLayer) {
             map.addLayer(vectorLayer);
         }
+
+        // add the select interaction to the map
+        map.addInteraction(selectInteraction());
 
         // on component unmount remove the map refrences to avoid unexpected behaviour
         return () => {

@@ -13,15 +13,16 @@ export const styleNormal = new Style({
         color: "white",
         width: 2,
     }),
+
 });
 
 // style for selected feature
 export const styleSelected = new Style({
     fill: new Fill({
-        color: "rgba(255, 255, 255, 0.2)",
+        color: "rgba(255, 255, 255, 0.5)",
     }),
     stroke: new Stroke({
         color: "#ffcc33",
-        width: 2,
+        width: 3,
     }),
 });
