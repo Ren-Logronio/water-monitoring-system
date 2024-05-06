@@ -92,6 +92,18 @@ export async function DELETE(request: NextRequest) {
   try {
     const pond_id = request.nextUrl.searchParams.get('pond_id');
     const connection = await getMySQLConnection();
+    const [ponds]: any = await connection.query("SELECT * FROM `ponds` WHERE `pond_id` = ?", [pond_id]);
+    if (ponds.length === 0) {
+      return NextResponse.json(
+        { message: "Pond not found" },
+        {
+          status: 404,
+        },
+      );
+    };
+    if (ponds[0].device_id) {
+      await connection.query("UPDATE `devices` SET `status` = 'IDLE' WHERE `device_id` = ?", [ponds[0].device_id]);
+    };
     const pondDeleteResult = await connection.query(
       "DELETE FROM `ponds` WHERE `pond_id` = ?",
       [pond_id]
