@@ -8,8 +8,12 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Switch } from "../ui/switch";
-import { set } from "date-fns";
+import { useVectorLayerStore } from "@/store/vectorLayerStore";
+
+// map component
 import { MapView } from "../Openlayers/map";
+import { polygonLayer } from "../Openlayers/utils/polygonLayer";
+import { labelLayer } from "../Openlayers/utils/labelLayer";
 
 
 // Pond Interface
@@ -34,6 +38,11 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
 
     const [loading, setLoading] = useState(false);
     const [currentPond, setCurrentPond] = useState<any>(null);
+
+    // vector layers for map component
+    const farm_plots = polygonLayer();
+    const farm_labels = labelLayer();
+
 
     const ponds = pond_data;
 
@@ -245,8 +254,10 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
                             <Label className="text-md xl:text:lg">Select Pond</Label>
 
                             <MapView
-                                classname={"h-[250px] w-full xl:w-[426px]"}
-                                zoom={17.8}
+                                vectorLayer={farm_plots}
+                                labelLayer={farm_labels}
+                                className={"h-[250px] w-full xl:w-[426px]"}
+                                zoom={18.1}
                             />
                         </div>
                     </div>
