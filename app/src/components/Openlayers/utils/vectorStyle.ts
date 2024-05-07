@@ -2,6 +2,7 @@
 import Fill from "ol/style/Fill";
 import Stroke from "ol/style/Stroke";
 import Style from "ol/style/Style";
+import Text from "ol/style/Text";
 
 
 // style for all features
@@ -24,5 +25,20 @@ export const styleSelected = new Style({
     stroke: new Stroke({
         color: "#ffcc33",
         width: 3,
+    }),
+});
+
+// style for text
+export const styleText = (label: any) => new Style({
+    text: new Text({
+        text: label,
+        font: "13px Arial",
+        fill: new Fill({
+            color: "white", // label text color
+        }),
+        // stroke: new Stroke({
+        //     color: "#fff", // label text outline color
+        //     width: 2,
+        // }),
     }),
 });
