@@ -8,13 +8,13 @@ const mysql = require('mysql2/promise');
 const moment = require('moment-timezone');
 
 async function runMigrate() {
-    const pond_id = 1;
+    const pond_id = 2;
     const connection = await mysql.createConnection({
         host: "localhost",
         user: "root",
         password: "0ri0nMC10!",
         database: "water-monitoring-system-db",
-    }); 
+    });
 
     const [parameters] = await connection.query("SELECT * FROM `parameters` WHERE `pond_id` = ?", [pond_id]);
 
@@ -23,12 +23,12 @@ async function runMigrate() {
         ["PH", "AMN", "TDS", "TMP"].forEach(async (param) => {
             const parameter_id = parameters.find(p => p.parameter === param).parameter_id;
             await connection.query(
-                "INSERT INTO `readings` (`parameter_id`, `value`, `recorded_at`) VALUES (?, ?, ?)", 
-                [parameter_id, data[param], moment.tz(data.recordedAt.$date, "Asia/Manila").format()]
+                "INSERT INTO `readings` (`parameter_id`, `value`, `recorded_at`) VALUES (?, ?, ?)",
+                [parameter_id, data[param], moment.tz(data.recordedAt.$date, "Asia/Manila").toDate()]
             );
         })
         console.log("Data Keys:", Object.keys(data));
-        console.log("Recorded at:", moment.tz(data.recordedAt.$date, "Asia/Manila").format());
+        console.log("Recorded at:", moment.tz(data.recordedAt.$date, "Asia/Manila").toDate());
     });
     console.log("SENSOR DATA LENGTH:", sensorData.length);
     console.log("PARAMETERS:", parameters);
