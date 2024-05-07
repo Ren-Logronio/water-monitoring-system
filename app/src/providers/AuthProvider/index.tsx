@@ -72,9 +72,9 @@ export type AuthContextType = {
     clearStatus: () => void;
     signOut: () => void;
     signIn: (
-        email: string, 
-        password: string, 
-        successCallback: () => void, 
+        email: string,
+        password: string,
+        successCallback: () => void,
         failureCallback: () => void
     ) => Promise<void>;
     addEventListener: (event: UserEventType, eventCallback: () => void) => number;
@@ -84,15 +84,15 @@ export type AuthContextType = {
 export const AuthContext = createContext<AuthContextType>({
     user: null,
     clearStatus: async () => { return; },
-    signIn: async () => {},
-    signOut: async () => {},
+    signIn: async () => { },
+    signOut: async () => { },
     addEventListener: () => 0,
-    removeEventListener: () => {}
+    removeEventListener: () => { }
 });
 
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<UserType | null>(null);
-    const [listeners, setListener] = useState<({id: number, callback: (event: UserEventType) => void})[]>([]);
+    const [listeners, setListener] = useState<({ id: number, callback: (event: UserEventType) => void })[]>([]);
     const [listenerIndex, setListenerIndex] = useState<number>(0);
 
     useEffect(() => {
@@ -107,7 +107,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     }, []);
 
     const clearStatus = () => {
-        setUser(user ? { ...user, status: "idle", message: "" } : { status: "idle", message: ""});
+        setUser(user ? { ...user, status: "idle", message: "" } : { status: "idle", message: "" });
     };
 
     const signOut = () => {
@@ -119,32 +119,32 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     };
 
     const signIn = async (
-        email: string, 
-        password: string, 
-        successCallback: () => void, 
+        email: string,
+        password: string,
+        successCallback: () => void,
         failureCallback: () => void
     ) => {
         axios
-        .post("/api/signin", { email, password })
-        .then((response) => {
-            const { token, firstname, middlename, lastname, email } = response.data;
-            Cookies.set("token", token, { expires: 2, sameSite: "strict" });
-            localStorage.setItem("firstname", firstname);
-            localStorage.setItem("middlename", middlename);
-            localStorage.setItem("lastname", lastname);
-            localStorage.setItem("email", email);
-            setUser(user ? { ...user, status: "resolved", firstname, lastname, email } : { status: "resolved", firstname, lastname });
-            listeners.forEach((listener) => listener.callback("signin"));
-            successCallback();
-        })
-        .catch((error) => {
-            setUser(user ? { ...user, status: "rejected", message: error.response.data.message } : { status: "rejected", message: error.response.data.message });
-            failureCallback();
-        });
+            .post("/api/signin", { email, password })
+            .then((response) => {
+                const { token, firstname, middlename, lastname, email } = response.data;
+                Cookies.set("token", token, { expires: 2, sameSite: "strict" });
+                localStorage.setItem("firstname", firstname);
+                localStorage.setItem("middlename", middlename);
+                localStorage.setItem("lastname", lastname);
+                localStorage.setItem("email", email);
+                setUser(user ? { ...user, status: "resolved", firstname, lastname, email } : { status: "resolved", firstname, lastname });
+                listeners.forEach((listener) => listener.callback("signin"));
+                successCallback();
+            })
+            .catch((error) => {
+                setUser(user ? { ...user, status: "rejected", message: error.response.data.message } : { status: "rejected", message: error.response.data.message });
+                failureCallback();
+            });
     };
 
     const addEventListener = (
-        event: UserEventType, 
+        event: UserEventType,
         eventCallback: () => void
     ) => {
         const mutatedCallback = (currentEvent: UserEventType) => {
@@ -153,7 +153,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
                 eventCallback()
             };
         }
-        setListener(prevListeners => [...prevListeners, {id: listenerIndex, callback: mutatedCallback}]);
+        setListener(prevListeners => [...prevListeners, { id: listenerIndex, callback: mutatedCallback }]);
         setListenerIndex(listenerIndex + 1);
         return listenerIndex;
     };
@@ -166,7 +166,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         console.log("EVENT LISTENERS:", listeners);
     }, [listeners])
 
-    return <AuthContext.Provider value={{user, clearStatus, signIn, signOut, addEventListener, removeEventListener}}>
+    return <AuthContext.Provider value={{ user, clearStatus, signIn, signOut, addEventListener, removeEventListener }}>
         {children}
     </AuthContext.Provider>;
 }
