@@ -5,6 +5,7 @@ export const vector_data = [
     {   
         type: "Polygon",
         id: 1,
+        name: "Pond 1",
         coordinates: [
             {
                 "latitude": 5.959414369647618,
@@ -32,6 +33,7 @@ export const vector_data = [
     {
         type: "Polygon",
         id: 2,
+        name: "Pond 2",
         coordinates: [
             {
                 "latitude": 5.959532079531357,
@@ -59,6 +61,7 @@ export const vector_data = [
     {
         type: "Polygon",
         id: 3,
+        name: "Pond 3",
         coordinates: [
             {
                 "latitude": 5.9596565793838465,
@@ -86,6 +89,7 @@ export const vector_data = [
     {
         type: "Polygon",
         id: 4,
+        name: "Pond 4",
         coordinates: [
             {
                 "latitude": 5.9597818103828075,
