@@ -26,6 +26,7 @@ vector_data.forEach((data) => {
     const feature = new Feature({
         geometry: geometry,
         extent: geometry.getExtent(),
+        label: data.name ? data.name : "",
         visible: true,
     });
 
