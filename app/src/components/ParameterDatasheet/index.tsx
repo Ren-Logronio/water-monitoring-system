@@ -18,6 +18,7 @@ import Download from "./Download";
 import Actions from "./Actions";
 import { useParameterDatasheetStore } from "@/store/parameterDatasheetStore";
 import { PopoverContent, PopoverTrigger, Popover } from "../ui/popover";
+import DaterangePopover from "../ui/daterange";
 
 const autoSizeStrategy: any = {
     type: 'fitGridWidth',
@@ -35,7 +36,7 @@ const autoSizeStrategy: any = {
 };
 
 
-export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, pondsLoading }: { pond_id?: string, ponds?: any[], pondsLoading: boolean, setSelectedPond: Dispatch<SetStateAction<string>>}) {
+export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, pondsLoading }: { pond_id?: string, ponds?: any[], pondsLoading: boolean, setSelectedPond: Dispatch<SetStateAction<string>> }) {
     // get parameter from the url
     const params = useParams();
     const { rowData, setRowData, purgeRowData } = useParameterDatasheetStore();
@@ -120,19 +121,12 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
                                 </svg>
                                 <p>Print View</p>
                             </Button> */}
-                            <Popover>
-                                <PopoverTrigger>
-
-                                </PopoverTrigger>
-                                <PopoverContent>
-                                    
-                                </PopoverContent>
-                            </Popover>
+                            <DaterangePopover />
                             <Download pond_id={pond_id} />
                         </div>
                     </div>
                     <div className="ag-theme-material h-[calc(100vh-200px)]">
-                        <AgGridReact rowData={rowData} columnDefs={columnDefs} autoSizeStrategy={autoSizeStrategy}/>
+                        <AgGridReact rowData={rowData} columnDefs={columnDefs} autoSizeStrategy={autoSizeStrategy} />
                     </div>
                 </>
             }
