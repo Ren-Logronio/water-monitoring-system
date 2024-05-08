@@ -59,11 +59,11 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
         { field: "reading_id", headerName: "reading_id", lockPosition: "left", resizable: false, hide: true },
         { field: "edit_recorded_at", headerName: "edit_recorded_at", lockPosition: "left", resizable: false, hide: true },
         { field: "edit_time", headerName: "edit_time", lockPosition: "left", resizable: false, hide: true },
-        { field: "reading", headerName: (params.parameter && `${params.parameter[0].toUpperCase()}${params.parameter.slice(1)}`) || "Reading", lockPosition: "left", resizable: false },
         { field: "date", headerName: "Date", lockPosition: "left", resizable: false },
         { field: "time", headerName: "Time", lockPosition: "left", resizable: false },
+        { field: "reading", headerName: (params.parameter && `${params.parameter[0].toUpperCase()}${params.parameter.slice(1)}`) || "Reading", lockPosition: "left", resizable: false },
         // { field: "recorded_by", headerName: "Recorded By", lockPosition: "left", resizable: false },
-        { headerName: "Actions", lockPosition: "right", cellRenderer: Actions, valueGetter: (params: any) => ({ reading_id: params.data.reading_id, reading: params.data.reading, date: params.data.edit_recorded_at, time: params.data.edit_time }), resizable: false }
+        // { headerName: "Actions", lockPosition: "right", cellRenderer: Actions, valueGetter: (params: any) => ({ reading_id: params.data.reading_id, reading: params.data.reading, date: params.data.edit_recorded_at, time: params.data.edit_time }), resizable: false }
     ]);
 
     const [currentPage, setCurrentPage] = useState(1);
