@@ -18,7 +18,7 @@ import { NinetyRing } from "react-svg-spinners";
 import { Switch } from "../switch";
 
 // map component
-import { MapView } from "@/components/Openlayers/map";
+import MapView from "@/components/Openlayers/map";
 import { polygonLayer } from "@/components/Openlayers/utils/polygonLayer";
 import { labelLayer } from "@/components/Openlayers/utils/labelLayer";
 
@@ -47,6 +47,11 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
     // vector layers for map component
     const farm_plots = polygonLayer();
     const farm_labels = labelLayer();
+
+    // map component
+    const map = MapView();
+    const newMap = map.newMap({ vectorLayer: farm_plots, labelLayer: farm_labels, className: "h-[350px] xl:h-[600px]" });
+
 
     // initial values for the form
     const [pondForm, setPondForm] = useState(PondDetailsProps);
@@ -216,12 +221,9 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
                 <div className="px-2 space-y-2 xl:space-y-2">
                     <Label className="text-md xl:text:lg">Select Pond</Label>
 
-                    <MapView
-                        vectorLayer={farm_plots}
-                        labelLayer={farm_labels}
-                        className={"h-[250px] w-full xl:w-[426px]"}
-                        zoom={17.8}
-                    />
+                    {/* Map */}
+                    {newMap}
+
                 </div>
 
             </div>

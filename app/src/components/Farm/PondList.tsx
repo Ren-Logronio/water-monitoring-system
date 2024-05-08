@@ -15,7 +15,7 @@ export default function PondList({ farm_id }: { farm_id: number }) {
                 return;
             }
             setPonds(response.data.results);
-            console.log(response.data.results);
+            //console.log(response.data.results);
         }).catch(error => {
             console.error(error);
         }).finally(() => {
