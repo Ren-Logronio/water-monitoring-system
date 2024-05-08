@@ -9,6 +9,7 @@ import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Switch } from "../ui/switch";
 import { set } from "date-fns";
+import useFarm from "@/hooks/useFarm";
 
 
 // Pond Interface
@@ -30,6 +31,7 @@ interface Pond {
 export default function PondOptions({ pond_id, updateCallback, deleteCallback, pond_data }: { pond_id: number, updateCallback: (pond: Pond) => void, deleteCallback: (pond_id: number) => void, pond_data: any }) {
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
     const [openEditDialog, setOpenEditDialog] = useState(false);
+    const { selectedFarm: farm } = useFarm();
 
     const [loading, setLoading] = useState(false);
     const [currentPond, setCurrentPond] = useState<any>(null);
@@ -136,6 +138,10 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
         }
     }
 
+    if (!farm || farm?.role !== "OWNER") { 
+        return <></>;
+    };
+
     return (
         <>
             {/* Delete Dialog */}
@@ -160,6 +166,20 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+
+            {/* Disconnect Device */}
+            {
+                pond_data.find((pond: any) => pond.pond_id === pond_id) 
+                && pond_data.find((pond: any) => pond.pond_id === pond_id).device_id &&
+                <Button onClick={() => {
+                    setLoading(true);
+                }} variant="ghost" className="flex flex-row space-x-2">
+                    {loading ?
+                        <><NinetyRing color="currentColor" /><p>Disconnecting..</p></>
+                        :
+                        "Disconnect Device"}
+                </Button>
+            }
 
             {/* Edit Dialog */}
             <Dialog open={openEditDialog} onOpenChange={setOpenEditDialog}>
@@ -264,4 +284,3 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
         </>
     );
 }
-
