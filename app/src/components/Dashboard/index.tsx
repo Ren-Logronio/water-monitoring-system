@@ -125,7 +125,7 @@ export default function Dashboard() {
                             <div className="grid grid-cols-4 w-full gap-3 gap-y-5">
 
                                 {/* # of time*/}
-                                <div className="bg-white border-2 rounded-2xl p-5 flex flex-row justify-center space-x-5 xl:space-x-0 xl:space-y-5 xl:flex-col items-center">
+                                <div className="bg-white border rounded-lg p-5 flex flex-row justify-center space-x-5 xl:space-x-0 xl:space-y-5 xl:flex-col items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-[40px] h-[40px]">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                     </svg>
@@ -136,7 +136,7 @@ export default function Dashboard() {
                                 </div>
 
                                 {/* # of ponds */}
-                                <div className="bg-white border-2 rounded-2xl p-5 flex flex-row justify-center space-x-5 xl:space-x-0 xl:space-y-5 xl:flex-col items-center">
+                                <div className="bg-white border rounded-lg p-5 flex flex-row justify-center space-x-5 xl:space-x-0 xl:space-y-5 xl:flex-col items-center">
                                     <Image alt="shrimp-ponds" src="/widget-shrimp.png" width={40} height={40}></Image>
                                     <div className="flex flex-row space-x-1">
                                         <span className="font-bold">{ponds.ponds.length || 0}</span>
@@ -145,7 +145,7 @@ export default function Dashboard() {
                                 </div>
 
                                 {/* staff */}
-                                <div className="bg-white border-2 rounded-2xl p-5 flex flex-row justify-center space-x-5 xl:space-x-0 xl:space-y-5 xl:flex-col items-center">
+                                <div className="bg-white border rounded-lg p-5 flex flex-row justify-center space-x-5 xl:space-x-0 xl:space-y-5 xl:flex-col items-center">
                                     <Image alt="shrimp-ponds" src="/widget-staff.png" width={50} height={40}></Image>
                                     <div className="flex flex-row space-x-1">
                                         <span className="font-bold">{farmerCount}</span>
@@ -170,10 +170,10 @@ export default function Dashboard() {
 
 
                         {/* pond details */}
-                        <div className="bg-white w-full h-fit rounded-2xl border-2">
+                        <div className="bg-white w-full h-fit rounded-lg border ">
                             {/* Dropdown menu for pond names */}
-                            <div className="flex flex-row space-x-5 justify-between xl:justify-start items-center border-0 p-5 border-b-2">
-                                <div className="text-xl font-regular">
+                            <div className="flex flex-row space-x-2 justify-between xl:justify-start items-center p-3">
+                                <div className="text-[14px] font-regular">
                                     Pond:
                                 </div>
 
@@ -192,7 +192,7 @@ export default function Dashboard() {
                             </div>
 
                             {/* Pond details */}
-                            <div className="p-6">
+                            <div className="p-4">
                                 <PondView pond_id={selectedPond} />
                             </div>
                         </div>

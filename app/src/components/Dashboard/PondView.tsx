@@ -1,12 +1,14 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { NinetyRing } from "react-svg-spinners";
 import Parameter from "./Parameter";
 import { Badge } from "../ui/badge";
+import { calculateWQI, classifyWQI } from "@/utils/SimpleFuzzyLogicWaterQuality";
 
 export default function PondView({ pond_id }: { pond_id?: string }) {
     const [parameters, setParameters] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [currentReadings, setCurrentReadings] = useState<any[]>([]);
 
     useEffect(() => {
         setParameters([]);
@@ -22,6 +24,18 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
             setParameters(response.data.results.map((i: any) => {
                 return i.count > 0 ? { ...i, hidden: false, unshowable: false } : { ...i, hidden: true, context: "No Readings", unshowable: true };
             }));
+            response.data.results.forEach(async (parameter: any) => {
+                if (parameter.count > 0) {
+                    await axios.get(`/api/reading/current?parameter_id=${parameter.parameter_id}`).then(response => {
+                        if (!response.data.result) {
+                            return;
+                        }
+                        setCurrentReadings(prev => [...prev.filter((reading) => reading.reading_id !== response.data.result.reading_id), {...response.data.result, ...parameter}]);
+                    }).catch(error => {
+                        console.error(error);
+                    });
+                }
+            });
         }).catch(error => {
             console.error(error);
         }).finally(() => {
@@ -41,14 +55,112 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
             return i.parameter_id === parameter.parameter_id ? { ...i, hidden: false } : i;
         }));
     };
+    
+    const phCurrentReading = useMemo(() => currentReadings.find((reading) => reading.parameter === "PH"), [currentReadings]);
+    // calculate +/-[difference] display is +[difference] or -[difference]
+    const phDifference = useMemo(() => { 
+        if (phCurrentReading && phCurrentReading.previous_value) {
+            const difference = phCurrentReading.value - phCurrentReading.previous_value;
+            return difference > 0 ? `+${difference}` : difference;
+        }
+        return null;
+    }, [phCurrentReading]);
+    const tempCurrentReading = useMemo(() => currentReadings.find((reading) => reading.parameter === "TMP"), [currentReadings]);
+    const tempDifference = useMemo(() => {
+        if (tempCurrentReading && tempCurrentReading.previous_value) {
+            const difference = tempCurrentReading.value - tempCurrentReading.previous_value;
+            return difference > 0 ? `+${difference}` : difference;
+        }
+        return null;
+    }, [tempCurrentReading]);
+    const tdsCurrentReading = useMemo(() => currentReadings.find((reading) => reading.parameter === "TDS"), [currentReadings]);
+    const tdsDifference = useMemo(() => {
+        if (tdsCurrentReading && tdsCurrentReading.previous_value) {
+            const difference = tdsCurrentReading.value - tdsCurrentReading.previous_value;
+            return difference > 0 ? `+${difference}` : difference;
+        }
+        return null;
+    }, [tdsCurrentReading]);
+    const ammoniaCurrentReading = useMemo(() => currentReadings.find((reading) => reading.parameter === "AMN"), [currentReadings]);
+    const ammoniaDifference = useMemo(() => {
+        if (ammoniaCurrentReading && ammoniaCurrentReading.previous_value) {
+            const difference = ammoniaCurrentReading.value - ammoniaCurrentReading.previous_value;
+            return difference > 0 ? `+${difference}` : difference;
+        }
+        return null;
+    }, [ammoniaCurrentReading]);
+
+    const wqi = useMemo(() => {
+        if (phCurrentReading && tempCurrentReading && tdsCurrentReading && ammoniaCurrentReading) {
+            return calculateWQI(phCurrentReading.value, tempCurrentReading.value, tdsCurrentReading.value, ammoniaCurrentReading.value);
+        }
+        return null;
+    }, [phCurrentReading, tempCurrentReading, tdsCurrentReading, ammoniaCurrentReading]);
+
+    const wqiClassification = useMemo(() => {
+        return wqi && classifyWQI(wqi);
+    }, [wqi]);
+
+    useEffect(() => {
+        console.log("CURRENT READINGS: ", currentReadings)
+    }, [currentReadings])
 
     return (
-        <div className="py-4 h-full mt-1">
+        <div className="h-full">
 
             {/* while fetching data */}
             {loading &&
                 <div className="flex justify-center items-center h-40 space-x-2">
                     <NinetyRing width={40} height={40} />
+                </div>
+            }
+
+            {
+                !loading && 
+                // currentReadings.length >= 4 && 
+                <div className="grid grid-cols-3 xl:grid-cols-5 gap-4 min-h-[200px]">
+                    <div className=" flex flex-col justify-center items-center border p-3">
+                        Water Quality Index
+                        {
+                            wqi && <>
+                                <span>{wqiClassification} ({(wqi * 100).toFixed(2)} %)</span>
+                                <span>{wqiClassification}</span>
+                            </>
+                        }
+                        {
+                            !wqi && <div>
+                                Inconclusive
+                            </div>
+                        }
+                    </div>
+                    <div className=" flex flex-col justify-center items-center border p-3">
+                        Temperature
+                        { tempCurrentReading && <span>{tempCurrentReading.value} °C {tempDifference !== 0 && `(${tempDifference})`}</span>}
+                        { !tempCurrentReading && <div className="flex justify-center items-center h-full space-x-2">
+                            <NinetyRing />
+                        </div>}
+                    </div>
+                    <div className=" flex flex-col justify-center items-center border p-3">
+                        pH
+                        { phCurrentReading && <span>{phCurrentReading.value} {phDifference !== 0 && `(${phDifference})`}</span>}
+                        { !phCurrentReading && <div className="flex justify-center items-center h-full space-x-2">
+                            <NinetyRing />
+                        </div>}
+                    </div>
+                    <div className=" flex flex-col justify-center items-center border p-3">
+                        Ammonia
+                        { ammoniaCurrentReading && <span>{ammoniaCurrentReading.value} ppm {ammoniaDifference !== 0 && `(${ammoniaDifference})`}</span>}
+                        { !ammoniaCurrentReading && <div className="flex justify-center items-center h-full space-x-2">
+                            <NinetyRing />
+                        </div>}
+                    </div>
+                    <div className=" flex flex-col justify-center items-center border p-3">
+                        Total Dissolved Solids
+                        { tdsCurrentReading && <span>{tdsCurrentReading.value} tds {tdsDifference !== 0 && `(${tdsDifference})`}</span>}
+                        { !tdsCurrentReading && <div className="flex justify-center items-center h-full space-x-2">
+                            <NinetyRing />
+                        </div>}
+                    </div>
                 </div>
             }
 

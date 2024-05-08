@@ -36,7 +36,7 @@ export default function Parameter({ parameter, hideCallback }: { parameter: any,
     const [loading, setLoading] = useState(true);
     const [thresholds, setThresholds] = useState<any[]>([]);
     const containingDiv = createRef<HTMLDivElement>();
-    const [aggregation, setAggregation] = useState<"minutes" | "hour" | "day" | "week" | "month">("minutes");
+    const [aggregation, setAggregation] = useState<"minutes" | "hour" | "day" | "week" | "month">("hour");
     const [action, setAction] = useState<"ALRT" | "WARN" | "INFO" | "NONE">("NONE");
     const router = useRouter();
     // const chartDimensions = useDimensions(containingDiv);
@@ -164,7 +164,7 @@ export default function Parameter({ parameter, hideCallback }: { parameter: any,
                             </svg>
                         </Button>
 
-                        <Button onClick={() => router.push(`/parameter/${parameter.name.toLowerCase()}/datasheet`)} variant="ghost" className="p-2">
+                        <Button onClick={() => router.push(`/parameter/${parameter.parameter.toLowerCase() === "tds" ? "tds" : parameter.name.toLowerCase()}/datasheet`)} variant="ghost" className="p-2">
                             <img src="./edit-logo.png" className="size-5" />
                         </Button>
                         {/* <Button variant="ghost" className="p-2">
