@@ -1,6 +1,6 @@
 'use client';
 
-import { HTMLProps, useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useCallback, HTMLAttributes } from "react";
 import { BING_API_KEY } from "./utils/bingmaps.key";
 
 import { useGeographic } from "ol/proj";
@@ -11,32 +11,29 @@ import BingMaps from "ol/source/BingMaps";
 import VectorLayer from "ol/layer/Vector";
 import { selectInteraction } from "./utils/select";
 import Feature from "ol/Feature";
+import React from "react";
 
+// selected feature
+let selected: Feature<any> | null = null;
 
 
 const MapView = () => {
-    // create a ref for the map
-    const mapRef = useRef<HTMLDivElement>(null);
-    const [selectedFeature, setSelectedFeature] = useState<Feature<any> | null>(null);
 
-    // handle feature selection event
-    const handleFeatureSelection = useCallback((selectedFeature: Feature<any> | null) => {
-        console.log(selectedFeature?.getProperties());
-        // Process the selected feature data without triggering a state update
-    }, []);
+    // map component
+    const MapBuilder = React.memo(({ vectorLayer, labelLayer, className, zoom }: {
+        vectorLayer: VectorLayer<any>,
+        labelLayer: VectorLayer<any>,
+        className: HTMLAttributes<HTMLElement>['className'],
+        zoom?: number,
+    }) => {
 
-    // return the selected feature
-    const getSelectedFeature = () => {
-        return selectedFeature;
-    }
+        // create a ref for the map
+        const mapRef = useRef<HTMLDivElement>(null);
 
-    const MapBuilder = ({ vectorLayer, labelLayer, className, zoom }:
-        {
-            vectorLayer: VectorLayer<any>,
-            labelLayer: VectorLayer<any>,
-            className: HTMLProps<HTMLElement>["className"],
-            zoom?: number,
-        }) => {
+        // handle feature selection event
+        const handleFeatureSelection = useCallback((selectedFeature: Feature<any> | null) => {
+            selectedFeature ? selected = selectedFeature : selected = null;
+        }, []);
 
         // for geographic projection
         useGeographic();
@@ -48,7 +45,7 @@ const MapView = () => {
 
             // create the map
             const map = new Map({
-                target: mapRef.current!,
+                target: mapRef.current,
                 layers: [
                     new TileLayer({
                         preload: Infinity,
@@ -76,7 +73,6 @@ const MapView = () => {
             const select = selectInteraction(handleFeatureSelection).newSelect(vectorLayer);
             map.addInteraction(select);
 
-
             // on component unmount remove the map refrences to avoid unexpected behaviour
             return () => {
                 // remove the map when the component is unmounted
@@ -86,19 +82,26 @@ const MapView = () => {
                     map.removeInteraction(select);
                 }
             };
-        }, [zoom, labelLayer, vectorLayer]);
-
+        }, [handleFeatureSelection, zoom, labelLayer, vectorLayer]);
 
         // return the map
-        return <div ref={mapRef} className={`overflow-hidden rounded-3xl ${className}`}></div>;
+        return <div ref={mapRef} className={`overflow-hidden rounded-3xl ${className}`}></div> as JSX.Element;
 
-    };
+    });
 
-    // return the methods
+    // set display name
+    MapBuilder.displayName = "MapBuilder";
+
+    // selected feature method
+    const getSelectedFeature = () => {
+        return selected;
+    }
+
+    // return the map component and selected feature
     return {
         newMap: MapBuilder,
         selectedFeature: getSelectedFeature,
     }
-}
+};
 
 export default MapView;
