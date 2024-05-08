@@ -77,12 +77,16 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
         // { headerName: "Actions", lockPosition: "right", cellRenderer: Actions, valueGetter: (params: any) => ({ reading_id: params.data.reading_id, reading: params.data.reading, date: params.data.edit_recorded_at, time: params.data.edit_time }), resizable: false }
     ]);
 
+    const thresholdRange = useMemo(() => {
+        return [
+            thresholds.find((thresholds: any) => thresholds.type === "LT"), 
+            thresholds.find((thresholds: any) => thresholds.type === "GT")
+        ]
+    }, [thresholds]);
+
     const [currentPage, setCurrentPage] = useState(1);
 
-    const numberOfPages = useMemo(() => {
-        const items = searchParams.get("items") === "all" ? 99999 : parseInt(searchParams.get("items") || "25");
-        return Math.ceil(rowData.length / items);
-    }, [rowData, searchParams.get("items")])
+    
 
     const filteredDate = useMemo(() => {
         const filterDateRange = rowData.filter((row: any) => {
@@ -92,6 +96,11 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
         console.log("filteredDate:", filterDateRange);
         return filterDateRange;
     }, [rowData, dateFrom, dateTo, selected]);
+
+    const numberOfPages = useMemo(() => {
+        const items = searchParams.get("items") === "all" ? 99999 : parseInt(searchParams.get("items") || "25");
+        return Math.ceil(filteredDate.length / items);
+    }, [filteredDate, searchParams.get("items")])
 
     const paginatedItems = useMemo(() => {
         const items = searchParams.get("items") === "all" ? 99999 : parseInt(searchParams.get("items") || "25");
@@ -116,6 +125,7 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
                         time: format(new Date(row.recorded_at), "h:mm a"), 
                         recorded_at: row.recorded_at,
                         value: row.value,
+                        unit: row.unit
                         // recorded_by: row.isRecordedBySensor ? "sensor" : "farmer" 
                     })
                     )
@@ -173,13 +183,10 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
                             { thresholds 
                             && thresholds.length && 
                             <p className="text-[14px] italic">Optimal {params.parameter && `${params.parameter[0].toUpperCase()}${params.parameter.slice(1)}`} levels: {
-                                [
-                                    thresholds.find((thresholds: any) => thresholds.type === "LT"), 
-                                    thresholds.find((thresholds: any) => thresholds.type === "GT")
-                                ].map(thresholds => `${thresholds.target}`).join(" to ")
-                                // unit
-                                
-                            }</p>}
+                                thresholdRange && thresholdRange.length && thresholdRange
+                                    .map(threshold => threshold || { target: 0 }).map(threshold => `${threshold?.target}`).join(" to ")
+                            } {thresholdRange && !thresholdRange && "None"} { rowData[0]?.unit.toLowerCase() !== "ph" && rowData[0]?.unit}
+                            </p>}
                             {/* <AddReading pond_id={pond_id} /> */}
                             {/* <Button variant="outline" onClick={handleFileImportPress} className="flex flex-row space-x-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
@@ -220,7 +227,7 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
                             <Download pond_id={pond_id} />
                         </div>
                     </div>
-                    <div className="ag-theme-material h-[calc(100vh-200px)]">
+                    <div className="ag-theme-material h-[calc(100vh-200px)] relative">
                         <span className="!bg-red-100 hidden">This is here to persist the !bg-red-100 style</span>
                         <span className="!bg-yellow-50 hidden">This is here to persist the !bg-yellow-50 style</span>
                         <AgGridReact getRowClass={(params: any): any => {
@@ -248,6 +255,9 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
                             });
                             return resultingStyle;
                         }} rowData={paginatedItems} columnDefs={columnDefs} autoSizeStrategy={autoSizeStrategy} /> 
+                        {
+                            filteredDate && filteredDate.length > 0 && <p className="absolute mt-4 italic text-[12px]">Approximately {filteredDate.length} reading{filteredDate.length > 1 && "s"}</p>
+                        }
                         { !!numberOfPages && numberOfPages !== 1 && <Pagination className="mt-2">
                             <PaginationContent>
                                 {currentPage > 1 && <PaginationItem>
