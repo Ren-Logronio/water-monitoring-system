@@ -49,7 +49,7 @@ export default function DaterangePopover({ children, asChild = false, onChange }
                 </span>}
                 {
                     selected !== "custom" && <span>
-                        {selected === "all" && "All date and time"}
+                        {selected === "all" && "Every date"}
                         {selected === "30" && "Last 30 days"}
                         {selected === "7" && "Last 7 days"}
                         {selected === "24h" && "Last 24 hours"}
