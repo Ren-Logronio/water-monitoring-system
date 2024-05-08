@@ -40,12 +40,23 @@ const autoSizeStrategy: any = {
     ],
 };
 
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableFooter,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
 
 export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, pondsLoading }: { pond_id?: string, ponds?: any[], pondsLoading: boolean, setSelectedPond: Dispatch<SetStateAction<string>> }) {
     const { user } = useAuth();
     const [selected, setSelected] = useState<string>("all");
     const [dateFrom, setDateFrom] = useState<Date>(moment.unix(0).toDate());
     const [dateTo, setDateTo] = useState<Date>(moment().toDate());
+    const [thresholds, setThresholds] = useState<any>([]);
     const [aggregation, setAggregation] = useState<string>("4");
     const searchParams = useSearchParams();
     const params = useParams();
@@ -104,16 +115,24 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
                         date: format(new Date(row.recorded_at), "MMM dd, yyyy"), 
                         time: format(new Date(row.recorded_at), "h:mm a"), 
                         recorded_at: row.recorded_at,
+                        value: row.value,
                         // recorded_by: row.isRecordedBySensor ? "sensor" : "farmer" 
                     })
                     )
                 );
             }
+            axios.get(`/api/threshold?parameter=${params.parameter}`).then(response => {
+                if (response.data.results && response.data.results.length > 0) {
+                    setThresholds(response.data.results);
+                }
+            }).catch(error => {
+                console.error(error);
+            }).finally(() => {
+                setLoading(false);
+            });
         }).catch(error => {
             console.error(error);
-        }).finally(() => {
-            setLoading(false);
-        })
+        });
     }, [pond_id]);
 
     const handleFileImportPress = () => {
@@ -133,7 +152,7 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
             {
                 !loading && <>
                     <div className="flex flex-row items-center justify-between">
-                        <div className="flex flex-row items-center space-x-2">
+                        <div className="flex flex-row items-center space-x-4">
                             {
                                 !loading && !!ponds && ponds.length > 0 && <>
                                     <Select value={pond_id} onValueChange={setSelectedPond}>
@@ -151,6 +170,16 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
                                     </Select>
                                 </>
                             }
+                            { thresholds 
+                            && thresholds.length && 
+                            <p className="text-[14px] italic">Optimal {params.parameter && `${params.parameter[0].toUpperCase()}${params.parameter.slice(1)}`} levels: {
+                                [
+                                    thresholds.find((thresholds: any) => thresholds.type === "LT"), 
+                                    thresholds.find((thresholds: any) => thresholds.type === "GT")
+                                ].map(thresholds => `${thresholds.target}`).join(" to ")
+                                // unit
+                                
+                            }</p>}
                             {/* <AddReading pond_id={pond_id} /> */}
                             {/* <Button variant="outline" onClick={handleFileImportPress} className="flex flex-row space-x-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
@@ -159,7 +188,7 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
                                 </svg>
                                 <p>Import file</p>
                             </Button> */}
-                            <Input type="file" ref={inputFile} accept=".csv" className="hidden" />
+                            {/* <Input type="file" ref={inputFile} accept=".csv" className="hidden" /> */}
                         </div>
                         <div className="flex flex-row space-x-2 text-[14px]">
                             {/* <Button className="flex flex-row space-x-2" variant="outline">
@@ -192,7 +221,33 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
                         </div>
                     </div>
                     <div className="ag-theme-material h-[calc(100vh-200px)]">
-                        <AgGridReact rowData={paginatedItems} columnDefs={columnDefs} autoSizeStrategy={autoSizeStrategy} />
+                        <span className="!bg-red-100 hidden">This is here to persist the !bg-red-100 style</span>
+                        <span className="!bg-yellow-50 hidden">This is here to persist the !bg-yellow-50 style</span>
+                        <AgGridReact getRowClass={(params: any): any => {
+                            let resultingStyle = "";
+                            thresholds.forEach((threshold: any) => {
+                                if (threshold.type === "LT") {
+                                    if (params.data.value < threshold.target) {
+                                        if (threshold.action === "WARN") {
+                                            resultingStyle = "!bg-yellow-50";
+                                        }
+                                        if (threshold.action === "ALRT") {
+                                            resultingStyle = "!bg-red-100";
+                                        }
+                                    }
+                                } else if (threshold.type === "GT") {
+                                    if (params.data.value > threshold.target) {
+                                        if (threshold.action === "WARN") {
+                                            resultingStyle = "!bg-yellow-50";
+                                        }
+                                        if (threshold.action === "ALRT") {
+                                            resultingStyle = "!bg-red-100";
+                                        }
+                                    }
+                                }
+                            });
+                            return resultingStyle;
+                        }} rowData={paginatedItems} columnDefs={columnDefs} autoSizeStrategy={autoSizeStrategy} /> 
                         { !!numberOfPages && numberOfPages !== 1 && <Pagination className="mt-2">
                             <PaginationContent>
                                 {currentPage > 1 && <PaginationItem>
