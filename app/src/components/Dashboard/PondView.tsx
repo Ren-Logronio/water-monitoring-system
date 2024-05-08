@@ -3,7 +3,8 @@ import { useEffect, useMemo, useState } from "react";
 import { NinetyRing } from "react-svg-spinners";
 import Parameter from "./Parameter";
 import { Badge } from "../ui/badge";
-import { calculateWQI, classifyWQI } from "@/utils/SimpleFuzzyLogicWaterQuality";
+import { calculateWQI, classifyWQI, wqiClassificationColorHex } from "@/utils/SimpleFuzzyLogicWaterQuality";
+import { PieChart, Pie } from "recharts";
 
 export default function PondView({ pond_id }: { pond_id?: string }) {
     const [parameters, setParameters] = useState<any[]>([]);
@@ -55,7 +56,7 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
             return i.parameter_id === parameter.parameter_id ? { ...i, hidden: false } : i;
         }));
     };
-    
+
     const phCurrentReading = useMemo(() => currentReadings.find((reading) => reading.parameter === "PH"), [currentReadings]);
     // calculate +/-[difference] display is +[difference] or -[difference]
     const phDifference = useMemo(() => { 
@@ -119,12 +120,34 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
                 !loading && 
                 // currentReadings.length >= 4 && 
                 <div className="grid grid-cols-3 xl:grid-cols-5 gap-4 min-h-[200px]">
-                    <div className=" flex flex-col justify-center items-center border p-3">
-                        Water Quality Index
+                    <div className=" flex flex-col justify-center items-center border p-3 relative">
                         {
                             wqi && <>
-                                <span>{wqiClassification} ({(wqi * 100).toFixed(2)} %)</span>
-                                <span>{wqiClassification}</span>
+                                {/* <RadialBarChart data={[{
+                                    name: 'WQI',
+                                    value: wqi * 100,
+                                    fill: '#8884d8',
+                                }]} innerRadius={"60%"} outerRadius={"75%"} width={200} height={200} startAngle={180} endAngle={0}>
+                                    <RadialBar background dataKey='value' />
+                                </RadialBarChart> */}
+                                <PieChart width={200} height={150}>
+                                    <Pie 
+                                        data={[
+                                            { name: 'WQI', value: wqi * 100, fill: (wqiClassification && wqiClassificationColorHex[wqiClassification] || "#4584B5")}, 
+                                            { name: 'Rest', value: 100 - (wqi * 100), fill: "#1A2127" }
+                                        ]} 
+                                        dataKey="value"
+                                         cx="50%" cy="50%" 
+                                         innerRadius={60} outerRadius={75} 
+                                         fill="#8884d8" 
+                                         startAngle={180} 
+                                         endAngle={0} />
+                                </PieChart>
+                                <div className="absolute top-1/2 flex flex-col justify-center items-center">
+                                    <p>{(wqi * 100).toFixed(2)} %</p>
+                                    <p>Water Quality</p>
+                                    <p className=" font-semibold">{wqiClassification}</p>
+                                </div>
                             </>
                         }
                         {
