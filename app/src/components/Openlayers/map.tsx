@@ -1,6 +1,6 @@
 'use client';
 
-import { HTMLProps, useEffect, useRef, useState } from "react";
+import { HTMLProps, useEffect, useRef, useState, useCallback } from "react";
 import { BING_API_KEY } from "./utils/bingmaps.key";
 
 import { useGeographic } from "ol/proj";
@@ -14,23 +14,23 @@ import Feature from "ol/Feature";
 
 
 
-export const MapView = () => {
+const MapView = () => {
     // create a ref for the map
     const mapRef = useRef<HTMLDivElement>(null);
     const [selectedFeature, setSelectedFeature] = useState<Feature<any> | null>(null);
 
     // handle feature selection event
-    const handleFeatureSelection = (selectedFeature: Feature<any> | null) => {
+    const handleFeatureSelection = useCallback((selectedFeature: Feature<any> | null) => {
         console.log(selectedFeature?.getProperties());
-        setSelectedFeature(selectedFeature);
-    };
+        // Process the selected feature data without triggering a state update
+    }, []);
 
     // return the selected feature
     const getSelectedFeature = () => {
         return selectedFeature;
     }
 
-    const NewMap = ({ vectorLayer, labelLayer, className, zoom }:
+    const MapBuilder = ({ vectorLayer, labelLayer, className, zoom }:
         {
             vectorLayer: VectorLayer<any>,
             labelLayer: VectorLayer<any>,
@@ -90,13 +90,15 @@ export const MapView = () => {
 
 
         // return the map
-        return <div ref={mapRef} className={`overflow-hidden rounded-3xl ${className}`}></div> as JSX.Element;
+        return <div ref={mapRef} className={`overflow-hidden rounded-3xl ${className}`}></div>;
 
-    }
+    };
 
     // return the methods
     return {
-        newMap: NewMap,
+        newMap: MapBuilder,
         selectedFeature: getSelectedFeature,
     }
 }
+
+export default MapView;

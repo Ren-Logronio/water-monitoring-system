@@ -24,24 +24,28 @@ export const selectInteraction = (handleFeatureSelection: (feature: Feature<any>
 
         // on select change set the style of the selected feature
         select.on('select', (e) => {
-            // when a feature is selected
-            e.selected.forEach((feature) => {
-                feature.setStyle(styleSelected);
-                selectedFeature = feature;
-                
-                // handle the selected feature
-                handleFeatureSelection(selectedFeature);
-            });
+            // Avoid triggering any updates in the map component
+            const selected = e.selected[0] || null;
+            const deselected = e.deselected[0] || null;
 
-            // when a feature is deselected
-            e.deselected.forEach((feature) => {
-                feature.setStyle(styleNormal);
-                selectedFeature = null;
-            });
+            // Set styles directly without triggering updates
+            if (selected) {
+                selected.setStyle(styleSelected);
+            }
+
+            if (deselected) {
+                deselected.setStyle(styleNormal);
+            }
+
+            // Update the selected feature
+            selectedFeature = selected;
+
+            // Handle the selected feature
+            handleFeatureSelection(selectedFeature);
 
         });
         
-
+        // return the select interaction
         return select;
         }
 
