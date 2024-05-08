@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, memo } from "react";
+import { useMemo } from "react";
 import FarmDetails from "../Dashboard/FarmDetails";
 import PondList from "./PondList";
 import { NinetyRing } from "react-svg-spinners";
@@ -16,22 +16,13 @@ import { labelLayer } from "../Openlayers/utils/labelLayer";
 export default function Farm() {
     const { selectedFarm, farmsLoading } = useFarm();
 
-    // layers for the map component
-    const farm_plots = polygonLayer();
-    const farm_labels = labelLayer();
+    // layers for the map component, memoized to prevent re-rendering
+    const farm_plots = useMemo(() => polygonLayer(), []);
+    const farm_labels = useMemo(() => labelLayer(), []);
 
     // map component
-    const map = MapView();
-    const selectedFeature = map.selectedFeature();
-    const newMap = map.newMap({ vectorLayer: farm_plots, labelLayer: farm_labels, className: "h-[350px] xl:h-[600px]" });
+    const { newMap: MapBuilder, selectedFeature } = MapView();
 
-
-
-
-
-    // useEffect(() => {
-    //     console.log(selectedFeature);
-    // }, [selectedFeature]);
 
     const loading = useMemo(() => {
         return farmsLoading;
@@ -69,10 +60,11 @@ export default function Farm() {
                         Ponds
                     </div>
 
-                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 w-full p-3">
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 w-full h-fit p-3">
+                        {/* Map */}
+                        <MapBuilder vectorLayer={farm_plots} labelLayer={farm_labels} className="w-full h-[500px]" />
 
-                        {newMap}
-                        {/* Ponds */}
+                        {/* Ponds list */}
                         <PondList farm_id={farm.farm_id} />
                     </div>
                 </div>

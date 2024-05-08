@@ -11,7 +11,7 @@ import { Label } from "../label";
 import { DialogClose } from "../dialog";
 import { Input } from "../input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../select";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { NinetyRing } from "react-svg-spinners";
@@ -45,12 +45,18 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
     const [loading, setLoading] = useState(false);
 
     // vector layers for map component
-    const farm_plots = polygonLayer();
-    const farm_labels = labelLayer();
+    const farm_plots = useMemo(() => polygonLayer(), []);
+    const farm_labels = useMemo(() => labelLayer(), []);
 
     // map component
-    const map = MapView();
-    const newMap = map.newMap({ vectorLayer: farm_plots, labelLayer: farm_labels, className: "h-[350px] xl:h-[600px]" });
+    const { newMap: MapBuilder, selectedFeature } = MapView();
+
+    // reset the form when the dialog is closed
+    useEffect(() => {
+        if (!dialogOpen) {
+            setPondForm(PondDetailsProps)
+        }
+    }, [dialogOpen]);
 
 
     // initial values for the form
@@ -70,6 +76,8 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
     }
 
     const handleSubmit = () => {
+        console.log(selectedFeature());
+
         if (pondForm.enter_device_id && !/^[\w\d]{8,8}-[\w\d]{4,4}-[\w\d]{4,4}-[\w\d]{4,4}-[\w\d]{12,12}$/i.test(pondForm.device_id)) {
             setPondForm({ ...pondForm, message: "* Invalid Device ID", status: "red" });
             return;
@@ -113,11 +121,6 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
         }
     }
 
-    // reset the form when the dialog is closed
-    useEffect(() => {
-        if (!dialogOpen) setPondForm(PondDetailsProps);
-    }, [dialogOpen]);
-
 
     return <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogTrigger>
@@ -150,7 +153,7 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
             <div className="flex flex-col xl:flex-row xl:space-x-2 space-y-3 xl:space-y-0">
 
                 {/* Pond details */}
-                <div className="px-2 xl:w-[600px]">
+                <div className="px-2 xl:w-[550px]">
                     {/* Row 1 */}
                     <div className="flex flex-row justify-between space-x-5 my-5 xl:my-0">
                         {/* Pond name */}
@@ -203,7 +206,7 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
                     </div>
 
                     {/* Device */}
-                    <div className={`flex flex-row space-x-5 border-2 p-3 rounded-2xl mt-10 mb-3 ${pondForm.enter_device_id ? "border-blue-400 bg-blue-100/30" : ""}`}>
+                    <div className={`flex flex-row space-x-5 border-2 p-3 rounded-2xl mt-10 xl:mt-[100px] mb-3 ${pondForm.enter_device_id ? "border-blue-400 bg-blue-100/30" : ""}`}>
                         <div className="flex flex-row space-x-2 items-center w-2/5">
                             <Switch disabled={loading} checked={pondForm.enter_device_id} onCheckedChange={handleCheckboxChange} />
                             <Label>Has device?</Label>
@@ -218,12 +221,9 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
                 </div>
 
                 {/* Map */}
-                <div className="px-2 space-y-2 xl:space-y-2">
-                    <Label className="text-md xl:text:lg">Select Pond</Label>
-
-                    {/* Map */}
-                    {newMap}
-
+                <div className="px-2 space-y-2 xl:space-y-2 w-full h-fit xl:w-[500px]">
+                    <Label className="text-md xl:text:lg">Location</Label>
+                    <MapBuilder vectorLayer={farm_plots} labelLayer={farm_labels} className="h-[250px] xl:h-[300px]" zoom={18.8} />
                 </div>
 
             </div>

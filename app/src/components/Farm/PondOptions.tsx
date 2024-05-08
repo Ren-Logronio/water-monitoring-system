@@ -1,6 +1,6 @@
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialogNoX";
 import { Button } from "../ui/button";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { NinetyRing } from "react-svg-spinners";
 import axios from "axios";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
@@ -11,7 +11,7 @@ import { Switch } from "../ui/switch";
 import { useVectorLayerStore } from "@/store/vectorLayerStore";
 
 // map component
-import { MapView } from "../Openlayers/map";
+import MapView from "../Openlayers/map";
 import { polygonLayer } from "../Openlayers/utils/polygonLayer";
 import { labelLayer } from "../Openlayers/utils/labelLayer";
 
@@ -33,6 +33,7 @@ interface Pond {
 }
 
 export default function PondOptions({ pond_id, updateCallback, deleteCallback, pond_data }: { pond_id: number, updateCallback: (pond: Pond) => void, deleteCallback: (pond_id: number) => void, pond_data: any }) {
+    const ponds = pond_data;
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
     const [openEditDialog, setOpenEditDialog] = useState(false);
 
@@ -43,8 +44,8 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
     const farm_plots = polygonLayer();
     const farm_labels = labelLayer();
 
-
-    const ponds = pond_data;
+    // map component
+    const { newMap: MapBuilder, selectedFeature } = MapView();
 
     // function to handle delete pond
     const handleDelete = () => {
@@ -100,6 +101,8 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
     // function to handle update pond
     const handleUpdatePond = () => {
         setLoading(true);
+
+        console.log(selectedFeature()?.getProperties());
 
         // check if the device_id matches the pattern
         if (currentPond?.device_id && !/^[\w\d]{8,8}-[\w\d]{4,4}-[\w\d]{4,4}-[\w\d]{4,4}-[\w\d]{12,12}$/i.test(currentPond?.device_id)) {
@@ -181,7 +184,7 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
                     <div className="flex flex-col xl:flex-row xl:space-x-2 space-y-3 xl:space-y-0">
 
                         {/* Pond details */}
-                        <div className="px-2 xl:w-[600px]">
+                        <div className="px-2 xl:w-[550px]">
                             {/* Row 1 */}
                             <div className="flex flex-row justify-between space-x-5 my-5 xl:my-0">
                                 {/* Pond name */}
@@ -234,7 +237,7 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
                             </div>
 
                             {/* Device */}
-                            <div className={`flex flex-row space-x-5 border-2 p-3 rounded-2xl mt-10 mb-3 ${0 ? "border-blue-400 bg-blue-100/30" : ""}`}>
+                            <div className={`flex flex-row space-x-5 border-2 p-3 rounded-2xl mt-10 xl:mt-[100px] mb-3 ${0 ? "border-blue-400 bg-blue-100/30" : ""}`}>
                                 <div className="flex flex-row space-x-2 items-center w-2/5">
                                     <Switch disabled={loading} onCheckedChange={handleSwitchChange} name="has_device" />
                                     <Label>Has device?</Label>
@@ -250,19 +253,14 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
                         </div>
 
                         {/* Map */}
-                        <div className="px-2 space-y-2 xl:space-y-2">
-                            <Label className="text-md xl:text:lg">Select Pond</Label>
-
-                            <MapView
-                                vectorLayer={farm_plots}
-                                labelLayer={farm_labels}
-                                className={"h-[250px] w-full xl:w-[426px]"}
-                                zoom={18.1}
-                            />
+                        <div className="px-2 space-y-2 xl:space-y-2 w-full h-fit xl:w-[500px] ">
+                            <Label className="text-md xl:text:lg">Location</Label>
+                            {/* {!mapReady ? <NinetyRing color="currentColor" /> : newMap} */}
+                            <MapBuilder vectorLayer={farm_plots} labelLayer={farm_labels} className="h-[250px] xl:h-[300px]" zoom={18.8} />
                         </div>
                     </div>
 
-                    <DialogFooter>
+                    <DialogFooter className="xl:px-2">
                         <DialogClose asChild>
                             <Button disabled={loading} variant="ghost">Cancel</Button>
                         </DialogClose>
