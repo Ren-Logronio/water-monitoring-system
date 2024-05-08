@@ -143,9 +143,9 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
                                          startAngle={180} 
                                          endAngle={0} />
                                 </PieChart>
-                                <div className="absolute top-1/2 flex flex-col justify-center items-center">
-                                    <p>{(wqi * 100).toFixed(2)} %</p>
-                                    <p>Water Quality</p>
+                                <div className="absolute top-1/2 -translate-y-6 flex flex-col justify-center items-center">
+                                    <p className=" text-[20px]">{(wqi * 100).toFixed(2)} %</p>
+                                    <p className=" text-[14px]">Water Quality</p>
                                     <p className=" font-semibold">{wqiClassification}</p>
                                 </div>
                             </>
@@ -157,29 +157,42 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
                         }
                     </div>
                     <div className=" flex flex-col justify-center items-center border p-3">
-                        Temperature
-                        { tempCurrentReading && <span>{tempCurrentReading.value} °C {tempDifference !== 0 && `(${tempDifference})`}</span>}
+                        <p className="text-[14px]">Temperature</p>
+                        { tempCurrentReading && <>
+                            <span className="text-[20px]">{tempCurrentReading.value} °C</span>
+                            <span className="text-[12px] mt-1">{tempDifference !== 0 && `(${tempDifference})`}</span>
+                        </>}
                         { !tempCurrentReading && <div className="flex justify-center items-center h-full space-x-2">
                             <NinetyRing />
                         </div>}
                     </div>
                     <div className=" flex flex-col justify-center items-center border p-3">
-                        pH
-                        { phCurrentReading && <span>{phCurrentReading.value} {phDifference !== 0 && `(${phDifference})`}</span>}
+                        <p className="text-[14px]">pH</p>
+                        { phCurrentReading && <>
+                            <span className="text-[20px]">{phCurrentReading.value}</span>
+                            <span className="text-[12px] mt-1">{phDifference !== 0 && `(${phDifference})`}</span>
+                        </>}
                         { !phCurrentReading && <div className="flex justify-center items-center h-full space-x-2">
                             <NinetyRing />
                         </div>}
                     </div>
                     <div className=" flex flex-col justify-center items-center border p-3">
-                        Ammonia
-                        { ammoniaCurrentReading && <span>{ammoniaCurrentReading.value} ppm {ammoniaDifference !== 0 && `(${ammoniaDifference})`}</span>}
+                        <p className="text-[14px]">Ammonia</p>
+                        { ammoniaCurrentReading && <>
+                            <span className="text-[20px]">{ammoniaCurrentReading.value} ppm</span>
+                            <span className="text-[12px] mt-1">{ammoniaDifference !== 0 && `(${ammoniaDifference})`}</span>
+                        </>}
                         { !ammoniaCurrentReading && <div className="flex justify-center items-center h-full space-x-2">
                             <NinetyRing />
                         </div>}
                     </div>
                     <div className=" flex flex-col justify-center items-center border p-3">
-                        Total Dissolved Solids
-                        { tdsCurrentReading && <span>{tdsCurrentReading.value} tds {tdsDifference !== 0 && `(${tdsDifference})`}</span>}
+                        <p className="text-[14px]">Total Dissolved Solids</p>
+                        { tdsCurrentReading && <>
+                            <span className="text-[20px]">{tdsCurrentReading.value} ppm</span>
+                            <span className="text-[12px] mt-1">{tdsDifference !== 0 && `(${tdsDifference})`}</span>
+                        </>
+                        }
                         { !tdsCurrentReading && <div className="flex justify-center items-center h-full space-x-2">
                             <NinetyRing />
                         </div>}
