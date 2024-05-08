@@ -105,10 +105,10 @@ export default function NavigationBar({ children }: NavigationBarProps): React.R
                 <div className="flex flex-col mx-auto md:mx-0 space-y-1">
                     <p className="text-[#205083] text-[14px] hidden md:flex pl-2">Logs</p>
                     <NavigationButton disabled={navBarLoading || farm.none} path="/water-quality" text="Water Quality" />
-                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="TMP" path="/parameter/temperature/datasheet" text="Temperature" />
-                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="pH" path="/parameter/ph/datasheet" text="pH Level" />
-                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="AMN" path="/parameter/ammonia/datasheet" text="Ammonia" />
-                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="TDS" path="/parameter/tds/datasheet" text="Total Dissolved Solids" />
+                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="TMP" path="/logs/temperature/" text="Temperature" />
+                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="pH" path="/logs/ph/" text="pH Level" />
+                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="AMN" path="/logs/ammonia/" text="Ammonia" />
+                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="TDS" path="/logs/tds/" text="Total Dissolved Solids" />
                 </div>
                 <div className="absolute text-[12px] bottom-[28px] left-1/2 -translate-x-1/2 hidden md:flex flex-col text-center text-sm h-fit text-[#205083]">
                     <p>Ternary Operators</p>
