@@ -1,6 +1,6 @@
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialogNoX";
 import { Button } from "../ui/button";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { NinetyRing } from "react-svg-spinners";
 import axios from "axios";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
@@ -33,6 +33,12 @@ interface Pond {
     message: string;
 }
 
+// instantiate the map component outside the component to prevent unnecessary re-renders
+const { newMap: MapBuilder, selectedFeature } = MapView();
+const farm_plots = polygonLayer();
+const farm_labels = labelLayer();
+
+
 export default function PondOptions({ pond_id, updateCallback, deleteCallback, pond_data }: { pond_id: number, updateCallback: (pond: Pond) => void, deleteCallback: (pond_id: number) => void, pond_data: any }) {
     const ponds = pond_data;
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -42,12 +48,6 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
     const [loading, setLoading] = useState(false);
     const [currentPond, setCurrentPond] = useState<any>(null);
 
-    // vector layers for map component
-    const farm_plots = polygonLayer();
-    const farm_labels = labelLayer();
-
-    // map component
-    const { newMap: MapBuilder, selectedFeature } = MapView();
 
     // function to handle delete pond
     const handleDelete = () => {
@@ -151,9 +151,9 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
         }
     }
 
-    if (!farm || farm?.role !== "OWNER") {
-        return <></>;
-    };
+    // if (!farm || farm?.role !== "OWNER") {
+    //     return <></>;
+    // };
 
     return (
         <>
@@ -273,10 +273,16 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
                         </div>
 
                         {/* Map */}
-                        <div className="px-2 space-y-2 xl:space-y-2 w-full h-fit xl:w-[500px] ">
+                        <div className="px-2 space-y-2 xl:space-y-2 w-full h-fit xl:w-[500px]">
                             <Label className="text-md xl:text:lg">Location</Label>
-                            {/* {!mapReady ? <NinetyRing color="currentColor" /> : newMap} */}
-                            <MapBuilder vectorLayer={farm_plots} labelLayer={farm_labels} className="h-[250px] xl:h-[300px]" zoom={18.8} />
+
+                            <MapBuilder
+                                vectorLayer={farm_plots}
+                                labelLayer={farm_labels}
+                                className={"h-[250px] xl:h-[300px] bg-slate-200"}
+                                zoom={18.1}
+                            />
+
                         </div>
                     </div>
 

@@ -11,7 +11,7 @@ import { Label } from "../label";
 import { DialogClose } from "../dialog";
 import { Input } from "../input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../select";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { NinetyRing } from "react-svg-spinners";
@@ -38,43 +38,36 @@ const PondDetailsProps = {
     status: "red",
 }
 
+// instantiate the map component outside the component to prevent unnecessary re-renders
+const { newMap: MapBuilder, selectedFeature } = MapView();
+const farm_plots = polygonLayer();
+const farm_labels = labelLayer();
+
+
 
 export default function AddPondDialog({ farm_id, page }: { farm_id: number, page: string }) {
     const router = useRouter();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    // vector layers for map component
-    const farm_plots = useMemo(() => polygonLayer(), []);
-    const farm_labels = useMemo(() => labelLayer(), []);
-
-    // map component
-    const { newMap: MapBuilder, selectedFeature } = MapView();
-
     // reset the form when the dialog is closed
     useEffect(() => {
-        if (!dialogOpen) {
-            setPondForm(PondDetailsProps)
-        }
+        if (!dialogOpen) setPondForm(PondDetailsProps);
     }, [dialogOpen]);
-
 
     // initial values for the form
     const [pondForm, setPondForm] = useState(PondDetailsProps);
 
+    // state change handlers
     const handleCheckboxChange = (value: any) => {
         setPondForm({ ...pondForm, device_id: "", enter_device_id: value });
-
     };
-
     const handleInputChange = (e: any) => {
         setPondForm({ ...pondForm, [e.target.name]: e.target.value });
     };
-
     const handleSelectChange = (value: string) => {
         setPondForm({ ...pondForm, method: value });
     }
-
     const handleSubmit = () => {
         console.log(selectedFeature());
 
@@ -122,6 +115,7 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
     }
 
 
+
     return <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogTrigger>
             {/* return custom elements depending on page */}
@@ -145,7 +139,7 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
         </DialogTrigger>
 
         {/* Dialog content */}
-        <DialogContent onInteractOutside={(e) => e.preventDefault()} className="sm:max-w-[625px] xl:max-w-[1100px] select-none">
+        <DialogContent onInteractOutside={(e) => e.preventDefault()} className="sm:max-w-[625px] xl:max-w-[1150px] select-none">
             <DialogHeader>
                 <DialogTitle className="font-semibold text-xl text-neutral-800 px-2">Add New Pond</DialogTitle>
             </DialogHeader>
@@ -153,7 +147,7 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
             <div className="flex flex-col xl:flex-row xl:space-x-2 space-y-3 xl:space-y-0">
 
                 {/* Pond details */}
-                <div className="px-2 xl:w-[550px]">
+                <div className="px-2 xl:w-[600px]">
                     {/* Row 1 */}
                     <div className="flex flex-row justify-between space-x-5 my-5 xl:my-0">
                         {/* Pond name */}
@@ -206,7 +200,7 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
                     </div>
 
                     {/* Device */}
-                    <div className={`flex flex-row space-x-5 border-2 p-3 rounded-2xl mt-10 xl:mt-[100px] mb-3 ${pondForm.enter_device_id ? "border-blue-400 bg-blue-100/30" : ""}`}>
+                    <div className={`flex flex-row space-x-5 border-2 p-3 rounded-2xl mt-10 xl:mt-[110px] mb-3 ${pondForm.enter_device_id ? "border-blue-400 bg-blue-100/30" : ""}`}>
                         <div className="flex flex-row space-x-2 items-center w-2/5">
                             <Switch disabled={loading} checked={pondForm.enter_device_id} onCheckedChange={handleCheckboxChange} />
                             <Label>Has device?</Label>
@@ -223,11 +217,18 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
                 {/* Map */}
                 <div className="px-2 space-y-2 xl:space-y-2 w-full h-fit xl:w-[500px]">
                     <Label className="text-md xl:text:lg">Location</Label>
-                    <MapBuilder vectorLayer={farm_plots} labelLayer={farm_labels} className="h-[250px] xl:h-[300px]" zoom={18.8} />
+
+                    {/* Map */}
+                    <MapBuilder
+                        vectorLayer={farm_plots}
+                        labelLayer={farm_labels}
+                        className={"h-[250px] xl:h-[300px] bg-slate-200"}
+                        zoom={18.1}
+                    />
                 </div>
 
             </div>
-            <DialogFooter>
+            <DialogFooter className="xl:px-2">
                 <DialogClose asChild>
                     <Button disabled={loading} variant="ghost">Cancel</Button>
                 </DialogClose>
