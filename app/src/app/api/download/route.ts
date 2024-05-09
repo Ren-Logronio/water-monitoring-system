@@ -8,8 +8,11 @@ export async function GET(request: NextRequest){
         const format = request.nextUrl.searchParams.get('format');
         const pond_id = request.nextUrl.searchParams.get('pond_id');
         const parameter = request.nextUrl.searchParams.get('parameter');
+        const from = request.nextUrl.searchParams.get('from');
+        const to = request.nextUrl.searchParams.get('to');
         const all = request.nextUrl.searchParams.get('all');
         const connection = await getMySQLConnection();
+        console.log("FROM AND TO", from, to);
         const [pondParameterReadings]: any = all ? await connection.query(
             "SELECT * FROM `view_pond_parameter_readings` WHERE `pond_id` = ?",
             [pond_id, parameter]
@@ -19,6 +22,7 @@ export async function GET(request: NextRequest){
             "SELECT * FROM `view_pond_parameter_readings` WHERE `pond_id` = ? AND ? IN (`parameter`, `name`)",
             [pond_id, parameter]
         );
+        console.log("FROM TO TEST", moment(from).format(), moment(to).format());
         if (pondParameterReadings.length <= 0) {
             return NextResponse.json(
                 { message: "Parameter not found" },
@@ -29,11 +33,12 @@ export async function GET(request: NextRequest){
         }
         if (format === 'csv') {
             // Generate CSV
-            let csv = 'Date,Time,Parameter,Value\n';
+            let csv = '#,Date,Time,Parameter,Value\n';
             pondParameterReadings
                 .sort((a: any, b: any) => moment(a.recorded_at).diff(b.recorded_at))
-                .forEach((reading: any) => {
-                csv += `${reading.created_at},${reading.parameter},${reading.value}\n`;
+                .filter((reading: any) => moment(reading.recorded_at).isBetween(moment(from), moment(to)))
+                .forEach((reading: any, index: number) => {
+                csv += `${index},${moment(reading.recorded_at).format("yyyy-MM-dd")},${moment(reading.recorded_at).format("hh:mm")},${reading.parameter},${reading.value}\n`;
             });
             const headers = new Headers();
             headers.set('Content-Type', 'text/csv');

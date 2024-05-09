@@ -222,7 +222,7 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
                                 setCurrentPage(1);
                                 setAggregation(aggregation);
                             }} />
-                            <Download pond_id={pond_id} />
+                            <Download pond_id={pond_id} from={moment(dateFrom).format()} to={moment(dateTo).format()} />
                         </div>
                     </div>
                     <div className="ag-theme-material h-[calc(100vh-200px)] relative">

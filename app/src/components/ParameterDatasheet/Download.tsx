@@ -5,9 +5,10 @@ import { useState } from "react";
 import { useParameterDatasheetStore } from "@/store/parameterDatasheetStore";
 import axios from "axios";
 import Link from "next/link";
+import moment from "moment";
 
 
-export default function Download({ pond_id }: { pond_id?: string }) {
+export default function Download({ pond_id, from, to }: { pond_id?: string, from: string, to: string}) {
     const [loading, setLoading] = useState(false);
     const { rowData } = useParameterDatasheetStore();
     const { parameter } = useParams();
@@ -19,7 +20,7 @@ export default function Download({ pond_id }: { pond_id?: string }) {
                 return;
             }
             setLoading(true);
-            axios.get(`/api/download?format=${format}&pond_id=${pond_id}&parameter=${parameter}`, { responseType: "blob" }).then(res => {
+            axios.get(`/api/download?format=${format}&pond_id=${pond_id}&parameter=${parameter}&from=${moment(from).toDate().toISOString()}&to=${moment(to).toDate().toISOString()}`, { responseType: "blob" }).then(res => {
                 console.log(res);
                 const blob = new Blob([res.data], { type: res.headers['content-type'] });
                 const url = window.URL.createObjectURL(blob);
@@ -51,7 +52,7 @@ export default function Download({ pond_id }: { pond_id?: string }) {
             <DropdownMenuContent className="w-56 mr-4">
                 <DropdownMenuItem onClick={handleDownload("csv")} className=" cursor-pointer">CSV</DropdownMenuItem>
                 <DropdownMenuItem className=" cursor-pointer">
-                    <Link href={`/pdf/${parameter}?pond_id=${pond_id}`} target="_blank" className="w-full text-start">
+                    <Link href={`/pdf/${parameter}?pond_id=${pond_id}&from=${from}&to=${to}`} target="_blank" className="w-full text-start">
                         PDF
                     </Link>
                 </DropdownMenuItem>
