@@ -151,52 +151,69 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
                             </>
                         }
                         {
-                            !wqi && <div>
+                            !wqi && parameters.some(p => p?.unshowable) && <div>
                                 Inconclusive
                             </div>
                         }
+                        {
+                            !wqi && !parameters.every(p => !p?.unshowable) && <div className="flex justify-center items-center h-full space-x-2">
+                            <NinetyRing />
+                        </div>
+                        }
                     </div>
-                    <div className=" flex flex-col justify-center items-center border p-3">
+                    { parameters.find(p => p?.parameter?.toLowerCase() === "tmp") 
+                        && !parameters.find(p => p?.parameter?.toLowerCase() === "tmp").unshowable
+                        && <div className=" flex flex-col justify-center items-center border p-3">
                         <p className="text-[14px]">Temperature</p>
                         { tempCurrentReading && <>
                             <span className="text-[20px]">{tempCurrentReading.value} °C</span>
                             <span className="text-[12px] mt-1">{tempDifference !== 0 && `(${tempDifference})`}</span>
+                            <span className="text-[12px]">Last recorded reading</span>
                         </>}
                         { !tempCurrentReading && <div className="flex justify-center items-center h-full space-x-2">
                             <NinetyRing />
                         </div>}
-                    </div>
-                    <div className=" flex flex-col justify-center items-center border p-3">
+                    </div>}
+                    {parameters.find(p => p?.parameter?.toLowerCase() === "ph") 
+                        && !parameters.find(p => p?.parameter?.toLowerCase() === "ph").unshowable
+                        && <div className=" flex flex-col justify-center items-center border p-3">
                         <p className="text-[14px]">pH</p>
                         { phCurrentReading && <>
                             <span className="text-[20px]">{phCurrentReading.value}</span>
                             <span className="text-[12px] mt-1">{phDifference !== 0 && `(${phDifference})`}</span>
+                            <span className="text-[12px]">Last recorded reading</span>
                         </>}
                         { !phCurrentReading && <div className="flex justify-center items-center h-full space-x-2">
                             <NinetyRing />
                         </div>}
-                    </div>
-                    <div className=" flex flex-col justify-center items-center border p-3">
+                    </div>}
+                    { parameters.find(p => p?.parameter?.toLowerCase() === "amn") 
+                        && !parameters.find(p => p?.parameter?.toLowerCase() === "amn").unshowable
+                        && <div className=" flex flex-col justify-center items-center border p-3">
                         <p className="text-[14px]">Ammonia</p>
                         { ammoniaCurrentReading && <>
                             <span className="text-[20px]">{ammoniaCurrentReading.value} ppm</span>
                             <span className="text-[12px] mt-1">{ammoniaDifference !== 0 && `(${ammoniaDifference})`}</span>
+                            <span className="text-[12px]">Last recorded reading</span>
                         </>}
                         { !ammoniaCurrentReading && <div className="flex justify-center items-center h-full space-x-2">
                             <NinetyRing />
                         </div>}
-                    </div>
-                    <div className=" flex flex-col justify-center items-center border p-3">
+                    </div> }
+                    { parameters.find(p => p?.parameter?.toLowerCase() === "tds") 
+                        && !parameters.find(p => p?.parameter?.toLowerCase() === "tds").unshowable
+                        && <div className=" flex flex-col justify-center items-center border p-3">
                         <p className="text-[14px]">Total Dissolved Solids</p>
                         { tdsCurrentReading && <>
                             <span className="text-[20px]">{tdsCurrentReading.value} ppm</span>
                             <span className="text-[12px] mt-1">{tdsDifference !== 0 && `(${tdsDifference})`}</span>
+                            <span className="text-[12px]">Last recorded reading</span>
                         </>
                         }
                         { !tdsCurrentReading && <div className="flex justify-center items-center h-full space-x-2">
                             <NinetyRing />
                         </div>}
-                    </div>
+                    </div>}
                 </div>
             }
 
