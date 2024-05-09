@@ -38,7 +38,7 @@ export async function GET(request: NextRequest){
                 .sort((a: any, b: any) => moment(a.recorded_at).diff(b.recorded_at))
                 .filter((reading: any) => moment(reading.recorded_at).isBetween(moment(from), moment(to)))
                 .forEach((reading: any, index: number) => {
-                csv += `${index},${moment(reading.recorded_at).format("yyyy-MM-dd")},${moment(reading.recorded_at).format("hh:mm")},${reading.parameter},${reading.value}\n`;
+                csv += `${index},${moment(reading.recorded_at).format("yyyy-MM-ddd")},${moment(reading.recorded_at).format("h:mm a")},${reading.parameter},${reading.value}\n`;
             });
             const headers = new Headers();
             headers.set('Content-Type', 'text/csv');

@@ -53,26 +53,77 @@ const ParameterGraph: FC<Props> = ({ readings, parameter, hover, thresholds, agg
             case "minutes":
                 return "hh:mm a";
             case "hour":
-                return "MMM dd - hh a";
+                return "MMM DD - h a";
             case "day":
-                return "MMM dd, yyyy";
+                return "MMM DD, yyyy";
             case "week":
-                return "MMM dd, yyyy";
+                return "MMM DD, yyyy";
             case "month":
-                return "MMM dd, yyyy";
+                return "MMM DD, yyyy";
             default:
-                return "MMM dd, yyyy - hh:mm a";
+                return "MMM DD, yyyy - h:mm a";
         }
     }
 
     // format readings to be used in the graph
-    const data = useMemo(() => aggReadings.map((reading) => {
-        const init: any = {
-            date: format(reading.recorded_at, getProperDateTimeFormat()),
+    // const data = useMemo(() => {
+    //     const oldestTimestamp = moment(readings[0].recorded_at);
+    //     const latestTimestamp = moment(readings[readings.length - 1].recorded_at);
+    //     let cursorTimestamp = oldestTimestamp;
+    //     const finalReadings: any = [];
+    //     let limit = 0;
+    //     while (cursorTimestamp.isBefore(moment().startOf(aggregation)) || limit <= 5) {
+    //         const reading = aggReadings.find(reading => moment(reading.recorded_at).isSame(moment(cursorTimestamp)));
+    //         if (!reading) {
+    //             finalReadings.push({ recorded_at: moment(cursorTimestamp).format(getProperDateTimeFormat()), [parameter.name]: null });
+    //             continue;
+    //         }
+    //         finalReadings.push({ recorded_at: moment(cursorTimestamp).format(getProperDateTimeFormat()), [parameter.name]: reading.value.toString()});
+    //         cursorTimestamp = cursorTimestamp.add(1, aggregation).startOf(aggregation);
+    //         limit++;
+    //     };
+    //     return finalReadings;
+    // }, [aggReadings]);
+
+    // useEffect(() => {
+    //     if (!aggReadings?.length) return;
+    //     const oldestTimestamp = moment(aggReadings[0].recorded_at);
+    //     const latestTimestamp = moment(aggReadings[aggReadings.length - 1].recorded_at).add(1, aggregation).startOf(aggregation);
+    //     const timestamps = [];
+    //     while (oldestTimestamp.isBefore(latestTimestamp)) {
+    //         timestamps.push(oldestTimestamp.format());
+    //         oldestTimestamp.add(1, aggregation).startOf(aggregation);
+    //     }
+    //     console.log("timestamps", timestamps, "=>", timestamps.map((timestamp) => {
+    //         return { ...aggReadings.find((reading) => moment(reading.recorded_at).isSame(moment(timestamp), aggregation)), compared_timestamp: timestamp }
+    //     }).map(reading => reading?.value ? {date: moment(reading.compared_timestamp).format(getProperDateTimeFormat()), [parameter.name]: reading?.value?.toString()} : {
+    //         date: moment(reading.compared_timestamp).format(getProperDateTimeFormat()), [parameter.name]: null
+    //     }));
+    // }, [aggReadings])
+
+    const data = useMemo(() => {
+        if (!aggReadings?.length) return;
+        const oldestTimestamp = moment(aggReadings[0].recorded_at);
+        const latestTimestamp = moment(aggReadings[aggReadings.length - 1].recorded_at).add(1, aggregation).startOf(aggregation);
+        const timestamps = [];
+        while (oldestTimestamp.isBefore(latestTimestamp)) {
+            timestamps.push(oldestTimestamp.format());
+            oldestTimestamp.add(1, aggregation).startOf(aggregation);
         }
-        init[parameter.name] = reading.value.toString();
-        return init
-    }), [aggReadings]);
+        return timestamps.map((timestamp) => {
+            return { ...aggReadings.find((reading) => moment(reading.recorded_at).isSame(moment(timestamp), aggregation)), compared_timestamp: timestamp }
+        }).map(reading => reading?.value ? {date: moment(reading.compared_timestamp).format(getProperDateTimeFormat()), [parameter.name]: reading?.value?.toString()} : {
+            date: moment(reading.compared_timestamp).format(getProperDateTimeFormat()), [parameter.name]: null
+        });
+    }, [aggReadings]);
+
+    // const data = useMemo(() => aggReadings.map((reading) => {
+    //     const init: any = {
+    //         date: format(reading.recorded_at, getProperDateTimeFormat()),
+    //     }
+    //     init[parameter.name] = reading.value.toString();
+    //     return init
+    // }), [aggReadings]);
 
     return (
         <ResponsiveContainer width="100%" height="100%" className="p-3">
