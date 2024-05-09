@@ -14,6 +14,7 @@ import { useVectorLayerStore } from "@/store/vectorLayerStore";
 import MapView from "../Openlayers/map";
 import { polygonLayer } from "../Openlayers/utils/polygonLayer";
 import { labelLayer } from "../Openlayers/utils/labelLayer";
+import useFarm from "@/hooks/useFarm";
 
 
 // Pond Interface
@@ -36,6 +37,7 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
     const ponds = pond_data;
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
     const [openEditDialog, setOpenEditDialog] = useState(false);
+    const { selectedFarm: farm } = useFarm();
 
     const [loading, setLoading] = useState(false);
     const [currentPond, setCurrentPond] = useState<any>(null);
@@ -149,6 +151,10 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
         }
     }
 
+    if (!farm || farm?.role !== "OWNER") {
+        return <></>;
+    };
+
     return (
         <>
             {/* Delete Dialog */}
@@ -173,6 +179,20 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+
+            {/* Disconnect Device */}
+            {
+                pond_data.find((pond: any) => pond.pond_id === pond_id)
+                && pond_data.find((pond: any) => pond.pond_id === pond_id).device_id &&
+                <Button onClick={() => {
+                    setLoading(true);
+                }} variant="ghost" className="flex flex-row space-x-2">
+                    {loading ?
+                        <><NinetyRing color="currentColor" /><p>Disconnecting..</p></>
+                        :
+                        "Disconnect Device"}
+                </Button>
+            }
 
             {/* Edit Dialog */}
             <Dialog open={openEditDialog} onOpenChange={setOpenEditDialog}>
@@ -289,4 +309,3 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
         </>
     );
 }
-

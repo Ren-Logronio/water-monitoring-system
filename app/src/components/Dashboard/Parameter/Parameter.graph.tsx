@@ -51,7 +51,7 @@ const ParameterGraph: FC<Props> = ({ readings, parameter, hover, thresholds, agg
     const getProperDateTimeFormat = () => {
         switch (aggregation) {
             case "minutes":
-                return "MMM dd - hh:mm a";
+                return "hh:mm a";
             case "hour":
                 return "MMM dd - hh a";
             case "day":
@@ -83,24 +83,24 @@ const ParameterGraph: FC<Props> = ({ readings, parameter, hover, thresholds, agg
             >
                 <CartesianGrid strokeDasharray="1 1" />
                 <XAxis dataKey="date" color="#aaaaaa" />
-                <YAxis dataKey={parameter.name} color="#aaaaaa"  domain={[minDomain, maxDomain]}/>
+                <YAxis dataKey={parameter.name} color="#aaaaaa" domain={[minDomain, maxDomain]} />
                 <Tooltip />
                 <Line type="monotone" dataKey={parameter.name} stroke="#205083" strokeLinecap="round" activeDot={{ r: 5 }} />
                 <ReferenceArea y1={undefined} />
                 {
                     thresholds?.map((threshold: any) => {
                         return <>
-                            <ReferenceLine 
-                                y={Number(threshold.target)} 
+                            <ReferenceLine
+                                y={Number(threshold.target)}
                                 fontSize={1}
-                                label={threshold.action === "ALRT" ? "Alert" : threshold.action === "WARN" ? "Warning" : undefined} 
+                                label={threshold.action === "ALRT" ? "Alert" : threshold.action === "WARN" ? "Warning" : undefined}
                                 stroke={threshold.action === "ALRT" ? "#ff0000" : threshold.action === "WARN" ? "#e8a72e" : "#293447"}
                                 strokeDasharray="3 3" />
-                            <ReferenceArea 
-                            y1={threshold.type === "GT" ? Number(threshold.target) : undefined} 
-                            y2={threshold.type === "LT" ? Number(threshold.target) : undefined} 
-                            fill={`${threshold.action === "ALRT" ? "#ff0000" : threshold.action === "WARN" ? "#e8a72e" : "#293447"}`} 
-                            opacity={0.25} />
+                            <ReferenceArea
+                                y1={threshold.type === "GT" ? Number(threshold.target) : undefined}
+                                y2={threshold.type === "LT" ? Number(threshold.target) : undefined}
+                                fill={`${threshold.action === "ALRT" ? "#ff0000" : threshold.action === "WARN" ? "#e8a72e" : "#293447"}`}
+                                opacity={0.25} />
                         </>
                     })
                 }
