@@ -11,6 +11,7 @@ export function calculateMembership(param: number, thresholds: number[]) {
 
 
 export function calculateWQI(ph: number, tds: number, ammonia: number, temperature: number) {
+    const before = performance.now();
     // Define thresholds for each parameter
     const phThresholds = [6, 6.5, 9];
     const tdsThresholds = [0, 500, 1000];
@@ -39,6 +40,8 @@ export function calculateWQI(ph: number, tds: number, ammonia: number, temperatu
         weights['temperature'] * temperatureDegree
     );
 
+    const after = performance.now();
+    console.log("Time taken to calculate WQI", after - before, "ms");
     return wqi;
 }
 
