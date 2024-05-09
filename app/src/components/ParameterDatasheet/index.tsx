@@ -116,6 +116,7 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
                 setRowData(response.data.results
                     .sort((a: any, b: any) => b.reading_id - a.reading_id)
                     .map((row: any, idx: number) => ({ 
+                        ...row,
                         idx: idx + 1, 
                         reading_id: row.reading_id, 
                         edit_recorded_at: format(row.recorded_at, "yyyy-MM-dd"), 
@@ -123,9 +124,6 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
                         reading: `${row.value} ${row.unit}`, 
                         date: format(new Date(row.recorded_at), "MMM dd, yyyy"), 
                         time: format(new Date(row.recorded_at), "h:mm a"), 
-                        recorded_at: row.recorded_at,
-                        value: row.value,
-                        unit: row.unit
                         // recorded_by: row.isRecordedBySensor ? "sensor" : "farmer" 
                     })
                     )
