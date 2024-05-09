@@ -60,7 +60,7 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
             }).catch(error => {
                 console.error(error);
             });
-        }, 1000);
+        }, 60000);
         return () => clearInterval(updateCount);
     }, [])
 
