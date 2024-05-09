@@ -26,8 +26,8 @@ export function calculateWQI(ph: number, tds: number, ammonia: number, temperatu
     // Define weightage factors for each parameter
     const weights = {
         'ph': 0.25,
-        'tds': 0.15,
-        'ammonia': 0.35,
+        'tds': 0.25,
+        'ammonia': 0.25,
         'temperature': 0.25
     };
 
