@@ -121,6 +121,7 @@ export const vector_data = [
     {
         type: "Polygon",
         id: 5,
+        name: "Pond 11",
         coordinates: [
             {
                 "latitude": 5.96026307599854,
@@ -148,6 +149,7 @@ export const vector_data = [
     {
         type: "Polygon",
         id: 6,
+        name: "Pond 19",
         coordinates: [
             {
                 "latitude": 5.960015614123748,
@@ -175,6 +177,7 @@ export const vector_data = [
     {
         type: "Polygon",
         id: 7,
+        name: "Pond 12",
         coordinates: [
             {
                 "latitude": 5.96031859389052,
@@ -202,6 +205,7 @@ export const vector_data = [
     {
         type: "Polygon",
         id: 8,
+        name: "Pond 20",
         coordinates: [
             {
                 "latitude": 5.960071619552437,
@@ -229,6 +233,7 @@ export const vector_data = [
     {
         type: "Polygon",
         id: 9,
+        name: "Pond 21",
         coordinates: [
             {
                 "latitude": 5.960127354726211,
@@ -256,6 +261,7 @@ export const vector_data = [
     {
         type: "Polygon",
         id: 10,
+        name: "Pond 13",
         coordinates: [
             {
                 "latitude": 5.960373175013174,
@@ -283,6 +289,7 @@ export const vector_data = [
     {
         type: "Polygon",
         id: 11,
+        name: "Pond 22",
         coordinates: [
             {
                 "latitude": 5.960181378812564,
@@ -310,6 +317,7 @@ export const vector_data = [
     {
         type: "Polygon",
         id: 12,
+        name: "Pond 8",
         coordinates: [
             {
                 "latitude": 5.960097259616376,
@@ -337,6 +345,7 @@ export const vector_data = [
     {
         type: "Polygon",
         id: 13,
+        name: "Pond 16",
         coordinates: [
             {
                 "latitude": 5.959853280533665,
@@ -364,6 +373,7 @@ export const vector_data = [
     {
         type: "Polygon",
         id: 14,
+        name: "Pond 9",
         coordinates: [
             {
                 "latitude": 5.960151580689498,
@@ -391,6 +401,7 @@ export const vector_data = [
     {
         type: "Polygon",
         id: 15,
+        name: "Pond 17",
         coordinates: [
             {
                 "latitude": 5.959906966870619,
@@ -418,6 +429,7 @@ export const vector_data = [
     {
         type: "Polygon",
         id: 16,
+        name: "Pond 10",
         coordinates: [
             {
                 "latitude": 5.960209532896272,
@@ -445,6 +457,7 @@ export const vector_data = [
     {
         type: "Polygon",
         id: 17,
+        name: "Pond 18",
         coordinates: [
             {
                 "latitude": 5.959961660612663,
@@ -472,6 +485,7 @@ export const vector_data = [
     {
         type: "Polygon",
         id: 18,
+        name: "Pond 5",
         coordinates: [
             {
                 "latitude": 5.959935538128903,
@@ -499,6 +513,7 @@ export const vector_data = [
     {
         type: "Polygon",
         id: 19,
+        name: "Pond 6",
         coordinates: [
             {
                 "latitude": 5.95999104748465,
@@ -526,6 +541,7 @@ export const vector_data = [
     {
         type: "Polygon",
         id: 20,
+        name: "Pond 14",
         coordinates: [
             {
                 "latitude": 5.959744930556397,
@@ -553,6 +569,7 @@ export const vector_data = [
     {
         type: "Polygon",
         id: 21,
+        name: "Pond 7",
         coordinates: [
             {
                 "latitude": 5.960043338383244,
@@ -580,6 +597,7 @@ export const vector_data = [
     {
         type: "Polygon",
         id: 22,
+        name: "Pond 15",
         coordinates: [
             {
                 "latitude": 5.959795976752787,
