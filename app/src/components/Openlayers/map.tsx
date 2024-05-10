@@ -12,20 +12,32 @@ import VectorLayer from "ol/layer/Vector";
 import { selectInteraction } from "./utils/select";
 import Feature from "ol/Feature";
 import React from "react";
+import { Color } from "ol/color";
+import { styleAssigned } from "./utils/vectorStyle";
 
+
+//----------------------------------------------------------------
 // selected feature
 let selected: Feature<any> | null = null;
+// vector layer
+let vector_Layer: VectorLayer<any> | null = null;
+// type for the attributes
+export type map_attributes = [id: number, color: string | Color];
 
 
 const MapView = () => {
 
     // map component
-    const MapBuilder = React.memo(({ vectorLayer, labelLayer, className, zoom }: {
+    const MapBuilder = React.memo(({ vectorLayer, labelLayer, className, zoom, assignedPonds }: {
         vectorLayer: VectorLayer<any>,
         labelLayer: VectorLayer<any>,
         className: HTMLAttributes<HTMLElement>['className'],
         zoom?: number,
+        assignedPonds?: map_attributes[],
     }) => {
+
+        // set the vector layer
+        vector_Layer = vectorLayer;
 
         // create a ref for the map
         const mapRef = useRef<HTMLDivElement>(null);
@@ -73,6 +85,12 @@ const MapView = () => {
             const select = selectInteraction(handleFeatureSelection).newSelect(vectorLayer);
             map.addInteraction(select);
 
+            // highlight assigned ponds
+            if (assignedPonds) {
+                highlightFeatures(assignedPonds);
+                console.log("assigned ponds: ", assignedPonds);
+            };
+
             // on component unmount remove the map refrences to avoid unexpected behaviour
             return () => {
                 // remove the map when the component is unmounted
@@ -82,7 +100,7 @@ const MapView = () => {
                     map.removeInteraction(select);
                 }
             };
-        }, [handleFeatureSelection, zoom, labelLayer, vectorLayer]);
+        }, [handleFeatureSelection, zoom, labelLayer, vectorLayer, assignedPonds]);
 
         // return the map
         return <div ref={mapRef} className={`overflow-hidden rounded-3xl ${className}`}></div> as JSX.Element;
@@ -97,10 +115,32 @@ const MapView = () => {
         return selected;
     }
 
-    // return the map component and selected feature
+    // highlight assigned features method
+    const highlightFeatures = (pond_data: map_attributes[]) => {
+        // do nothing if the vector layer is not yet initialized
+        if (!vector_Layer) return;
+
+        // get the features
+        const features = vector_Layer.getSource().getFeatures();
+
+        // iterate over each ID and color pair
+        pond_data.forEach(([id, color]) => {
+            // find and update the corresponding feature
+            features.forEach((feature: Feature) => {
+                if (feature.getId() === id) {
+                    feature.setStyle(styleAssigned(color));
+                }
+            });
+        });
+    }
+
+
+
+    // return the methods for the map
     return {
         newMap: MapBuilder,
         selectedFeature: getSelectedFeature,
+        assignedPonds: highlightFeatures,
     }
 };
 
