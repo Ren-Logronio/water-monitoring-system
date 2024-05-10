@@ -52,6 +52,7 @@
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.1/xlsx-0.20.1.tgz",
+    "xlsx-populate": "^1.21.0",
     "zustand": "^4.5.1"
   },
   "devDependencies": {
