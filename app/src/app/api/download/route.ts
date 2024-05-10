@@ -1,7 +1,8 @@
 import getMySQLConnection from "@/db/mysql";
 import moment from "moment";
 import { NextRequest, NextResponse } from "next/server";
-import ExcelJS from "exceljs";
+import xlsxPopulate from "xlsx-populate";
+// import ExcelJS from "exceljs";
 
 export async function GET(request: NextRequest){
     try {
@@ -51,40 +52,40 @@ export async function GET(request: NextRequest){
                 },
             );
         }
-        if (format === 'spreadsheet') {
-            // generate spreadsheet
-            const workbook = new ExcelJS.Workbook();
-            const worksheet = workbook.addWorksheet('Readings');
-            worksheet.columns = [
-                { header: 'Date', key: 'created_at', width: 20 },
-                { header: 'Time', key: 'recorded_at', width: 20 },
-                { header: 'Parameter', key: 'parameter', width: 20 },
-                { header: 'Value', key: 'value', width: 20 },
-            ];
-            pondParameterReadings
-                .sort((a: any, b: any) => moment(a.recorded_at).diff(b.recorded_at))
-                .forEach((reading: any) => {
-                worksheet.addRow({
-                    created_at: reading.created_at,
-                    recorded_at: reading.recorded_at,
-                    parameter: reading.parameter,
-                    value: reading.value,
-                });
-            });
-            const buffer = await workbook.xlsx.writeBuffer();
+        // generate spreadsheet
+        // const workbook = new ExcelJS.Workbook();
+        // const worksheet = workbook.addWorksheet('Readings');
+        // worksheet.columns = [
+        //     { header: 'Date', key: 'created_at', width: 20 },
+        //     { header: 'Time', key: 'recorded_at', width: 20 },
+        //     { header: 'Parameter', key: 'parameter', width: 20 },
+        //     { header: 'Value', key: 'value', width: 20 },
+        // ];
+        // pondParameterReadings
+        //     .sort((a: any, b: any) => moment(a.recorded_at).diff(b.recorded_at))
+        //     .forEach((reading: any) => {
+        //     worksheet.addRow({
+        //         created_at: reading.created_at,
+        //         recorded_at: reading.recorded_at,
+        //         parameter: reading.parameter,
+        //         value: reading.value,
+        //     });
+        // });
+        // const buffer = await workbook.xlsx.writeBuffer();
 
-            const headers = new Headers();
-            headers.set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            headers.set('Content-Disposition', 'attachment; filename=readings.xlsx');
-            return new NextResponse(
-                buffer,
-                {
-                    headers,
-                    statusText: 'OK',
-                    status: 200,
-                },
-            );
-        }
+        const spreadsheet = await xlsxPopulate.fromFileAsync("/templates/template-paramter-logs.xlsx");
+
+        const headers = new Headers();
+        headers.set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        headers.set('Content-Disposition', 'attachment; filename=readings.xlsx');
+        return new NextResponse(
+            buffer,
+            {
+                headers,
+                statusText: 'OK',
+                status: 200,
+            },
+        );
         return NextResponse.json(
             { message: "Responded" },
             {
