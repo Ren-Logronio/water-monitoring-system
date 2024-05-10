@@ -10,14 +10,23 @@ import useFarm from "@/hooks/useFarm";
 import MapView from "../Openlayers/map";
 import { polygonLayer } from "../Openlayers/utils/polygonLayer";
 import { labelLayer } from "../Openlayers/utils/labelLayer";
+import { map_attributes } from "../Openlayers/map";
 
 
 // instantiate the map component outside the component to prevent unnecessary re-renders
-const { newMap: MapBuilder, selectedFeature } = MapView();
+const { newMap: MapBuilder, assignedPonds } = MapView();
 const farm_plots = polygonLayer();
 const farm_labels = labelLayer();
 
-
+// dummy data for assignedPonds
+const assignedPondsData: map_attributes[] = [
+    [1, "#FF0000"],
+    [2, "#00FF00"],
+    [3, "#0000FF"],
+    [4, "#FFFF00"],
+    [5, "#00FFFF"],
+    [6, "#FF00FF"],
+];
 
 export default function Farm() {
     const { selectedFarm, farmsLoading } = useFarm();
@@ -65,6 +74,7 @@ export default function Farm() {
                             vectorLayer={farm_plots}
                             labelLayer={farm_labels}
                             className="w-full h-[500px]"
+                            assignedPonds={assignedPondsData}
                         />
                         {/* Pond List */}
                         <PondList farm_id={farm.farm_id} />
