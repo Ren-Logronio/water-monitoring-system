@@ -7,6 +7,8 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-material.css";
 import { useSearchParams, useRouter, useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import moment from "moment";
+import { Table, TableBody, TableHeader } from "@/components/ui/table";
 
 const autoSizeStrategy: any = {
     type: 'fitGridWidth',
@@ -52,15 +54,25 @@ export default function PrintParameter() {
         axios.get(`/api/pond/parameter/reading?pond_id=${pond_id}&parameter=${parameter}`).then(response => {
             if (response.data.results && response.data.results.length > 0) {
                 console.log("response.data.results:", response.data.results);
-                setRowData(response.data.results);
+                setRowData(response.data.results.sort((a: any, b: any) => moment(a.recorded_at).diff(b.recorded_at)));
             }
         }).catch(error => {
             console.error(error);
         }).finally(() => {
             setLoading(false);
-        })
+        });
     }, [pond_id]);
 
-    return <div className="ag-theme-material max-w-full h-screen flex flex-col">
+    return <div className="max-w-full h-screen flex flex-col bg-gray-500">
+        <div className="flex max-w-[800px] h-screen bg-white">
+            <Table>
+                <TableHeader>
+
+                </TableHeader>
+                <TableBody>
+                    
+                </TableBody>
+            </Table>
+        </div>
     </div>
 }

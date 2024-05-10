@@ -49,17 +49,11 @@ export default function Download({ pond_id, from, to }: { pond_id?: string, from
             <DropdownMenuContent className="w-56 mr-4">
                 <DropdownMenuItem onClick={handleDownload("csv")} className=" cursor-pointer">CSV</DropdownMenuItem>
                 <DropdownMenuItem className=" cursor-pointer">
-                    <Link href={`/pdf/parameter/${parameter}?pond_id=${pond_id}&from=${moment(from).toDate().toISOString()}&to=${moment(to).toDate().toISOString()}`} target="_blank" className="w-full text-start">
+                    <Link rel="noopener noreferrer" href={`/pdf/parameter/${parameter}?pond_id=${pond_id}&from=${moment(from).toDate().toISOString()}&to=${moment(to).toDate().toISOString()}`} target="_blank" className="w-full text-start">
                         PDF
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleDownload("spreadsheet")} className=" cursor-pointer">Spreadsheet</DropdownMenuItem>
-                {/* <DropdownMenuItem onClick={handleDownload("spreadsheet")} className=" cursor-pointer">Spreadsheet</DropdownMenuItem> */}
-                {/* <DropdownMenuSeparator />
-                <DropdownMenuLabel className="text-xs">All Parameters</DropdownMenuLabel>
-                <DropdownMenuItem onClick={handleDownload("csv", true)} className=" cursor-pointer">CSV</DropdownMenuItem>
-                <DropdownMenuItem onClick={handleDownload("pdf", true)} className=" cursor-pointer">PDF</DropdownMenuItem>
-                <DropdownMenuItem onClick={handleDownload("spreadsheet", true)} className=" cursor-pointer">Spreadsheet</DropdownMenuItem> */}
             </DropdownMenuContent>
         </DropdownMenu>
     )
