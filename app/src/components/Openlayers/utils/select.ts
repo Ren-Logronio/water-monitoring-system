@@ -34,7 +34,7 @@ export const selectInteraction = (handleFeatureSelection: (feature: Feature<any>
             }
 
             if (deselected) {
-                deselected.setStyle(styleNormal);
+                //deselected.setStyle(styleNormal);
             }
 
             // Update the selected feature
