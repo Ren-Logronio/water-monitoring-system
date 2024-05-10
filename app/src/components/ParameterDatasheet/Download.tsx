@@ -16,9 +16,6 @@ export default function Download({ pond_id, from, to }: { pond_id?: string, from
 
     const handleDownload = (format: string, all: boolean | undefined = false) => {
         return () => {
-            if(format === 'pdf') {
-                return;
-            }
             setLoading(true);
             axios.get(`/api/download?format=${format}&pond_id=${pond_id}&parameter=${parameter}&from=${moment(from).toDate().toISOString()}&to=${moment(to).toDate().toISOString()}`, { responseType: "blob" }).then(res => {
                 console.log(res);
@@ -26,7 +23,7 @@ export default function Download({ pond_id, from, to }: { pond_id?: string, from
                 const url = window.URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.href = url;
-                link.setAttribute('download', `downloaded-file.${format === 'spreadsheet' ? 'xlsx' : format}`);
+                link.setAttribute('download', `${parameter}_logs_${moment().format("MMM-DD-yyyy_h:mm-a")}.${format === 'spreadsheet' ? 'xlsx' : format}`);
                 document.body.appendChild(link);
                 link.click();
                 link?.parentNode?.removeChild(link);
@@ -52,7 +49,7 @@ export default function Download({ pond_id, from, to }: { pond_id?: string, from
             <DropdownMenuContent className="w-56 mr-4">
                 <DropdownMenuItem onClick={handleDownload("csv")} className=" cursor-pointer">CSV</DropdownMenuItem>
                 <DropdownMenuItem className=" cursor-pointer">
-                    <Link href={`/pdf/${parameter}?pond_id=${pond_id}&from=${from}&to=${to}`} target="_blank" className="w-full text-start">
+                    <Link href={`/pdf/parameter/${parameter}?pond_id=${pond_id}&from=${moment(from).toDate().toISOString()}&to=${moment(to).toDate().toISOString()}`} target="_blank" className="w-full text-start">
                         PDF
                     </Link>
                 </DropdownMenuItem>
