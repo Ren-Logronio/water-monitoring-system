@@ -1,12 +1,14 @@
 "use client";
 
 import roundToSecondDecimal from "@/utils/RoundToNDecimals";
+import { calculateWQI, classifyWQI } from "@/utils/SimpleFuzzyLogicWaterQuality";
 import axios from "axios";
 import { create } from "domain";
 import moment from "moment";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { createRef, useEffect, useState } from "react";
+import "./page.css";
 
 export default function PrintWaterQuality() {
     const printableRef = createRef<HTMLDivElement>();
@@ -35,6 +37,19 @@ export default function PrintWaterQuality() {
         })
     }, []);
 
+    useEffect(() => {
+        if (loading || !printableRef?.current) return;
+        const timeout = setTimeout( async () => {
+            window.onafterprint = () => {
+                window.close();
+            }
+            window.print();
+        }, 100);
+        return () => {
+            clearTimeout(timeout);
+        };
+    }, [loading]);
+
     return <div className="max-w-full h-full flex flex-col items-center bg-white">
         <title>{`Water Quality Report ${moment().format("MMM-DD-yyyy_h:mm-a")}`}</title>
         <div ref={printableRef} className="flex flex-col min-w-[800px] max-w-[800px] h-screen mx-auto bg-white p-4 space-y-9">
@@ -62,13 +77,13 @@ export default function PrintWaterQuality() {
                 <table>
                     <thead className="border-0 border-b border-black">
                         <tr>
-                            <th className="text-[14px] font-semibold">Sample Size</th>
-                            <th className="text-[14px] font-semibold">Parameters</th>
-                            <th className="text-[14px] font-semibold">Min.</th>
-                            <th className="text-[14px] font-semibold">Max.</th>
-                            <th className="text-[14px] font-semibold">Mean</th>
-                            <th className="text-[14px] font-semibold">Std. Deviation</th>
-                            <th className="text-[14px] font-semibold">Rate Of Change</th>
+                            <th className="text-[14px] font-medium">Sample Size</th>
+                            <th className="text-[14px] font-medium">Parameters</th>
+                            <th className="text-[14px] font-medium">Min.</th>
+                            <th className="text-[14px] font-medium">Max.</th>
+                            <th className="text-[14px] font-medium">Mean</th>
+                            <th className="text-[14px] font-medium">Std. Deviation</th>
+                            <th className="text-[14px] font-medium">Rate Of Change</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -108,6 +123,53 @@ export default function PrintWaterQuality() {
                             <td className="text-end">{roundToSecondDecimal(Math.sqrt(waterQualityReadings.reduce((acc, curr) => acc + Math.pow(curr.tds - (waterQualityReadings.reduce((acc, curr) => acc + curr.tds, 0) / waterQualityReadings.length), 2), 0) / waterQualityReadings.length))}</td>
                             <td className="text-end">{roundToSecondDecimal((waterQualityReadings[0].tds - waterQualityReadings[waterQualityReadings.length - 1].tds) / waterQualityReadings.length)}</td>
                         </tr>
+                    </tbody>
+                </table>
+                <p className="font-medium">CURRENT WATER QUALITY &nbsp; - &nbsp; {
+                    roundToSecondDecimal(
+                        calculateWQI(
+                            waterQualityReadings[0].ph,
+                            waterQualityReadings[0].tds,
+                            waterQualityReadings[0].ammonia,
+                            waterQualityReadings[0].temperature, 
+                        ) * 100
+                    )
+                }% ({
+                    classifyWQI(
+                        calculateWQI(
+                            waterQualityReadings[0].ph,
+                            waterQualityReadings[0].tds,
+                            waterQualityReadings[0].ammonia,
+                            waterQualityReadings[0].temperature, 
+                        )
+                    )
+                }) </p>
+                <table>
+                    <thead className="border-0 border-b border-black">
+                        <tr>
+                            <th className="text-[14px] font-medium">Date</th>
+                            <th className="text-[14px] font-medium">Time</th>
+                            <th className="text-[14px] font-medium">Temperature</th>
+                            <th className="text-[14px] font-medium">pH</th>
+                            <th className="text-[14px] font-medium">Ammonia</th>
+                            <th className="text-[14px] font-medium">TDS</th>
+                            <th className="text-[14px] font-medium">Water Quality</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            waterQualityReadings.map((reading, index) => {
+                                return <tr key={index}>
+                                    <td className="text-center">{moment(reading.recorded_at).format("MMM DD, yyyy")}</td>
+                                    <td className="text-center">{moment(reading.recorded_at).format("h:mm a")}</td>
+                                    <td className="text-center">{reading.temperature} °C</td>
+                                    <td className="text-center">{reading.ph}</td>
+                                    <td className="text-center">{reading.ammonia} ppm</td>
+                                    <td className="text-center">{reading.tds} ppm</td>
+                                    <td className="text-center">{roundToSecondDecimal(calculateWQI(reading.ph, reading.tds, reading.ammonia, reading.temperature) * 100)}% ({classifyWQI(calculateWQI(reading.ph, reading.tds, reading.ammonia, reading.temperature))})</td>
+                                </tr>
+                            })
+                        }
                     </tbody>
                 </table>
             </>}

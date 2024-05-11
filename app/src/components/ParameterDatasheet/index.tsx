@@ -6,24 +6,16 @@ import { Dispatch, SetStateAction, use, useEffect, useMemo, useRef, useState } f
 import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-material.css";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
 import { NinetyRing } from "react-svg-spinners";
 import axios from "axios";
-import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialogNoX";
-import AddReading from "./AddReading";
-import { Input } from "../ui/input";
 import Download from "./Download";
-import Actions from "./Actions";
 import { useParameterDatasheetStore } from "@/store/parameterDatasheetStore";
-import { PopoverContent, PopoverTrigger, Popover } from "../ui/popover";
 import DaterangePopover from "../ui/daterange";
 import NumberOfItemsDropdown, { DefaultValueLabelSet } from "../ui/no-of-items-dropdown";
 import moment from "moment";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "../ui/pagination";
 import useAuth from "@/hooks/useAuth";
-import Aggregation, { DefaultAggregationValueLabelSet } from "../ui/aggregation";
 
 const autoSizeStrategy: any = {
     type: 'fitGridWidth',
@@ -39,17 +31,6 @@ const autoSizeStrategy: any = {
         }
     ],
 };
-
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableFooter,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
 
 export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, pondsLoading }: { pond_id?: string, ponds?: any[], pondsLoading: boolean, setSelectedPond: Dispatch<SetStateAction<string>> }) {
     const { user } = useAuth();
@@ -204,7 +185,7 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
                             </Button> */}
                             <div className="flex flex-row items-center space-x-2 relative">
                                 <NumberOfItemsDropdown 
-                                    disabled={loading || !!filteredDate?.length}
+                                    disabled={loading || !rowData?.length}
                                     setValueLabel={DefaultValueLabelSet} 
                                     defaultValue={searchParams.get("items") || "25"}
                                     onValueChange={(value) => {
@@ -213,7 +194,7 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
                                     }} />
                             </div>
                             <div className="flex flex-row items-center space-x-2 relative">
-                                <DaterangePopover disabled={loading || !!filteredDate?.length} onChange={(dateFrom, dateTo, mode) => {
+                                <DaterangePopover disabled={loading || !rowData?.length} onChange={(dateFrom, dateTo, mode) => {
                                     setDateFrom(dateFrom);
                                     setDateTo(dateTo);
                                     setSelected(mode);
