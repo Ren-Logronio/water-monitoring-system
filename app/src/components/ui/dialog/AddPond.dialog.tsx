@@ -157,7 +157,7 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
                         </div>
 
                         {/* Type of farming */}
-                        <div className="flex flex-col space-y-2 my-1 xl:my-0">
+                        {/* <div className="flex flex-col space-y-2 my-1 xl:my-0">
                             <Label className="text-md">Type of Farming</Label>
                             <Select disabled={loading} name="method" onValueChange={handleSelectChange} value={pondForm.method}>
                                 <SelectTrigger className="w-[180px] border-2 border-blue-400 bg-blue-50 focus-visible:ring-blue-200/40 focus-visible:ring-4 shadow-none rounded-2xl">
@@ -169,7 +169,7 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
                                     <SelectItem value="TRADITIONAL">Traditional</SelectItem>
                                 </SelectContent>
                             </Select>
-                        </div>
+                        </div> */}
                     </div>
 
                     {/* Pond dimensions */}
