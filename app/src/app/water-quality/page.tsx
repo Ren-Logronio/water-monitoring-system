@@ -111,19 +111,21 @@ export default function WaterQuality() {
                 </div>}
             {!loading && <>
             <div className="flex flex-row justify-between">
-                <Select value={selectedPond} onValueChange={setSelectedPond}>
-                    <SelectTrigger className="w-[180px] border-2 border-orange-300 bg-orange-50 focus-visible:ring-blue-200/40 focus-visible:ring-4 shadow-none rounded-2xl">
-                        <SelectValue placeholder="Select Pond" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {
-                            ponds.map(
-                                (pond) => <SelectItem key={pond.pond_id} value={pond.pond_id}>{pond.name}</SelectItem>
-                            )
-                        }
-                        {/* <SelectItem value="light">Light</SelectItem> */}
-                    </SelectContent>
-                </Select>
+                <div className="flex flex-row space-x-3 items-center">
+                    <Select value={selectedPond} onValueChange={setSelectedPond}>
+                        <SelectTrigger className="w-[180px] border-2 border-orange-300 bg-orange-50 focus-visible:ring-blue-200/40 focus-visible:ring-4 shadow-none rounded-2xl">
+                            <SelectValue placeholder="Select Pond" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {
+                                ponds.map(
+                                    (pond) => <SelectItem key={pond.pond_id} value={pond.pond_id}>{pond.name}</SelectItem>
+                                )
+                            }
+                            {/* <SelectItem value="light">Light</SelectItem> */}
+                        </SelectContent>
+                    </Select>
+                </div>
                 <div className="flex flex-row space-x-2">
                     <DaterangePopover onChange={(dateFrom, dateTo, mode) => {
                         setDateFrom(dateFrom);
@@ -156,10 +158,10 @@ export default function WaterQuality() {
                         <TableHead>#</TableHead>
                         <TableHead>Date</TableHead>
                         <TableHead>Time</TableHead>
-                        <TableHead>Avg. Temperature</TableHead>
-                        <TableHead>Avg. pH</TableHead>
-                        <TableHead>Avg. TDS</TableHead>
-                        <TableHead>Avg. Ammonia</TableHead>
+                        <TableHead>Hourly Avg. Temperature</TableHead>
+                        <TableHead>Hourly Avg. pH</TableHead>
+                        <TableHead>Hourly Avg. TDS</TableHead>
+                        <TableHead>Hourly Avg. Ammonia</TableHead>
                         <TableHead>Water Quality</TableHead>
                     </TableRow>
                 </TableHeader>
