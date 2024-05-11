@@ -46,8 +46,12 @@ export async function POST(request: NextRequest) {
             "INSERT INTO `farm_farmer` (`farmer_id`, `farm_id`, `role`, `is_approved`) VALUES (?, ?, ?, 1)",
             [user_id, lastInsertedId, "OWNER"]
         );
+        const [farm]: any = await connection.query(
+            "SELECT * FROM `view_farmer_farm` WHERE `farm_id` = ?",
+            [lastInsertedId]
+        );
         return NextResponse.json(
-            { results: results2 },
+            { results: results2, result: farm[0] },
             {
                 status: 200,
             },

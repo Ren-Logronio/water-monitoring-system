@@ -21,16 +21,16 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
     const [readingNotification, setReadingNotification] = useState<any>([]);
     const [notificationToggle, setNotificationToggle] = useState<"reading"|"all">("reading");
 
-    // useEffect(() => {
-    //     if (pathIsSignIn(path)) {
-    //         console.log("Notif fetch disabled");
-    //         setActive(false);
-    //         clearInterval(poller);
-    //     } else {
-    //         console.log("Notif fetch enabled");
-    //         setActive(true);
-    //     };
-    // }, [path]);
+    useEffect(() => {
+        if (pathIsSignIn(path)) {
+            console.log("Notif fetch disabled");
+            setActive(false);
+            clearInterval(poller);
+        } else {
+            console.log("Notif fetch enabled");
+            setActive(true);
+        };
+    }, [path]);
 
     // useEffect(() => {
     //     if (!active) {

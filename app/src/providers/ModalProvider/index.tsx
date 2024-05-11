@@ -1,3 +1,6 @@
+"use client";
+
+import FarmDetails from "@/components/ui/dialog/AddFarm.dialog";
 import { createContext, useState } from "react";
 
 export type ModalType = {
@@ -22,16 +25,7 @@ export type ModalContextType = {
     // alertModal: ModalType;
 };
 
-export const ModalContext = createContext({
-    addFarmModal: {
-        open: () => { },
-        close: () => { }
-    },
-    // alertModal: {
-    //     open: () => { },
-    //     close: () => { }
-    // }
-});
+export const ModalContext = createContext({addFarmModal: { open: () => {}, close: () => {} }});
 
 export default function ModalProvider({ children }: { children: React.ReactNode }) {
     const [addFarmModalIsOpen, setAddFarmModalIsOpen] = useState(false);
@@ -48,8 +42,9 @@ export default function ModalProvider({ children }: { children: React.ReactNode 
     };
 
     return <ModalContext.Provider value={{ addFarmModal }}>
+        <FarmDetails open={addFarmModalIsOpen} setOpen={setAddFarmModalIsOpen} />
         {children}
-    </ModalContext.Provider>
+    </ModalContext.Provider> 
 }
 
 
