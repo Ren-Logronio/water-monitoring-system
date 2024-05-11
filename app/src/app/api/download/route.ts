@@ -82,10 +82,10 @@ export async function GET(request: NextRequest){
             const rateOfChange = Math.abs((curr.value - previous.value) / (moment(curr.recorded_at).diff(moment(previous.recorded_at), 'hours')));
             return acc + rateOfChange;
         }, 0) / aggregatedReadings.length);
-        const mean = roundToSecondDecimal(aggregatedReadings.reduce((acc: number, curr: any) => acc + curr.value, 0) / aggregatedReadings.length);
-        const standardDeviation = roundToSecondDecimal(Math.sqrt(aggregatedReadings.reduce((acc: number, curr: any) => acc + Math.pow(curr.value - mean, 2), 0) / aggregatedReadings.length));
-        const max = roundToSecondDecimal(Math.max(...aggregatedReadings.map((reading: any) => reading.value)));
-        const min = roundToSecondDecimal(Math.min(...aggregatedReadings.map((reading: any) => reading.value)));
+        const mean = roundToSecondDecimal(pondParameterReadings.reduce((acc: number, curr: any) => acc + curr.value, 0) / aggregatedReadings.length);
+        const standardDeviation = roundToSecondDecimal(Math.sqrt(pondParameterReadings.reduce((acc: number, curr: any) => acc + Math.pow(curr.value - mean, 2), 0) / aggregatedReadings.length));
+        const max = roundToSecondDecimal(Math.max(...pondParameterReadings.map((reading: any) => reading.value)));
+        const min = roundToSecondDecimal(Math.min(...pondParameterReadings.map((reading: any) => reading.value)));
 
         spreadsheet.sheet(0).cell('A1').value(farmPond[0].farm_name);
         spreadsheet.sheet(0).cell('A2').value(`${[farmPond[0].address_street, farmPond[0].address_city, farmPond[0].address_province].join(", ") || "Mindanao State University General Santos"}`);
