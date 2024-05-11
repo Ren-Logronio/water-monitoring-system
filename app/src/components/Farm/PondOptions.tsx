@@ -214,7 +214,7 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
                                 </div>
 
                                 {/* Type of farming */}
-                                <div className="flex flex-col space-y-2 my-1 xl:my-0">
+                                {/* <div className="flex flex-col space-y-2 my-1 xl:my-0">
                                     <Label className="text-md">Type of Farming</Label>
                                     <Select disabled={loading} name="method" value={currentPond?.method} onValueChange={handleSelectChange} >
                                         <SelectTrigger className="w-[180px] border-2 border-blue-400 bg-blue-50 focus-visible:ring-blue-200/40 focus-visible:ring-4 shadow-none rounded-2xl">
@@ -226,17 +226,17 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
                                             <SelectItem value="TRADITIONAL">Traditional</SelectItem>
                                         </SelectContent>
                                     </Select>
-                                </div>
+                                </div> */}
                             </div>
 
                             {/* Pond dimensions */}
-                            <div className="flex flex-col space-y-[12px] my-5">
+                            {/* <div className="flex flex-col space-y-[12px] my-5">
                                 <Label className="text-md">
                                     Dimensions of Pond
                                     <span className="text-sm"> (Optional)</span>
                                 </Label>
 
-                                {/* Input fields */}
+                                Input fields
                                 <div className="flex flex-row justify-between">
                                     <div className="flex flex-row items-center space-x-2">
                                         <Label>Width</Label>
@@ -254,6 +254,19 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
                                         <p className="hidden text-sm text-red-600"></p>
                                     </div>
                                 </div>
+                            </div> */}
+
+                            {/* Map */}
+                            <div className="px-2 space-y-2 xl:space-y-2 w-full h-fit xl:w-[500px]">
+                                <Label className="text-md xl:text:lg">Location</Label>
+
+                                <MapBuilder
+                                    vectorLayer={farm_plots}
+                                    labelLayer={farm_labels}
+                                    className={"h-[250px] xl:h-[300px] bg-slate-200"}
+                                    zoom={10.1}
+                                />
+
                             </div>
 
                             {/* Device */}
@@ -269,19 +282,6 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
 
                             {/* Error Message */}
                             {!!currentPond?.message && <p className={` text-sm text-center ${currentPond?.status === "red" ? 'text-red-600' : 'text-green-500'}`}>{currentPond?.message}</p>}
-
-                        </div>
-
-                        {/* Map */}
-                        <div className="px-2 space-y-2 xl:space-y-2 w-full h-fit xl:w-[500px]">
-                            <Label className="text-md xl:text:lg">Location</Label>
-
-                            <MapBuilder
-                                vectorLayer={farm_plots}
-                                labelLayer={farm_labels}
-                                className={"h-[250px] xl:h-[300px] bg-slate-200"}
-                                zoom={18.1}
-                            />
 
                         </div>
                     </div>
