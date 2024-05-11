@@ -1,6 +1,6 @@
-//'use client';
+'use client';
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback, HTMLAttributes } from "react";
 import { BING_API_KEY } from "./utils/bingmaps.key";
 
 import { useGeographic } from "ol/proj";
@@ -8,60 +8,140 @@ import Map from "ol/Map";
 import View from "ol/View";
 import TileLayer from "ol/layer/Tile";
 import BingMaps from "ol/source/BingMaps";
-
-import { vectorLayer } from "./utils/vectorSource";
+import VectorLayer from "ol/layer/Vector";
 import { selectInteraction } from "./utils/select";
+import Feature from "ol/Feature";
+import React from "react";
+import { Color } from "ol/color";
+import { styleAssigned } from "./utils/vectorStyle";
 
 
-export const MapView: React.FC = () => {
-    const mapRef = useRef<HTMLDivElement>(null);
+//----------------------------------------------------------------
+// selected feature
+let selected: Feature<any> | null = null;
+// vector layer
+let vector_Layer: VectorLayer<any> | null = null;
+// type for the attributes
+export type map_attributes = [id: number, color: string | Color];
 
-    // for geographic projection
-    useGeographic();
 
-    // initialize the map
-    useEffect(() => {
-        // do nothing if mapRef is not yet initialized
-        if (!mapRef.current) return;
+const MapView = () => {
 
-        // create the map
-        const map = new Map({
-            target: mapRef.current!,
-            layers: [
-                new TileLayer({
-                    preload: Infinity,
-                    visible: true,
-                    source: new BingMaps({
-                        key: BING_API_KEY!,
-                        imagerySet: "Aerial",
-                        maxZoom: 19,
+    // map component
+    const MapBuilder = React.memo(({ vectorLayer, labelLayer, className, zoom, assignedPonds }: {
+        vectorLayer: VectorLayer<any>,
+        labelLayer: VectorLayer<any>,
+        className: HTMLAttributes<HTMLElement>['className'],
+        zoom?: number,
+        assignedPonds?: map_attributes[],
+    }) => {
+
+        // set the vector layer
+        vector_Layer = vectorLayer;
+
+        // create a ref for the map
+        const mapRef = useRef<HTMLDivElement>(null);
+
+        // handle feature selection event
+        const handleFeatureSelection = useCallback((selectedFeature: Feature<any> | null) => {
+            selectedFeature ? selected = selectedFeature : selected = null;
+        }, []);
+
+        // for geographic projection
+        useGeographic();
+
+        // initialize the map
+        useEffect(() => {
+            // do nothing if mapRef is not yet initialized
+            if (!mapRef.current) return;
+
+            // create the map
+            const map = new Map({
+                target: mapRef.current,
+                layers: [
+                    new TileLayer({
+                        preload: Infinity,
+                        visible: true,
+                        source: new BingMaps({
+                            key: BING_API_KEY!,
+                            imagerySet: "Aerial",
+                            maxZoom: 19,
+                        }),
                     }),
+                ],
+                view: new View({
+                    center: [125.106098, 5.959807],
+                    zoom: !zoom ? 18.5 : zoom,
+                    extent: [125.102278, 5.956575, 125.108819, 5.962964],
                 }),
-            ],
-            view: new View({
-                center: [125.106098, 5.959807],
-                zoom: 18.5,
-                extent: [125.102278, 5.956575, 125.108819, 5.962964],
-            }),
-            controls: [],
-        });
+                controls: [],
+            });
 
-        // add the vector layer to the map
-        if (vectorLayer) {
+            // add the vector & label layers to the map
             map.addLayer(vectorLayer);
-        }
+            map.addLayer(labelLayer);
 
-        // add the select interaction to the map
-        map.addInteraction(selectInteraction());
+            // add the select interaction to the map
+            const select = selectInteraction(handleFeatureSelection).newSelect(vectorLayer);
+            map.addInteraction(select);
 
-        // on component unmount remove the map refrences to avoid unexpected behaviour
-        return () => {
-            // remove the map when the component is unmounted
-            map.setTarget(undefined);
-        };
+            // highlight assigned ponds
+            if (assignedPonds) {
+                highlightFeatures(assignedPonds);
+                console.log("assigned ponds: ", assignedPonds);
+            };
 
-    }, [])
+            // on component unmount remove the map refrences to avoid unexpected behaviour
+            return () => {
+                // remove the map when the component is unmounted
+                map.setTarget(undefined);
+                // remove the select interaction
+                if (select) {
+                    map.removeInteraction(select);
+                }
+            };
+        }, [handleFeatureSelection, zoom, labelLayer, vectorLayer, assignedPonds]);
 
-    // return the map
-    return <div ref={mapRef} className="w-full h-full overflow-hidden rounded-3xl"></div>
-}
+        // return the map
+        return <div ref={mapRef} className={`overflow-hidden rounded-3xl ${className}`}></div> as JSX.Element;
+
+    });
+
+    // set display name
+    MapBuilder.displayName = "MapBuilder";
+
+    // selected feature method
+    const getSelectedFeature = () => {
+        return selected;
+    }
+
+    // highlight assigned features method
+    const highlightFeatures = (pond_data: map_attributes[]) => {
+        // do nothing if the vector layer is not yet initialized
+        if (!vector_Layer) return;
+
+        // get the features
+        const features = vector_Layer.getSource().getFeatures();
+
+        // iterate over each ID and color pair
+        pond_data.forEach(([id, color]) => {
+            // find and update the corresponding feature
+            features.forEach((feature: Feature) => {
+                if (feature.getId() === id) {
+                    feature.setStyle(styleAssigned(color));
+                }
+            });
+        });
+    }
+
+
+
+    // return the methods for the map
+    return {
+        newMap: MapBuilder,
+        selectedFeature: getSelectedFeature,
+        assignedPonds: highlightFeatures,
+    }
+};
+
+export default MapView;
