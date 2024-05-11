@@ -2,7 +2,7 @@
 /* eslint-disable @next/next/no-img-element */
 
 import axios from "axios";
-import { createRef, useCallback, useEffect, useLayoutEffect, useState } from "react";
+import { createRef, useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { NinetyRing } from "react-svg-spinners";
 import { Button } from "../ui/button";
 import moment from "moment";
@@ -101,6 +101,11 @@ export default function Parameter({ parameter, hideCallback }: { parameter: any,
         setAction("NONE");
     }, [readings, thresholds, loading]);
 
+    const last60MinuteAverage: number = useMemo(() => {
+        const last60Minutes: any[] = readings.filter((reading) => moment(reading.recorded_at).isAfter(moment(readings[readings.length - 1].recorded_at).subtract(60, "minutes")));
+        return Math.round((last60Minutes.reduce((acc: number, curr: any) => acc + curr.value, 0) / last60Minutes.length) * 100) / 100;
+    }, [readings]);
+
     useEffect(() => {
         console.log("action", action);
     }, [action]);
@@ -128,10 +133,10 @@ export default function Parameter({ parameter, hideCallback }: { parameter: any,
                         <div className={`${action === "ALRT" ? `text-red-900` : action === "WARN" ? `text-orange-900` : "text-blue-900"} mx-7 mb-4`}>
                             <h1 className="text-[20px] leading-[28px] font-medium">{parameter.name}</h1>
                             <div className="flex flex-row items-center space-x-2">
-                                <p className="text-[40px] leading-[32px] m-0 font-semibold">{readings[readings.length - 1].value}</p>
+                                <p className="text-[40px] leading-[32px] m-0 font-semibold">{last60MinuteAverage}</p>
                                 <p className="text-[32px] leading-[26px] m-0 font-semibold">{parameter.unit}</p>
                             </div>
-                            <p className="text-[14px] font-normal m-0">Last recorded reading</p>
+                            <p className="text-[14px] font-normal m-0">Average - last 60 minutes ago</p>
                         </div>
                     </div>
                     <img src={action === "ALRT" ? `./gradient-red.png` : action === "WARN" ? `./gradient-yellow.png` : `./gradient-blue.png`} className={`absolute bottom-0 left-0 z-30 ${hover ? 'opacity-0 pointer-events-none' : 'opacity-100'}`} />
@@ -145,7 +150,7 @@ export default function Parameter({ parameter, hideCallback }: { parameter: any,
                                 </svg>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="w-56">
-                                <DropdownMenuLabel>Grouping</DropdownMenuLabel>
+                                <DropdownMenuLabel>Filter</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuRadioGroup value={aggregation} onValueChange={(value: any) => setAggregation(value)}>
                                     <DropdownMenuRadioItem value="minutes">Minutes</DropdownMenuRadioItem>

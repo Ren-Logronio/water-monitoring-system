@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import Loading from "@/components/Loading";
 import FarmProvider from "@/providers/FarmProvider";
 import AuthProvider from "@/providers/AuthProvider";
+import ModalProvider from "@/providers/ModalProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,11 +30,13 @@ export default function RootLayout({
         >
           <AuthProvider>
             <FarmProvider>
-              <NavigationBar>
-                <Suspense fallback={<Loading />}>
-                  {children}
-                </Suspense>
-              </NavigationBar>
+              <ModalProvider>
+                <NavigationBar>
+                  <Suspense fallback={<Loading />}>
+                    {children}
+                  </Suspense>
+                </NavigationBar>
+              </ModalProvider>
             </FarmProvider>
           </AuthProvider>
         </ThemeProvider>

@@ -25,6 +25,7 @@ import {
   } from "@/components/ui/dropdown-menu"
 import useFarm from "@/hooks/useFarm";
 import FarmDetails from "../Dashboard/FarmDetails";
+import useAddFarmModal from "@/hooks/useModal/useAddFarmModal";
 
 interface NavigationBarProps {
     children?: React.ReactNode;
@@ -32,6 +33,7 @@ interface NavigationBarProps {
 
 export default function NavigationBar({ children }: NavigationBarProps): React.ReactNode {
     const [farm, setFarm] = useState<any>({});
+    const addFarmModal = useAddFarmModal();
     const { farms, selectedFarm, setSelectedFarm, farmsLoading } = useFarm();
     const [navBarLoading, setNavBarLoading] = useState(true);
     const path = usePathname();
@@ -138,7 +140,7 @@ export default function NavigationBar({ children }: NavigationBarProps): React.R
                             </DropdownMenuRadioGroup>
                             <DropdownMenuSeparator />
                             <DropdownMenuGroup>
-                                <DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => addFarmModal.open()}>
                                     Add New Farm
                                 </DropdownMenuItem>
                             </DropdownMenuGroup>

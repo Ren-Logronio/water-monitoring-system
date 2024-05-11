@@ -32,41 +32,41 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
         };
     }, [path]);
 
-    useEffect(() => {
-        if (!active) {
-            setUserNotifications([]);
-        };
-    }, [active]);
+    // useEffect(() => {
+    //     if (!active) {
+    //         setUserNotifications([]);
+    //     };
+    // }, [active]);
 
-    useEffect(() => {
-        if (pathIsSignIn(path)) { setNotificationCount(0); return; };
-        axios.get("/api/notification/count").then(response => {
-            console.log("Notification Count:", response.data.results);
-            if (response.data.count <= 0) {
-                setNotificationCount(0);
-                return;
-            };
-            setNotificationCount(response.data.count);
-        }).catch(error => {
-            console.error(error);
-        });
-        const updateCount = setInterval(() => {
-            axios.get("/api/notification/count").then(response => {
-                if (response.data.count <= 0) {
-                    setNotificationCount(0);
-                    return;
-                };
-                setNotificationCount(response.data.count);
-            }).catch(error => {
-                console.error(error);
-            });
-        }, 1000);
-        return () => clearInterval(updateCount);
-    }, [])
+    // useEffect(() => {
+    //     if (pathIsSignIn(path)) { setNotificationCount(0); return; };
+    //     axios.get("/api/notification/count").then(response => {
+    //         console.log("Notification Count:", response.data.results);
+    //         if (response.data.count <= 0) {
+    //             setNotificationCount(0);
+    //             return;
+    //         };
+    //         setNotificationCount(response.data.count);
+    //     }).catch(error => {
+    //         console.error(error);
+    //     });
+    //     const updateCount = setInterval(() => {
+    //         axios.get("/api/notification/count").then(response => {
+    //             if (response.data.count <= 0) {
+    //                 setNotificationCount(0);
+    //                 return;
+    //             };
+    //             setNotificationCount(response.data.count);
+    //         }).catch(error => {
+    //             console.error(error);
+    //         });
+    //     }, 60000);
+    //     return () => clearInterval(updateCount);
+    // }, [])
 
-    useEffect(() => {
-        console.log(notificationCount);
-    }, [notificationCount]);
+    // useEffect(() => {
+    //     console.log(notificationCount);
+    // }, [notificationCount]);
 
     const handleOpen = (open: boolean) => {
         setOpen(open);
@@ -78,115 +78,115 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
         }
     }
 
-    const handleNotificationToggle = (value: "reading"|"all") => {
-        return () => {
-            setNotificationToggle(value);
-        }
-    } 
+    // const handleNotificationToggle = (value: "reading"|"all") => {
+    //     return () => {
+    //         setNotificationToggle(value);
+    //     }
+    // } 
 
-    useEffect(() => {
-        console.log("NOTIFICATION TOGGLE", notificationToggle);
-        if (!notificationToggle || !open) return;
-        setLoading(true);
-        axios.get("/api/notification/count").then(response => {
-            if (response.data.count <= 0) {
-                setNotificationCount(0);
-                return;
-            };
-            setNotificationCount(response.data.count);
-        }).catch(error => {
-            console.error(error);
-        });
-        if (notificationToggle === "all") {
-            console.log("fetching notification");
-            axios.get("/api/notification/reading")
-                .then((response) => {
-                    console.log(response.data);
-                    const uniqueNotifications: any[] = [];
-                    response.data.results.forEach((notification: any) => {
-                        const existingIndex = uniqueNotifications.findIndex((item: any) => item.parameter_id === notification.parameter_id && item.threshold_id === notification.threshold_id);
-                        if (existingIndex === -1) {
-                            uniqueNotifications.push(notification);
-                        } else {
-                            const existingItem = uniqueNotifications[existingIndex];
-                            if (moment(existingItem.issued_at).isBefore(moment(notification.issued_at))) {
-                                uniqueNotifications[existingIndex] = notification;
-                            }
-                        }
-                    });
-                    const latestNotifications = uniqueNotifications.map((notification: any) => {
-                        return response.data.results.filter((item: any) => item.parameter_id === notification.parameter_id && item.threshold_id === notification.threshold_id)
-                        // sort by latest issued_at to get the latest notification
-                        .sort((a: any, b: any) => moment(b.issued_at).diff(moment(a.issued_at)))[0];
-                    });
-                    setReadingNotification(latestNotifications);
-                    axios.get("/api/notification")
-                        .then((response) => {
-                            console.log(response.data);
-                            const parsedNotifications = response.data.results.map((notification: any) => {
-                                return {
-                                    ...notification,
-                                    title: notification.action === "WARN" ? "Warning" : notification.action === "ALRT" ? "Alert" : "Information",
-                                    action: notification.action,
-                                    message: notification.message,
-                                    dateIssued: format(notification.issued_at, "MMM dd, yyyy"),
-                                }
-                            });
-                            setUserNotifications(parsedNotifications);
-                        }).catch((error) => {
-                            console.error(error);
-                        }).finally(() => {
-                            setLoading(false);
-                        });
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
-        } else {
-            axios.get("/api/notification/reading")
-                .then((response) => {
-                    const uniqueNotifications: any[] = [];
-                    response.data.results.forEach((notification: any) => {
-                        const existingIndex = uniqueNotifications.findIndex((item: any) => item.parameter_id === notification.parameter_id && item.threshold_id === notification.threshold_id);
-                        if (existingIndex === -1) {
-                            uniqueNotifications.push(notification);
-                        } else {
-                            const existingItem = uniqueNotifications[existingIndex];
-                            if (moment(existingItem.issued_at).isBefore(moment(notification.issued_at))) {
-                                uniqueNotifications[existingIndex] = notification;
-                            }
-                        }
-                    });
-                    const latestNotifications = uniqueNotifications.map((notification: any) => {
-                        return response.data.results.filter((item: any) => item.parameter_id === notification.parameter_id && item.threshold_id === notification.threshold_id)
-                        // sort by latest issued_at to get the latest notification
-                        .sort((a: any, b: any) => moment(b.issued_at).diff(moment(a.issued_at)))[0];
-                    });
-                    setReadingNotification(latestNotifications);
-                })
-                .catch((error) => {
-                    console.error(error);
-                }).finally(() => {
-                    console.log("TAG UNLOAD");
-                    setLoading(false);
-                });
-        }
-    }, [notificationToggle, open]);
+    // useEffect(() => {
+    //     console.log("NOTIFICATION TOGGLE", notificationToggle);
+    //     if (!notificationToggle || !open) return;
+    //     setLoading(true);
+    //     axios.get("/api/notification/count").then(response => {
+    //         if (response.data.count <= 0) {
+    //             setNotificationCount(0);
+    //             return;
+    //         };
+    //         setNotificationCount(response.data.count);
+    //     }).catch(error => {
+    //         console.error(error);
+    //     });
+    //     if (notificationToggle === "all") {
+    //         console.log("fetching notification");
+    //         axios.get("/api/notification/reading")
+    //             .then((response) => {
+    //                 console.log(response.data);
+    //                 const uniqueNotifications: any[] = [];
+    //                 response.data.results.forEach((notification: any) => {
+    //                     const existingIndex = uniqueNotifications.findIndex((item: any) => item.parameter_id === notification.parameter_id && item.threshold_id === notification.threshold_id);
+    //                     if (existingIndex === -1) {
+    //                         uniqueNotifications.push(notification);
+    //                     } else {
+    //                         const existingItem = uniqueNotifications[existingIndex];
+    //                         if (moment(existingItem.issued_at).isBefore(moment(notification.issued_at))) {
+    //                             uniqueNotifications[existingIndex] = notification;
+    //                         }
+    //                     }
+    //                 });
+    //                 const latestNotifications = uniqueNotifications.map((notification: any) => {
+    //                     return response.data.results.filter((item: any) => item.parameter_id === notification.parameter_id && item.threshold_id === notification.threshold_id)
+    //                     // sort by latest issued_at to get the latest notification
+    //                     .sort((a: any, b: any) => moment(b.issued_at).diff(moment(a.issued_at)))[0];
+    //                 });
+    //                 setReadingNotification(latestNotifications);
+    //                 axios.get("/api/notification")
+    //                     .then((response) => {
+    //                         console.log(response.data);
+    //                         const parsedNotifications = response.data.results.map((notification: any) => {
+    //                             return {
+    //                                 ...notification,
+    //                                 title: notification.action === "WARN" ? "Warning" : notification.action === "ALRT" ? "Alert" : "Information",
+    //                                 action: notification.action,
+    //                                 message: notification.message,
+    //                                 dateIssued: format(notification.issued_at, "MMM dd, yyyy"),
+    //                             }
+    //                         });
+    //                         setUserNotifications(parsedNotifications);
+    //                     }).catch((error) => {
+    //                         console.error(error);
+    //                     }).finally(() => {
+    //                         setLoading(false);
+    //                     });
+    //             })
+    //             .catch((error) => {
+    //                 console.error(error);
+    //             });
+    //     } else {
+    //         axios.get("/api/notification/reading")
+    //             .then((response) => {
+    //                 const uniqueNotifications: any[] = [];
+    //                 response.data.results.forEach((notification: any) => {
+    //                     const existingIndex = uniqueNotifications.findIndex((item: any) => item.parameter_id === notification.parameter_id && item.threshold_id === notification.threshold_id);
+    //                     if (existingIndex === -1) {
+    //                         uniqueNotifications.push(notification);
+    //                     } else {
+    //                         const existingItem = uniqueNotifications[existingIndex];
+    //                         if (moment(existingItem.issued_at).isBefore(moment(notification.issued_at))) {
+    //                             uniqueNotifications[existingIndex] = notification;
+    //                         }
+    //                     }
+    //                 });
+    //                 const latestNotifications = uniqueNotifications.map((notification: any) => {
+    //                     return response.data.results.filter((item: any) => item.parameter_id === notification.parameter_id && item.threshold_id === notification.threshold_id)
+    //                     // sort by latest issued_at to get the latest notification
+    //                     .sort((a: any, b: any) => moment(b.issued_at).diff(moment(a.issued_at)))[0];
+    //                 });
+    //                 setReadingNotification(latestNotifications);
+    //             })
+    //             .catch((error) => {
+    //                 console.error(error);
+    //             }).finally(() => {
+    //                 console.log("TAG UNLOAD");
+    //                 setLoading(false);
+    //             });
+    //     }
+    // }, [notificationToggle, open]);
 
-    useEffect(() => {
-        console.log("READING NOTIFICATIONS", readingNotification);
-        console.log("LOADING STATE", loading)
-    }, [readingNotification]);
+    // useEffect(() => {
+    //     console.log("READING NOTIFICATIONS", readingNotification);
+    //     console.log("LOADING STATE", loading)
+    // }, [readingNotification]);
 
-    const handleMarkReadingNotificationAsRead = (reading_notification_id: number) => {
-        return () => axios.patch("/api/notification/reading", { reading_notification_id }).then((response: any) => {
-            setReadingNotification([
-                ...readingNotification.filter((notification: any) => notification.reading_notification_id !== reading_notification_id), 
-                ...([readingNotification.find((notification: any) => notification.reading_notification_id === reading_notification_id)].map((notification: any) => ({...notification, isRead: true, read_at: new Date()})))
-            ]);
-            setNotificationCount(notificationCount - 1);
-        });
-    }
+    // const handleMarkReadingNotificationAsRead = (reading_notification_id: number) => {
+    //     return () => axios.patch("/api/notification/reading", { reading_notification_id }).then((response: any) => {
+    //         setReadingNotification([
+    //             ...readingNotification.filter((notification: any) => notification.reading_notification_id !== reading_notification_id), 
+    //             ...([readingNotification.find((notification: any) => notification.reading_notification_id === reading_notification_id)].map((notification: any) => ({...notification, isRead: true, read_at: new Date()})))
+    //         ]);
+    //         setNotificationCount(notificationCount - 1);
+    //     });
+    // }
 
     return (
         <DropdownMenu onOpenChange={handleOpen}>
@@ -198,9 +198,9 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
                     </svg>
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="min-w-[416px] max-w-[416px]">
+            <DropdownMenuContent className="md:min-w-[400px] lg:min-w-[800px] max-w-[800px] mr-6">
                 <DropdownMenuLabel className="text-center">Notifications</DropdownMenuLabel>
-                <div className="flex flex-row pl-4 mb-2">
+                {/* <div className="flex flex-row pl-4 mb-2">
                     <Button variant="ghost" disabled={notificationToggle === "reading"} onClick={handleNotificationToggle("reading")} className="text-[#205083] disabled:bg-[#DEEAF7] !disabled:text-[#205083] disabled:opacity-100`">Readings</Button>
                     <Button variant="ghost" disabled={notificationToggle === "all"} onClick={handleNotificationToggle("all")} className="text-[#205083] disabled:bg-[#DEEAF7] !disabled:text-[#205083] disabled:opacity-100`">All</Button>
                 </div>
@@ -291,7 +291,7 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
                         )
                     })}
                     </>
-                }
+                } */}
             </DropdownMenuContent>
         </DropdownMenu>
     )

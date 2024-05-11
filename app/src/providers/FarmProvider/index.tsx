@@ -1,5 +1,6 @@
 "use client";
 
+import FarmDetails from "@/components/ui/dialog/AddFarm.dialog";
 import useAuth from "@/hooks/useAuth";
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
@@ -7,7 +8,7 @@ import { createContext, useEffect, useState } from "react";
 export const FarmContext = createContext<any>({});
 
 export default function FarmProvider({ children }: Readonly<{ children: React.ReactNode }>) {
-    const [farms, setFarm] = useState([]);
+    const [farms, setFarm] = useState<any[]>([]);
     const [selectedFarm, setSelectedFarm] = useState({} as any);
     const [farmsLoading, setFarmsLoading] = useState(true);
 
@@ -50,7 +51,11 @@ export default function FarmProvider({ children }: Readonly<{ children: React.Re
         };
     }, []);
 
-    return <FarmContext.Provider value={{farms, selectedFarm, setSelectedFarm, farmsLoading}}>
+    const appendFarm = (farm: any) => {
+        setFarm((prev: any) => [...prev, farm]);
+    };
+
+    return <FarmContext.Provider value={{farms, selectedFarm, setSelectedFarm, appendFarm, farmsLoading}}>
         {children}
     </FarmContext.Provider>;
 }
