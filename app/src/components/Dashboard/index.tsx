@@ -11,6 +11,13 @@ import { useRouter } from "next/navigation";
 import AddPondDialog from "../ui/dialog/AddPond.dialog";
 import moment from "moment-timezone";
 import useFarm from "@/hooks/useFarm";
+import { polygonLayer } from "../Openlayers/utils/polygonLayer";
+import { labelLayer } from "../Openlayers/utils/labelLayer";
+import MapView from "../Openlayers/map";
+
+const { newMap: MapBuilder, selectedFeature } = MapView();
+const farm_plots = polygonLayer();
+const farm_labels = labelLayer();
 
 export default function Dashboard() {
     const router = useRouter();
@@ -123,6 +130,13 @@ export default function Dashboard() {
 
                             {/* quick widgets */}
                             <div className="grid grid-cols-4 w-full gap-3 gap-y-5">
+
+                                <MapBuilder
+                                    vectorLayer={farm_plots}
+                                    labelLayer={farm_labels}
+                                    className="w-full h-full"
+                                    assignedPonds={undefined}
+                                />
 
                                 {/* # of time*/}
                                 <div className="bg-white border rounded-lg p-5 flex flex-row justify-center space-x-5 xl:space-x-0 xl:space-y-5 xl:flex-col items-center">
