@@ -204,6 +204,7 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
                             </Button> */}
                             <div className="flex flex-row items-center space-x-2 relative">
                                 <NumberOfItemsDropdown 
+                                    disabled={loading || !!filteredDate?.length}
                                     setValueLabel={DefaultValueLabelSet} 
                                     defaultValue={searchParams.get("items") || "25"}
                                     onValueChange={(value) => {
@@ -212,16 +213,16 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
                                     }} />
                             </div>
                             <div className="flex flex-row items-center space-x-2 relative">
-                                <DaterangePopover onChange={(dateFrom, dateTo, mode) => {
+                                <DaterangePopover disabled={loading || !!filteredDate?.length} onChange={(dateFrom, dateTo, mode) => {
                                     setDateFrom(dateFrom);
                                     setDateTo(dateTo);
                                     setSelected(mode);
                                 }}/>
                             </div>
-                            <Aggregation setValueLabel={DefaultAggregationValueLabelSet} defaultValue="minute" onValueChange={() => {
+                            {/* <Aggregation setValueLabel={DefaultAggregationValueLabelSet} defaultValue="minute" onValueChange={() => {
                                 setCurrentPage(1);
                                 setAggregation(aggregation);
-                            }} />
+                            }} /> */}
                             <Download pond_id={pond_id} from={moment(dateFrom).format()} to={moment(dateTo).format()} />
                         </div>
                     </div>
