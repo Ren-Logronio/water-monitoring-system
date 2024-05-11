@@ -198,7 +198,7 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
                     </svg>
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="min-w-[416px] max-w-[416px]">
+            <DropdownMenuContent className="md:min-w-[400px] lg:min-w-[800px] max-w-[800px] mr-6">
                 <DropdownMenuLabel className="text-center">Notifications</DropdownMenuLabel>
                 {/* <div className="flex flex-row pl-4 mb-2">
                     <Button variant="ghost" disabled={notificationToggle === "reading"} onClick={handleNotificationToggle("reading")} className="text-[#205083] disabled:bg-[#DEEAF7] !disabled:text-[#205083] disabled:opacity-100`">Readings</Button>
