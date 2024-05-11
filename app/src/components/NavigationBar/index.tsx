@@ -79,7 +79,7 @@ export default function NavigationBar({ children }: NavigationBarProps): React.R
 
     return (
         <div className="min-h-screen min-w-full flex flex-row">
-            <div className="relative p-1 py-8 md:pt-[42px] md:pb-[28px] md:px-[42px] transition-all min-w-[80px] max-w-[90px] md:max-w-[316px] flex-1 border-r border-indigo-100 bg-white space-y-[44px]">
+            <div className="relative p-1 py-8 md:pt-[42px] md:pb-[28px] md:px-[42px] transition-all min-w-[80px] max-w-[90px] md:max-w-[316px] flex-1 border-r border-indigo-100 bg-white space-y-[12px]">
 
                 {/* Icon and Title */}
                 <div className="flex flex-row justify-center items-center pointer-events-none select-none ">
@@ -98,19 +98,19 @@ export default function NavigationBar({ children }: NavigationBarProps): React.R
                     <NavigationButton disabled={navBarLoading || farm.none} path="/dashboard" imagePath="/dashboard.png" text="Dashboard" />
                     <NavigationButton disabled={navBarLoading || farm.none} path="/farm" imagePath="/farm.png" text="Farm" />
                     <NavigationButton disabled={navBarLoading || farm.none} path="/staff" imagePath="/staff.png" text="Staff" />
-                    <NavigationButton disabled={navBarLoading || farm.none} path="/preferences" imagePath="/preferences.png" text="Preferences" /> 
                 </div>
 
                 <Separator className="bg-indigo-100" />
 
                 <div className="flex flex-col mx-auto md:mx-0 space-y-1">
-                    <p className="text-[#205083] hidden md:flex  pb-2 pl-2">Parameters</p>
-                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="TMP" path="/parameter/temperature/datasheet" text="Temperature" />
-                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="pH" path="/parameter/ph/datasheet" text="pH Level" />
-                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="AMN" path="/parameter/ammonia/datasheet" text="Ammonia" />
-                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="TDS" path="/parameter/tds/datasheet" text="Total Dissolved Solids" />
+                    <p className="text-[#205083] text-[14px] hidden md:flex pl-2">Logs</p>
+                    <NavigationButton disabled={navBarLoading || farm.none} path="/water-quality" text="Water Quality" />
+                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="TMP" path="/logs/temperature/" text="Temperature" />
+                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="pH" path="/logs/ph/" text="pH Level" />
+                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="AMN" path="/logs/ammonia/" text="Ammonia" />
+                    <NavigationButton disabled={navBarLoading || farm.none} shortcut="TDS" path="/logs/tds/" text="Total Dissolved Solids" />
                 </div>
-                <div className="absolute bottom-[28px] left-1/2 -translate-x-1/2 hidden md:flex flex-col text-center text-sm h-fit text-[#205083]">
+                <div className="absolute text-[12px] bottom-[28px] left-1/2 -translate-x-1/2 hidden md:flex flex-col text-center text-sm h-fit text-[#205083]">
                     <p>Ternary Operators</p>
                     <p>Capstone Project 2023-2024</p>
                 </div>

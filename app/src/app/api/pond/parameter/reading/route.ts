@@ -47,40 +47,40 @@ export async function POST(request: NextRequest) {
             "SELECT `user_id` FROM `view_farmer_ponds` WHERE `pond_id` = ?",
             [pond_id]
         );
-        const [thresholds]: any = await connection.query(
-            "SELECT * FROM `parameter_thresholds` LEFT JOIN parameter_list ON parameter_list.parameter = parameter_thresholds.parameter WHERE ? IN (parameter_list.name, parameter_list.parameter)",
-            [parameter],
-        );
-        thresholds.forEach((threshold: any) => {
-            switch (threshold.type) {
-                case "LT":
-                    if (Number(value) < (threshold.target + threshold.error)) {
-                        console.log("Threshold LT breached:", parameter, value);
-                        farmers.forEach(async (farmer: any) => {
-                            await connection.query("INSERT INTO `reading_notifications` (`user_id`, `threshold_id`, `reading_id`) VALUES (?, ?, ?)", [farmer.user_id, threshold.threshold_id, readingId]);
-                        });
-                    }
-                    break;
-                case "GT":
-                    if (Number(value) > (threshold.target - threshold.error)) {
-                        console.log("Threshold GT breached:", parameter, value);
-                        farmers.forEach(async (farmer: any) => {
-                            await connection.query("INSERT INTO `reading_notifications` (`user_id`, `threshold_id`, `reading_id`) VALUES (?, ?, ?)", [farmer.user_id, threshold.threshold_id, readingId]);
-                        });
-                    }
-                    break;
-                case "EQ":
-                    if (Number(value) > (threshold.target - threshold.error) && Number(value) < (threshold.value + threshold.error)) {
-                        console.log("Threshold EQ breached:", parameter, value);
-                        farmers.forEach(async (farmer: any) => {
-                            await connection.query("INSERT INTO `reading_notifications` (`user_id`, `threshold_id`, `reading_id`) VALUES (?, ?, ?)", [farmer.user_id, threshold.threshold_id, readingId]);
-                        });
-                    }
-                    break;
-                default:
-                    break;
-            }
-        });
+        // const [thresholds]: any = await connection.query(
+        //     "SELECT * FROM `parameter_thresholds` LEFT JOIN parameter_list ON parameter_list.parameter = parameter_thresholds.parameter WHERE ? IN (parameter_list.name, parameter_list.parameter)",
+        //     [parameter],
+        // );
+        // thresholds.forEach((threshold: any) => {
+        //     switch (threshold.type) {
+        //         case "LT":
+        //             if (Number(value) < (threshold.target + threshold.error)) {
+        //                 console.log("Threshold LT breached:", parameter, value);
+        //                 farmers.forEach(async (farmer: any) => {
+        //                     await connection.query("INSERT INTO `reading_notifications` (`user_id`, `threshold_id`, `reading_id`) VALUES (?, ?, ?)", [farmer.user_id, threshold.threshold_id, readingId]);
+        //                 });
+        //             }
+        //             break;
+        //         case "GT":
+        //             if (Number(value) > (threshold.target - threshold.error)) {
+        //                 console.log("Threshold GT breached:", parameter, value);
+        //                 farmers.forEach(async (farmer: any) => {
+        //                     await connection.query("INSERT INTO `reading_notifications` (`user_id`, `threshold_id`, `reading_id`) VALUES (?, ?, ?)", [farmer.user_id, threshold.threshold_id, readingId]);
+        //                 });
+        //             }
+        //             break;
+        //         case "EQ":
+        //             if (Number(value) > (threshold.target - threshold.error) && Number(value) < (threshold.value + threshold.error)) {
+        //                 console.log("Threshold EQ breached:", parameter, value);
+        //                 farmers.forEach(async (farmer: any) => {
+        //                     await connection.query("INSERT INTO `reading_notifications` (`user_id`, `threshold_id`, `reading_id`) VALUES (?, ?, ?)", [farmer.user_id, threshold.threshold_id, readingId]);
+        //                 });
+        //             }
+        //             break;
+        //         default:
+        //             break;
+        //     }
+        // });
         return NextResponse.json(
             { results },
             {

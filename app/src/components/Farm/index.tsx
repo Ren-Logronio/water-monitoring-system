@@ -1,15 +1,37 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, memo } from "react";
 import FarmDetails from "../Dashboard/FarmDetails";
 import PondList from "./PondList";
 import { NinetyRing } from "react-svg-spinners";
 import useFarm from "@/hooks/useFarm";
 
-import { MapView } from "../Openlayers/map";
+// map component
+import MapView from "../Openlayers/map";
+import { polygonLayer } from "../Openlayers/utils/polygonLayer";
+import { labelLayer } from "../Openlayers/utils/labelLayer";
+import { map_attributes } from "../Openlayers/map";
+
+
+// instantiate the map component outside the component to prevent unnecessary re-renders
+const { newMap: MapBuilder, assignedPonds } = MapView();
+const farm_plots = polygonLayer();
+const farm_labels = labelLayer();
+
+// dummy data for assignedPonds
+const assignedPondsData: map_attributes[] = [
+    [1, "#FF0000"],
+    [2, "#00FF00"],
+    [3, "#0000FF"],
+    [4, "#FFFF00"],
+    [5, "#00FFFF"],
+    [6, "#FF00FF"],
+];
 
 export default function Farm() {
     const { selectedFarm, farmsLoading } = useFarm();
+
+
     const loading = useMemo(() => {
         return farmsLoading;
     }, [farmsLoading]);
@@ -46,13 +68,15 @@ export default function Farm() {
                         Ponds
                     </div>
 
-                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 w-full p-3">
-                        {/* map */}
-                        <div className="w-full h-[350px] xl:h-[600px]">
-                            <MapView />
-                        </div>
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 w-full h-fit p-3">
 
-                        {/* Ponds */}
+                        <MapBuilder
+                            vectorLayer={farm_plots}
+                            labelLayer={farm_labels}
+                            className="w-full h-[500px]"
+                            assignedPonds={assignedPondsData}
+                        />
+                        {/* Pond List */}
                         <PondList farm_id={farm.farm_id} />
                     </div>
                 </div>

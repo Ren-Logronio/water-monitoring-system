@@ -4,6 +4,7 @@ import AddPondDialog from "../ui/dialog/AddPond.dialog";
 import { NinetyRing } from "react-svg-spinners";
 import { Badge } from "../ui/badge";
 import PondOptions from "./PondOptions";
+import useFarm from "@/hooks/useFarm";
 
 export default function PondList({ farm_id }: { farm_id: number }) {
     const [ponds, setPonds] = useState<any[]>([])
@@ -15,7 +16,7 @@ export default function PondList({ farm_id }: { farm_id: number }) {
                 return;
             }
             setPonds(response.data.results);
-            console.log(response.data.results);
+            //console.log(response.data.results);
         }).catch(error => {
             console.error(error);
         }).finally(() => {
@@ -37,7 +38,7 @@ export default function PondList({ farm_id }: { farm_id: number }) {
     }
 
     return (
-        <div className="py-4">
+        <div>
 
             {/* loading spinner */}
             {loading &&
@@ -47,7 +48,7 @@ export default function PondList({ farm_id }: { farm_id: number }) {
             }
 
 
-            {!loading && <div className=" gap-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-4">
+            {!loading && <div className=" gap-2 grid grid-cols-1 space-y-1">
 
                 {ponds.map((pond, idx) => {
                     return <div key={idx} className="flex flex-col border-2 rounded-xl p-4 h-fit select-none align-middle hover:border-orange-300 transition-all ease-in-out duration-100">
@@ -64,22 +65,18 @@ export default function PondList({ farm_id }: { farm_id: number }) {
                         <div className="flex flex-col mt-1">
                             <p className="text-sm">{pond.method[0].toUpperCase() + pond.method.slice(1).toLowerCase()} pond</p>
 
-                            <div className="flex flex-row mt-4">
+                            {/* Badges */}
+                            <div className="flex flex-row mt-4 space-x-2">
+                                {/* Farm plot */}
+                                <Badge key={pond} variant={"default"} className="m-0 w-fit">
+                                    Pond plot: {pond.device_id || "No Device"}
+                                </Badge>
+
                                 <Badge key={pond} variant={"default"} className="m-0 w-fit">
                                     Status: {pond.status || "No Device"}
                                 </Badge>
                             </div>
-                            {/* <DropdownMenu>
-                                <DropdownMenuTrigger>
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4">
-                                        <path d="M8 2a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM8 6.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM9.5 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z" />
-                                    </svg>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent>
-                                    <DropdownMenuItem className="cursor-pointer">Edit</DropdownMenuItem>
-                                    
-                                </DropdownMenuContent>
-                            </DropdownMenu> */}
+
                         </div>
                     </div>
                 })}
