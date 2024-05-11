@@ -22,7 +22,7 @@ export default function Dashboard() {
     const [readingCount, setReadingCount] = useState<number>(0);
     const [datetime, setDatetime] = useState<string>("");
     const [timezone, setTimezone] = useState<string>("");
-    const {selectedFarm} = useFarm();
+    const { selectedFarm } = useFarm();
 
     useEffect(() => {
         setDatetime(moment().format("h:mm a, MMM D, yyyy"));
@@ -33,39 +33,58 @@ export default function Dashboard() {
         return () => clearInterval(intervs);
     }, []);
 
+
+    // Fetch farm details, ponds, farmers, and readings on component mount.
     useEffect(() => {
-        setFarm(selectedFarm);
+        // Check if the selected farm is approved. If not, stop further execution and set loading to false.
         if (!selectedFarm.is_approved) {
             setLoading(false);
             return;
         }
-        axios.get(`/api/farm/pond?farm_id=${selectedFarm.farm_id}`).then(response => {
-            if (!response.data.results && response.data.results.length <= 0) {
-                setPonds({ ponds: [], noPonds: true });
-            } else {
-                setPonds({ ponds: response.data.results, noPonds: false });
-                setSelectedPond(response.data.results[0] && response.data.results[0].pond_id ? response.data.results[0].pond_id : "");
+
+        // Start loading state as we are beginning to fetch data.
+        setLoading(true);
+        // Update the farm state with the selected farm details.
+        setFarm(selectedFarm);
+
+        // Prepare API calls to fetch ponds, farmers, and readings in parallel.
+        // These calls do not depend on each other's data, so they can be executed simultaneously.
+        const fetchPonds = axios.get(`/api/farm/pond?farm_id=${selectedFarm.farm_id}`);
+        const fetchFarmers = axios.get(`/api/farm/farmer?farm_id=${selectedFarm.farm_id}`);
+        const fetchReadings = axios.get(`/api/farm/reading/count?farm_id=${selectedFarm.farm_id}`);
+
+        // Execute all API calls at once using Promise.all.
+        Promise.all([fetchPonds, fetchFarmers, fetchReadings]).then((responses) => {
+            // Destructure the responses to get data for ponds, farmers, and readings.
+            const [pondsResponse, farmersResponse, readingsResponse] = responses;
+
+            // Handling ponds response:
+            const ponds = pondsResponse.data.results;
+            setPonds({ ponds, noPonds: ponds.length === 0 });
+            setSelectedPond(ponds[0]?.pond_id || ''); // Set the first pond as selected by default, if available.
+
+            // Handling farmers response:
+            const farmers = farmersResponse.data.results;
+            if (farmers.length > 0) {
+                setFarmerCount(farmers.length); // Update farmer count state.
             }
-            axios.get(`/api/farm/farmer?farm_id=${response.data.results[0].farm_id}`).then(response => {
-                if (!response.data.results || response.data.results.length <= 0) {
-                    return;
-                };
-                setFarmerCount(response.data.results.length);
-                axios.get(`/api/farm/reading/count?farm_id=${response.data.results[0].farm_id}`).then(response => {
-                    if (!response.data.results || response.data.results.length <= 0) {
-                        return;
-                    }
-                    setReadingCount(response.data.results[0].count);
-                }).catch(error => {
-                    console.error(error);
-                }).finally(() => {
-                    setLoading(false);
-                });
-            });
+
+            // Handling readings response:
+            const readings = readingsResponse.data.results;
+            if (readings.length > 0) {
+                setReadingCount(readings[0].count); // Update reading count state.
+            }
+
         }).catch(error => {
+            // Log any error that occurs during the API calls.
             console.error(error);
-        })
-    }, [selectedFarm]);
+        }).finally(() => {
+            // Set loading to false once all operations are complete.
+            setLoading(false);
+        });
+    }, [selectedFarm]); // This effect depends on `selectedFarm` and will re-run if it changes.
+
+
 
     useEffect(() => {
         const reloadForUpdates: any = {};
