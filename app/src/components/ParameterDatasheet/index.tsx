@@ -54,6 +54,7 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
         { field: "date", headerName: "Date", lockPosition: "left", resizable: false },
         { field: "time", headerName: "Time", lockPosition: "left", resizable: false },
         { field: "reading", headerName: (params.parameter && `${params.parameter[0].toUpperCase()}${params.parameter.slice(1)}`) || "Reading", lockPosition: "left", resizable: false },
+        { field: "status", headerName: "Status", lockPosition: "left", resizable: false },
         // { field: "recorded_by", headerName: "Recorded By", lockPosition: "left", resizable: false },
         // { headerName: "Actions", lockPosition: "right", cellRenderer: Actions, valueGetter: (params: any) => ({ reading_id: params.data.reading_id, reading: params.data.reading, date: params.data.edit_recorded_at, time: params.data.edit_time }), resizable: false }
     ]);
@@ -70,12 +71,25 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
     
 
     const filteredDate = useMemo(() => {
+        console.log("FUCKING TRASH:", rowData);
+        if (!rowData || !rowData?.length) return [];
         const filterDateRange = rowData.filter((row: any) => {
             const date = moment(row.edit_recorded_at);
             return date.isBetween(dateFrom, dateTo, "day", "[]");
         });
         console.log("filteredDate:", filterDateRange);
-        return filterDateRange;
+        return filterDateRange.map((row: any) => {
+            const threshold = thresholds.find((threshold: any) => {
+                if (threshold.type === "LT") {
+                    return row.value < threshold.target;
+                } else if (threshold.type === "GT") {
+                    return row.value > threshold.target;
+                }
+            });
+    
+            const status = threshold ? "Poor" : "Optimal";
+            return { ...row, status };
+        });
     }, [rowData, dateFrom, dateTo, selected]);
 
     const numberOfPages = useMemo(() => {
@@ -161,9 +175,9 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
                             }
                             { thresholds 
                             && thresholds.length && 
-                            <p className="text-[14px] italic">Optimal {params.parameter && `${params.parameter[0].toUpperCase()}${params.parameter.slice(1)}`} levels: {
+                            <p className="text-[14px] italic">Optimal {params.parameter && `${params.parameter[0].toUpperCase()}${params.parameter.slice(1)}`} Range: {
                                 thresholdRange && thresholdRange.length && thresholdRange
-                                    .map(threshold => threshold || { target: 0 }).map(threshold => `${threshold?.target}`).join(" to ")
+                                    .map(threshold => threshold || { target: 0 }).map(threshold => `${threshold.type === "GT" ? ">" : "<"} ${threshold?.target}`).join(" and ")
                             } {thresholdRange && !thresholdRange && "None"} { rowData[0]?.unit.toLowerCase() !== "ph" && rowData[0]?.unit}
                             </p>}
                             {/* <AddReading pond_id={pond_id} /> */}
