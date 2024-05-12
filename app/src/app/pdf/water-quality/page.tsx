@@ -9,6 +9,7 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { createRef, useEffect, useState } from "react";
 import "./page.css";
+import Signature from "@/components/Signature";
 
 export default function PrintWaterQuality() {
     const printableRef = createRef<HTMLDivElement>();
@@ -172,6 +173,7 @@ export default function PrintWaterQuality() {
                         }
                     </tbody>
                 </table>
+                <Signature/>
             </>}
         </div>
     </div>

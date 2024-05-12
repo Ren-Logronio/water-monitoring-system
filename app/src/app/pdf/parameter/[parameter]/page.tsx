@@ -21,6 +21,7 @@ import jsPDF from 'jspdf';
 import Image from "next/image";
 
 import "./page.css";
+import Signature from "@/components/Signature";
 
 export default function PrintParameter() { 
     const searchParams = useSearchParams();
@@ -245,7 +246,7 @@ export default function PrintParameter() {
                     }
                 </tbody>
             </table>
-            
+            <Signature/>
             </>}
         </div>
     </div>
