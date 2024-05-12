@@ -151,6 +151,17 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
         }
     }
 
+    const handleDisconnectDevice = (device_id: string) => () => {
+        setLoading(true);
+        axios.delete(`/api/device?device_id=${device_id}`).then(res => {
+            updateCallback({ ...currentPond, device_id: null, status: "INACTIVE" });
+        }).catch(err => {
+            console.log(err);
+        }).finally(() => {
+            setLoading(false);
+        });
+    }
+
     // if (!farm || farm?.role !== "OWNER") {
     //     return <></>;
     // };
@@ -184,9 +195,7 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
             {
                 pond_data.find((pond: any) => pond.pond_id === pond_id)
                 && pond_data.find((pond: any) => pond.pond_id === pond_id).device_id &&
-                <Button onClick={() => {
-                    setLoading(true);
-                }} variant="ghost" className="flex flex-row space-x-2">
+                <Button onClick={handleDisconnectDevice(pond_data.find((pond: any) => pond.pond_id === pond_id).device_id)} variant="ghost" className="flex flex-row space-x-2">
                     {loading ?
                         <><NinetyRing color="currentColor" /><p>Disconnecting..</p></>
                         :
