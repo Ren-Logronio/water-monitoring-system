@@ -129,9 +129,12 @@ export default function Dashboard() {
                         <div className="flex flex-col mb-5 xl:mb-0">
 
                             {/* quick widgets */}
-                            <div className="grid grid-cols-4 w-full gap-3 gap-y-5">
-
+                            <div className="grid grid-cols-4 w-full gap-3 gap-y-5 relative">
+                                <div className="h-[20px] px-2 rounded-md bg-white text-[12px] top-0 absolute z-[1000]">
+                                    Map View
+                                </div>
                                 <MapBuilder
+                                    zoom={12.3}
                                     vectorLayer={farm_plots}
                                     labelLayer={farm_labels}
                                     className="w-full h-full"
