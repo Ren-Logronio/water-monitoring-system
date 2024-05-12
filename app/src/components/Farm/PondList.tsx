@@ -5,37 +5,70 @@ import { NinetyRing } from "react-svg-spinners";
 import { Badge } from "../ui/badge";
 import PondOptions from "./PondOptions";
 import useFarm from "@/hooks/useFarm";
+import { addPoints } from "../Openlayers/utils/addPoints";
+import { pointData } from "../Openlayers/utils/dummy/pointData";
+
 
 export default function PondList({ farm_id }: { farm_id: number }) {
     const [ponds, setPonds] = useState<any[]>([])
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        axios.get(`/api/farm/pond?farm_id=${farm_id}`).then(response => {
-            if (!response.data.results && response.data.results.length <= 0) {
-                return;
-            }
-            setPonds(response.data.results);
-            //console.log(response.data.results);
-        }).catch(error => {
-            console.error(error);
-        }).finally(() => {
-            setLoading(false);
+
+    // for demo purposes
+    function getPointData() {
+        pointData.forEach((point) => {
+            // console.log("point: ", point);
+            addPoints(point.coordinates, point.name, point.id);
         });
+    }
+
+
+    // get the farm data
+    useEffect(() => {
+        console.log("initializing ponds")
+
+        const fetchPonds = async () => {
+            setLoading(true);
+            setError(null);
+
+            // get the ponds from the database
+            try {
+                const response = await axios.get(`/api/farm/pond?farm_id=${farm_id}`);
+                setPonds(response.data.results || []);
+
+                // for demo purposes
+                // add the points to the vector source
+                getPointData();
+
+                // get the coordinate data to add to the point vector source
+                response.data.results.forEach((pond: any) => {
+                    let coordinates = pond.coordinates; // longitude, latitude
+                    let name = pond.name;
+                    let id = pond.pond_id;
+                    // add the points to the vector source
+                    //addPoints(coordinates, name, id); // uncommment this line kung may data na from the database
+                });
+            } catch (error) {
+                console.error(error);
+                setError("Failed to load ponds. Please try again.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchPonds();
     }, [farm_id]);
 
     const handleRemovePond = (pond_id: number) => {
         setPonds(ponds.filter(pond => pond.pond_id !== pond_id));
     };
 
-    const handleEditPond = (pond: any) => {
-        setPonds(ponds.map(p => {
-            if (p.pond_id === pond.pond_id) {
-                return pond;
-            }
-            return p;
-        }));
-    }
+    const handleEditPond = (updatedPond: any) => {
+        setPonds(prevPonds => prevPonds.map(pond => pond.pond_id === updatedPond.pond_id ? updatedPond : pond));
+    };
+
+
 
     return (
         <div>
