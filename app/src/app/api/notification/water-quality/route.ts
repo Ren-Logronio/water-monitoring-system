@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
             "SELECT * FROM `view_user_water_quality_notifications` WHERE `user_id` = ?",
             [user_id]
         );
-        console.log("TIMESTAMP", results[0].date_issued);
+        console.log("TIMESTAMP", results[0]?.date_issued);
         return NextResponse.json(
             { results },
             {
@@ -20,6 +20,6 @@ export async function GET(request: NextRequest) {
             },
         );
     } catch (err: any) {
-        NextResponse.json({ message: err.message || "An error occurred" }, { status: 500 });
+        return NextResponse.json({ message: err.message || "An error occurred" }, { status: 500 });
     }
 }
