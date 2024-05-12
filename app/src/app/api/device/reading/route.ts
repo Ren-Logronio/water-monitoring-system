@@ -3,10 +3,14 @@ import getMySQLConnection from "@/db/mysql";
 import axios from "axios";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import moment from "moment";
+import { hardcodedThresholds } from "@/utils/HardcodedThresholds";
+import { calculateWQI, classifyWQI } from "@/utils/SimpleFuzzyLogicWaterQuality";
 
 export async function POST(request: NextRequest) {
     try {
-        const { device_id, recorded_at, ...parameters } = await request.json();
+        const { device_id, recorded_at: nullable_recorded_at, ...parameters } = await request.json();
+        const recorded_at = nullable_recorded_at || moment().format();
+        const thresholds: any = hardcodedThresholds;
         if (!device_id) return NextResponse.json({ message: "missing device id" }, { status: 400 });
         const connection = await getMySQLConnection();
         console.log("GEtting device");
@@ -37,9 +41,44 @@ export async function POST(request: NextRequest) {
             "SELECT * FROM `view_pond_parameters` WHERE `pond_id` = ?",
             [pondId]
         );
+
+        const [waterQualityNotifications]: any = await connection.query(
+            "SELECT * FROM `pond_water_quality_notifications` WHERE `pond_id` = ? AND `is_resolved` = FALSE LIMIT 1", [pondId]
+        );
+
+        const targetRecordedAt = waterQualityNotifications && waterQualityNotifications.length > 0 ? waterQualityNotifications[0].date_issued : moment(recorded_at).subtract(10, "minute").format();
+
+        const [readings]: [results: any[], rows: any[]] = await connection.query(
+            "SELECT * FROM `view_pond_readings` WHERE `pond_id` = ? AND `recorded_at` > ?",
+            [pondId, targetRecordedAt]
+        );
+
+        console.log("READINGS", readings);
+
+        readings.push({
+            temperature: Number(parameters.TMP),
+            tds: Number(parameters.TDS),
+            ammonia: Number(parameters.AMN),
+            ph: Number(parameters.PH),
+            recorded_at: moment(recorded_at).format("YYYY-MM-DD hh:mm:ss"),
+        })
+
+        const averageTemperature = readings.reduce((acc: number, reading: any) => {
+            return acc + reading.temperature;
+        }, 0) / readings.length;
+        const averageTDS = readings.reduce((acc: number, reading: any) => {
+            return acc + reading.tds;
+        }, 0) / readings.length;
+        const averageAmmonia = readings.reduce((acc: number, reading: any) => {
+            return acc + reading.ammonia;
+        }, 0) / readings.length;
+        const averagePH = readings.reduce((acc: number, reading: any) => {
+            return acc + reading.ph;
+        }, 0) / readings.length;
+
         // const [thresholds]: any = await connection.query("SELECT * FROM `parameter_thresholds`");
         pondParameters.forEach(async (param: any) => {
-            console.log("Inserting:", param, parameters[param.parameter]);
+            // console.log("Inserting:", param, parameters[param.parameter]);
             const [readingsResultHeader] = await connection.query(
                 "INSERT INTO `readings` (`parameter_id`, `value`, recorded_at) VALUES (?, ?, ?)",
                 [
@@ -48,48 +87,37 @@ export async function POST(request: NextRequest) {
                     moment(recorded_at).format(),
                 ]
             );
-            // const readingId = (readingsResultHeader as ResultSetHeader).insertId;
-            // console.log("Checking param thresholds");
-            // const [farmers]: any = await connection.query("SELECT * FROM `farm_farmer` WHERE `farm_id` = ?", [ponds[0].farm_id]);
-            // console.log("FARMERS:", farmers);
-            // thresholds
-            //     .filter((threshold: any) => threshold.parameter === param.parameter)
-            //     .forEach((threshold: any) => {
-            //         switch (threshold.type) {
-            //             case "LT":
-            //                 if (Number(parameters[param.parameter]) < (threshold.target + threshold.error)) {
-            //                     console.log("Threshold LT breached:", param, parameters[param.parameter]);
-            //                     farmers.forEach(async (farmer: any) => {
-            //                         // user threshold reading id
-            //                         await connection.query("INSERT INTO `reading_notifications` (`user_id`, `threshold_id`, `reading_id`) VALUES (?, ?, ?)", [farmer.farmer_id, threshold.threshold_id, readingId]);
-            //                     });
-            //                 }
-            //                 break;
-            //             case "GT":
-            //                 if (Number(parameters[param.parameter]) > (threshold.target - threshold.error)) {
-            //                     console.log("Threshold GT breached:", param, parameters[param.parameter]);
-            //                     farmers.forEach(async (farmer: any) => {
-            //                         // user threshold reading id
-            //                         await connection.query("INSERT INTO `reading_notifications` (`user_id`, `threshold_id`, `reading_id`) VALUES (?, ?, ?)", [farmer.farmer_id, threshold.threshold_id, readingId]);
-            //                     });
-            //                 }
-            //                 break;
-            //             case "EQ":
-            //                 if (Number(parameters[param.parameter]) > (threshold.target - threshold.error) && Number(parameters[param.parameter]) < (threshold.target + threshold.error)) {
-            //                     console.log("Threshold EQ breached:", param, parameters[param.parameter]);
-            //                     farmers.forEach(async (farmer: any) => {
-            //                         // user threshold reading id
-            //                         await connection.query("INSERT INTO `reading_notifications` (`user_id`, `threshold_id`, `reading_id`) VALUES (?, ?, ?)", [farmer.farmer_id, threshold.threshold_id, readingId]);
-            //                     });
-            //                 }
-            //                 break;
-            //             default:
-            //                 break;
-            //         }
-            //     });
         });
 
-
+        console.log("NOTIFICATIONS", waterQualityNotifications);
+        console.log("AVERAGES", averageTemperature, averageTDS, averageAmmonia, averagePH);
+        
+        if ((averageTemperature || averageTDS || averageAmmonia || averagePH) && (waterQualityNotifications && waterQualityNotifications.length <= 0)) {
+            const wqi = calculateWQI(averageTemperature, averageTDS, averageAmmonia, averagePH);
+            console.log("WQI AFTER DEVICE INSERT", wqi);
+            const classification = classifyWQI(wqi);
+            if(wqi < 0.25) {
+                await connection.query(
+                    "INSERT INTO `pond_water_quality_notifications` (`water_quality`, `pond_id`, `date_issued`) VALUES (?, ?, ?)",
+                    [classification, pondId, moment().format()]
+                )
+            }
+        } else if ((averageTemperature || averageTDS || averageAmmonia || averagePH) && (waterQualityNotifications && waterQualityNotifications.length > 0)) {
+            const wqi = calculateWQI(averageTemperature, averageTDS, averageAmmonia, averagePH);
+            console.log("WQI AFTER DEVICE INSERT", wqi);
+            const classification = classifyWQI(wqi);
+            if(wqi >= 0.25) {
+                await connection.query(
+                    "UPDATE `pond_water_quality_notifications` SET `water_quality` = ?, `date_resolved` = ?, is_resolved = TRUE WHERE `notification_id` = ?",
+                    [classification, moment().format(), waterQualityNotifications[0].notification_id]
+                )
+            } else if (wqi < 0.25) {
+                await connection.query(
+                    "UPDATE `pond_water_quality_notifications` SET `water_quality` = ? WHERE `notification_id` = ?",
+                    [classification, waterQualityNotifications[0].notification_id]
+                )
+            }
+        }
 
         return NextResponse.json({ message: "responded" }, { status: 200 });
     } catch (error: any) {
