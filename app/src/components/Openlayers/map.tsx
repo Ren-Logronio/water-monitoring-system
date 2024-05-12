@@ -34,17 +34,20 @@ const MapView = () => {
 
     // map component
     const MapBuilder = React.memo(({ vectorLayer, labelLayer, className, zoom }: {
-        vectorLayer: VectorLayer<any>,
+        vectorLayer?: VectorLayer<any>,
         labelLayer?: VectorLayer<any>,
         className: HTMLAttributes<HTMLElement>['className'],
         zoom?: number,
 
     }) => {
 
-        // set the vector layer
-        vector_Layer = vectorLayer;
-        // set the vector source
-        vector_Source = vectorLayer.getSource();
+        // if vector layer is provided
+        if (vectorLayer) {
+            // set the vector layer
+            vector_Layer = vectorLayer;
+            // set the vector source
+            vector_Source = vectorLayer.getSource();
+        }
 
         // create a ref for the map
         const mapRef = useRef<HTMLDivElement>(null);
@@ -88,7 +91,7 @@ const MapView = () => {
             if (map) mapObj = map;
 
             // add the vector & label layers to the map
-            map.addLayer(vectorLayer);
+            if (vectorLayer) map.addLayer(vectorLayer);
 
             // when the pointer is moved
             // change the cursor to pointer if the pointer is on a feature
