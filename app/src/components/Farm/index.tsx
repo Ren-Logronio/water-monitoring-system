@@ -8,29 +8,15 @@ import useFarm from "@/hooks/useFarm";
 
 // map component
 import MapView from "../Openlayers/map";
-import { polygonLayer } from "../Openlayers/utils/polygonLayer";
-import { labelLayer } from "../Openlayers/utils/labelLayer";
-import { map_attributes } from "../Openlayers/map";
-
+import { pointLayer } from "../Openlayers/utils/layer/pointLayer";
 
 // instantiate the map component outside the component to prevent unnecessary re-renders
-const { newMap: MapBuilder, assignedPonds } = MapView();
-const farm_plots = polygonLayer();
-const farm_labels = labelLayer();
+const { newMap: MapBuilder } = MapView();
+const farm_points = pointLayer();
 
-// dummy data for assignedPonds
-const assignedPondsData: map_attributes[] = [
-    [1, "#FF0000"],
-    [2, "#00FF00"],
-    [3, "#0000FF"],
-    [4, "#FFFF00"],
-    [5, "#00FFFF"],
-    [6, "#FF00FF"],
-];
 
 export default function Farm() {
     const { selectedFarm, farmsLoading } = useFarm();
-
 
     const loading = useMemo(() => {
         return farmsLoading;
@@ -71,10 +57,8 @@ export default function Farm() {
                     <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 w-full h-fit p-3">
 
                         <MapBuilder
-                            vectorLayer={farm_plots}
-                            labelLayer={farm_labels}
+                            vectorLayer={farm_points}
                             className="w-full h-[500px]"
-                            assignedPonds={assignedPondsData}
                         />
                         {/* Pond List */}
                         <PondList farm_id={farm.farm_id} />
