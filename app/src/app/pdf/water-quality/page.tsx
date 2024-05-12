@@ -72,7 +72,7 @@ export default function PrintWaterQuality() {
                         Date Range: {!moment(searchParams.get("from")).isSame(moment.unix(0)) ? `${moment(searchParams.get("from")).format("MMM DD, yyyy")} to` : " Until"} {moment(searchParams.get("to")).format("MMM DD, yyyy")}
                     </p>
                     <p>
-                        Date: {moment().format("MMM DD, yyyy, h:mm a")}
+                        Date Generated: {moment().format("MMM DD, yyyy, h:mm a")}
                     </p>
                 </div>
                 <table>
