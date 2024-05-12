@@ -8,7 +8,9 @@ import axios from "axios";
 import { usePathname } from "next/navigation";
 import { pathIsSignIn } from "@/utils/PathChecker";
 import { NinetyRing } from "react-svg-spinners";
-import moment from "moment";
+import moment from "moment-timezone";
+import Link from "next/link";
+import Image from "next/image";
 
 export default function Notifications({ disabled = false }: Readonly<{ disabled: boolean }>) {
     const path = usePathname();
@@ -32,6 +34,17 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
         };
     }, [path]);
 
+    useEffect(() => {
+        const setIntervalId = setInterval(() => {
+            axios.get("/api/notification/water-quality").then(({ data }) => {
+                setUserNotifications(data.results);
+                setNotificationCount(data.results.filter((result: any) => !result.is_resolved).length);
+                setLoading(false);
+            }).catch(console.error);
+        }, 5000);
+        return () => clearInterval(setIntervalId);
+    }, []);
+
     const handleOpen = (open: boolean) => {
         setOpen(open);
         if (open) {
@@ -52,9 +65,28 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
                     </svg>
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="md:min-w-[400px] lg:min-w-[800px] max-w-[800px] mr-6">
+            <DropdownMenuContent className="md:min-w-[400px] lg:min-w-[400px] max-w-[400px] mr-6">
                 <DropdownMenuLabel className="text-center">Notifications</DropdownMenuLabel>
-                
+                <DropdownMenuSeparator />
+                {userNotifications.map((notification: any) => <>
+                    <Link href={``} className="flex flex-row justify-start space-x-2 items-center p-1 hover:bg-gray-50">
+                        <div className="flex justify-center items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                                </svg>
+                        </div>
+                        <div className="flex flex-col">
+                            
+                            <div className="flex flex-col  w-full p-1">
+                                <p className="font-medium text-sm">Water Quality is <b>{notification?.water_quality}</b></p>
+                                <p>Status - {notification.is_resolved ? "Resolved" : "Unresolved"}</p>
+                                <p className="text-xs text-gray-500">{moment(notification.date_issued).from(moment())}</p>
+                                <p className="text-xs text-gray-500">{moment(notification.date_issued).format("MMM DD, yyyy - hh:mm a")}</p>
+                            </div>
+                        </div>
+                        <></>
+                    </Link>
+                </>)}
             </DropdownMenuContent>
         </DropdownMenu>
     )
