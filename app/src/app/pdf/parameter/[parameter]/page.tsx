@@ -29,15 +29,7 @@ export default function PrintParameter() {
     const { parameter } = useParams();
     const [loading, setLoading] = useState(false);
     const [rowData, setRowData] = useState<any[]>([]);
-    const [columnDefs, setColumnDefs] = useState<any>([
-        { field: "idx", headerName: "#", lockPosition: "left", resizable: false },
-        { field: "reading_id", headerName: "reading_id", lockPosition: "left", resizable: false, hide: true },
-        { field: "edit_recorded_at", headerName: "edit_recorded_at", lockPosition: "left", resizable: false, hide: true },
-        { field: "edit_time", headerName: "edit_time", lockPosition: "left", resizable: false, hide: true },
-        { field: "reading", headerName: (parameter && `${parameter[0].toUpperCase()}${parameter.slice(1)}`) || "Reading", lockPosition: "left", resizable: false },
-        { field: "date", headerName: "Date", lockPosition: "left", resizable: false },
-        { field: "time", headerName: "Time", lockPosition: "left", resizable: false },
-    ]);
+    const [threshold, setThreshold] = useState<any>(null);
     const [farm, setFarm] = useState<any>(null);
     const printableRef = createRef<HTMLDivElement>();
 
@@ -60,11 +52,18 @@ export default function PrintParameter() {
                 if (response.data.result) {
                     setFarm(response.data.result);
                 }
+                axios.get(`/api/threshold?parameter=${parameter}`).then(response => {
+                    if (response.data.results) {
+                        setThreshold(response.data.results);
+                    }
+                }).catch(error => {
+                    console.error(error);
+                }).finally(() => {
+                    setLoading(false);
+                });
             }).catch(error => {
                 console.error(error);
-            }).finally(() => {
-                setLoading(false);
-            });
+            })
         }).catch(error => {
             console.error(error);
         });
@@ -228,6 +227,9 @@ export default function PrintParameter() {
                         <th>
                             {parameter}
                         </th>
+                        <th>
+                            Status
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -241,6 +243,19 @@ export default function PrintParameter() {
                             </td>
                             <td className="text-center">
                                 {reading?.value} {reading?.unit}
+                            </td>
+                            <td>
+                                {
+                                    threshold && threshold.length > 0 && threshold.map((thresh: any, idx: number) => {
+                                        if (reading?.value >= thresh.min && reading?.value <= thresh.max) {
+                                            return <span key={idx} className="text-green-500">Optimal</span>
+                                        } else if (reading?.value < thresh.min) {
+                                            return <span key={idx} className="text-red-500">Poor</span>
+                                        } else if (reading?.value > thresh.max) {
+                                            return <span key={idx} className="text-red-500">Poor</span>
+                                        }
+                                    })
+                                }
                             </td>
                         </tr>)
                     }
