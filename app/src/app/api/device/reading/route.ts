@@ -93,7 +93,8 @@ export async function POST(request: NextRequest) {
         console.log("AVERAGES", averageTemperature, averageTDS, averageAmmonia, averagePH);
         
         if ((averageTemperature || averageTDS || averageAmmonia || averagePH) && (waterQualityNotifications && waterQualityNotifications.length <= 0)) {
-            const wqi = calculateWQI(averageTemperature, averageTDS, averageAmmonia, averagePH);
+            // (ph: number, tds: number, ammonia: number, temperature: number)
+            const wqi = calculateWQI({ ph: averagePH, tds: averageTDS, ammonia: averageAmmonia, temperature: averageTemperature });
             console.log("WQI AFTER DEVICE INSERT", wqi);
             const classification = classifyWQI(wqi);
             if(wqi < 0.25) {
@@ -103,7 +104,7 @@ export async function POST(request: NextRequest) {
                 )
             }
         } else if ((averageTemperature || averageTDS || averageAmmonia || averagePH) && (waterQualityNotifications && waterQualityNotifications.length > 0)) {
-            const wqi = calculateWQI(averageTemperature, averageTDS, averageAmmonia, averagePH);
+            const wqi = calculateWQI({ ph: averagePH, tds: averageTDS, ammonia: averageAmmonia, temperature: averageTemperature });
             console.log("WQI AFTER DEVICE INSERT", wqi);
             const classification = classifyWQI(wqi);
             if(wqi >= 0.25) {

@@ -93,7 +93,8 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
 
     const wqi = useMemo(() => {
         if (phCurrentReading && tempCurrentReading && tdsCurrentReading && ammoniaCurrentReading) {
-            return calculateWQI(phCurrentReading.value, tempCurrentReading.value, tdsCurrentReading.value, ammoniaCurrentReading.value);
+            // (ph: number, tds: number, ammonia: number, temperature: number)
+            return calculateWQI({ ph: phCurrentReading.value, tds: tdsCurrentReading.value, ammonia: ammoniaCurrentReading.value, temperature: tempCurrentReading.value });
         }
         return null;
     }, [phCurrentReading, tempCurrentReading, tdsCurrentReading, ammoniaCurrentReading]);
