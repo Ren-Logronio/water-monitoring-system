@@ -26,10 +26,10 @@ export function calculateWQI(ph: number, tds: number, ammonia: number, temperatu
 
     // Define weightage factors for each parameter
     const weights = {
-        'ph': 0.25,
-        'tds': 0.25,
+        'ph': 0.30,
+        'tds': 0.15,
         'ammonia': 0.25,
-        'temperature': 0.25
+        'temperature': 0.30
     };
 
     // Calculate weighted average of membership degrees
@@ -45,6 +45,7 @@ export function calculateWQI(ph: number, tds: number, ammonia: number, temperatu
     return wqi;
 }
 
+
 export function classifyWQI(wqi: number) {
     if (wqi >= 0.9) {
         return "Excellent";
@@ -52,7 +53,7 @@ export function classifyWQI(wqi: number) {
         return "Good";
     } else if (wqi >= 0.5 && wqi < 0.75) {
         return "Fair";
-    } else if (wqi >= 0.27 && wqi < 0.5) {
+    } else if (wqi >= 0.25 && wqi < 0.5) {
         return "Poor";
     } else {
         return "Very Poor";
