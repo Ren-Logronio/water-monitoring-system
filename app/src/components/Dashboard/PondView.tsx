@@ -13,8 +13,8 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
 
     useEffect(() => {
         setParameters([]);
+        setCurrentReadings([]);
         setLoading(true);
-
         // get parameters from the server
         axios.get(`/api/parameter?pond_id=${pond_id}`).then(response => {
             // if no parameters found
@@ -108,7 +108,6 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
 
     return (
         <div className="h-full">
-
             {/* while fetching data */}
             {loading &&
                 <div className="flex justify-center items-center h-40 space-x-2">
