@@ -50,3 +50,27 @@ export async function PATCH(request: NextRequest) {
         );
     }
 }
+
+export async function DELETE(request: NextRequest) {
+    try {
+        const connection = await getMySQLConnection();
+        const { device_id } = await request.json();
+        await connection.query(
+            "DELETE FROM `devices` WHERE `device_id` = ?",
+            [device_id]
+        );
+        return NextResponse.json(
+            { message: "Device deleted successfully" },
+            {
+                status: 200,
+            },
+        );
+    } catch (e: any) {
+        return NextResponse.json(
+            { message: "Something went wrong while deleting the device" },
+            {
+                status: 500,
+            },
+        );
+    }
+};
