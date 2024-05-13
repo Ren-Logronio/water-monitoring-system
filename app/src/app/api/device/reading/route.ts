@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
             "SELECT * FROM `pond_water_quality_notifications` WHERE `pond_id` = ? AND `is_resolved` = FALSE LIMIT 1", [pondId]
         );
 
-        const targetRecordedAt = waterQualityNotifications && waterQualityNotifications.length > 0 ? waterQualityNotifications[0].date_issued : moment(recorded_at).subtract(10, "minute").format();
+        const targetRecordedAt = moment().subtract(1, "hour").format();
 
         const [readings]: [results: any[], rows: any[]] = await connection.query(
             "SELECT * FROM `view_pond_readings` WHERE `pond_id` = ? AND `recorded_at` > ?",
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
             tds: Number(parameters.TDS),
             ammonia: Number(parameters.AMN),
             ph: Number(parameters.PH),
-            recorded_at: moment(recorded_at).format("YYYY-MM-DD hh:mm:ss"),
+            recorded_at: moment(recorded_at).format(),
         })
 
         const averageTemperature = readings.reduce((acc: number, reading: any) => {
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
             const wqi = calculateWQI({ ph: averagePH, tds: averageTDS, ammonia: averageAmmonia, temperature: averageTemperature });
             console.log("WQI AFTER DEVICE INSERT", wqi);
             const classification = classifyWQI(wqi);
-            if(wqi < 0.25) {
+            if(wqi < 0.50) {
                 await connection.query(
                     "INSERT INTO `pond_water_quality_notifications` (`water_quality`, `pond_id`, `date_issued`) VALUES (?, ?, ?)",
                     [classification, pondId, moment().format()]
@@ -107,12 +107,12 @@ export async function POST(request: NextRequest) {
             const wqi = calculateWQI({ ph: averagePH, tds: averageTDS, ammonia: averageAmmonia, temperature: averageTemperature });
             console.log("WQI AFTER DEVICE INSERT", wqi);
             const classification = classifyWQI(wqi);
-            if(wqi >= 0.25) {
+            if(wqi > 0.5) {
                 await connection.query(
-                    "UPDATE `pond_water_quality_notifications` SET `water_quality` = ?, `date_resolved` = ?, is_resolved = TRUE WHERE `notification_id` = ?",
-                    [classification, moment().format(), waterQualityNotifications[0].notification_id]
+                    "UPDATE `pond_water_quality_notifications` SET `date_resolved` = ?, is_resolved = TRUE WHERE `notification_id` = ?",
+                    [moment().format(), waterQualityNotifications[0].notification_id]
                 )
-            } else if (wqi < 0.25) {
+            } else {
                 await connection.query(
                     "UPDATE `pond_water_quality_notifications` SET `water_quality` = ? WHERE `notification_id` = ?",
                     [classification, waterQualityNotifications[0].notification_id]
