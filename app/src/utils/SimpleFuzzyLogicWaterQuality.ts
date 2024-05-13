@@ -9,28 +9,28 @@ export function calculateMembership(param: number, thresholds: number[]) {
     return 0;
 }
 
+export const weights = {
+    'ph': 0.25,
+    'tds': 0.25,
+    'ammonia': 0.25,
+    'temperature': 0.25
+};
 
-export function calculateWQI(ph: number, tds: number, ammonia: number, temperature: number) {
+export const phThresholds = [4, 7, 10];
+export const tdsThresholds = [-25, 250, 900];
+export const ammoniaThresholds = [-999999999, 150, 300];
+export const temperatureThresholds = [20, 25, 31];
+
+
+export function calculateWQI(parameters: { ph: number, tds: number, ammonia: number, temperature: number }) {
     const before = performance.now();
-    // Define thresholds for each parameter
-    const phThresholds = [6, 6.5, 9];
-    const tdsThresholds = [0, 500, 1000];
-    const ammoniaThresholds = [0, 150, 300];
-    const temperatureThresholds = [20, 25, 30];
+
 
     // Calculate membership degrees
-    const phDegree = calculateMembership(ph, phThresholds);
-    const tdsDegree = calculateMembership(tds, tdsThresholds);
-    const ammoniaDegree = calculateMembership(ammonia, ammoniaThresholds);
-    const temperatureDegree = calculateMembership(temperature, temperatureThresholds);
-
-    // Define weightage factors for each parameter
-    const weights = {
-        'ph': 0.30,
-        'tds': 0.15,
-        'ammonia': 0.25,
-        'temperature': 0.30
-    };
+    const phDegree = calculateMembership(parameters.ph, phThresholds);
+    const tdsDegree = calculateMembership(parameters.tds, tdsThresholds);
+    const ammoniaDegree = calculateMembership(parameters.ammonia, ammoniaThresholds);
+    const temperatureDegree = calculateMembership(parameters.temperature, temperatureThresholds);
 
     // Calculate weighted average of membership degrees
     const wqi = (
@@ -43,6 +43,28 @@ export function calculateWQI(ph: number, tds: number, ammonia: number, temperatu
     const after = performance.now();
     console.log("Time taken to calculate WQI", after - before, "ms");
     return wqi;
+}
+
+export function calculateWQIDebug(ph: number, tds: number, ammonia: number, temperature: number) {
+    const before = performance.now();
+
+    // Calculate membership degrees
+    const phDegree = calculateMembership(ph, phThresholds);
+    const tdsDegree = calculateMembership(tds, tdsThresholds);
+    const ammoniaDegree = calculateMembership(ammonia, ammoniaThresholds);
+    const temperatureDegree = calculateMembership(temperature, temperatureThresholds);
+
+    // Calculate weighted average of membership degrees
+    const wqi = (
+        weights['ph'] * phDegree +
+        weights['tds'] * tdsDegree +
+        weights['ammonia'] * ammoniaDegree +
+        weights['temperature'] * temperatureDegree
+    );
+
+    const after = performance.now();
+    console.log("Time taken to calculate WQI", after - before, "ms");
+    return { ph: phDegree, tds: tdsDegree, ammonia: ammoniaDegree, temperature: temperatureDegree, wqi };
 }
 
 
