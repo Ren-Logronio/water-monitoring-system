@@ -27,8 +27,8 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
     const [showResolvedNotifications, setShowResolvedNotifications] = useState<boolean>(false);
 
     // newer comes first
-    const unresolvedUserNotifications = useMemo(() => userNotifications.sort((a,b) => moment(b.date_issued).diff(moment(a.date_issued))).filter((result: any) => !result?.is_resolved), [userNotifications]);
-    const resolvedUserNotifications = useMemo(() => userNotifications.sort((a,b) => moment(b.date_resolved).diff(moment(a.date_resolved))).filter((result: any) => result?.is_resolved), [userNotifications]);
+    const unresolvedUserNotifications: any[] = useMemo(() => userNotifications.sort((a,b) => moment(b.date_issued).diff(moment(a.date_issued))).filter((result: any) => !result?.is_resolved), [userNotifications]);
+    const resolvedUserNotifications: any[] = useMemo(() => userNotifications.sort((a,b) => moment(b.date_resolved).diff(moment(a.date_resolved))).filter((result: any) => result?.is_resolved), [userNotifications]);
 
     useEffect(() => {
         if (pathIsSignIn(path)) {
@@ -110,6 +110,11 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
                     <DropdownMenuLabel className="text-center">Notifications</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                 </div>
+                {
+                    !unresolvedUserNotifications.length && !resolvedUserNotifications.length && <div className="flex flex-row justify-center items-center h-[100px]">
+                        <p>No Notifications to Show</p>
+                    </div>
+                }
                 {!!unresolvedUserNotifications.length && <div>
                     <span className="text-[14px] font-medium ml-3">Unresolved Notifications</span>
                     {unresolvedUserNotifications.map((notification: any) => <>
@@ -146,7 +151,7 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
                     </>)}
                 </div>}
                 {
-                    resolvedUserNotifications && <div>
+                    !!resolvedUserNotifications.length && <div>
                         {!!unresolvedUserNotifications.length && <DropdownMenuSeparator className="mb-2"/>}
                         <div className="flex flex-row pr-[40px]">
                             <span className="text-[14px] font-medium ml-3">Resolved Notifications</span>
