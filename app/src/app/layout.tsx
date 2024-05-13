@@ -8,6 +8,7 @@ import Loading from "@/components/Loading";
 import FarmProvider from "@/providers/FarmProvider";
 import AuthProvider from "@/providers/AuthProvider";
 import ModalProvider from "@/providers/ModalProvider";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,6 +36,7 @@ export default function RootLayout({
                   <Suspense fallback={<Loading />}>
                     {children}
                   </Suspense>
+                  <Toaster />
                 </NavigationBar>
               </ModalProvider>
             </FarmProvider>
