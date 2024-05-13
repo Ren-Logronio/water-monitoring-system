@@ -11,7 +11,7 @@ import { Label } from "../label";
 import { DialogClose } from "../dialog";
 import { Input } from "../input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../select";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { NinetyRing } from "react-svg-spinners";
@@ -21,9 +21,12 @@ import { Switch } from "../switch";
 import MapView from "@/components/Openlayers/map";
 import { polygonLayer } from "@/components/Openlayers/utils/polygonLayer";
 import { labelLayer } from "@/components/Openlayers/utils/labelLayer";
-
-
-
+import { pointLayer } from "@/components/Openlayers/utils/layer/pointLayer";
+import VectorLayer from "ol/layer/Vector";
+import VectorSource from "ol/source/Vector";
+import Feature from "ol/Feature";
+import { Geometry } from "ol/geom";
+import useFarm from "@/hooks/useFarm";
 
 // default values for the form
 const PondDetailsProps = {
@@ -36,19 +39,27 @@ const PondDetailsProps = {
     method: "SEMI-INTENSIVE",
     message: "",
     status: "red",
+    latitude: 0.00,
+    longitude: 0.00
 }
 
 // instantiate the map component outside the component to prevent unnecessary re-renders
 const { newMap: MapBuilder, selectedFeature } = MapView();
-const farm_plots = polygonLayer();
-const farm_labels = labelLayer();
-
-
+const farm_points = pointLayer();
 
 export default function AddPondDialog({ farm_id, page }: { farm_id: number, page: string }) {
     const router = useRouter();
+    const { selectedFarm } = useFarm();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const farm = useMemo(() => {
+        return selectedFarm;
+    }, [selectedFarm, dialogOpen]);
+
+    const points = useMemo(() => {
+        return pointLayer();
+    }, [dialogOpen]);
 
     // reset the form when the dialog is closed
     useEffect(() => {
@@ -65,6 +76,9 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
     const handleInputChange = (e: any) => {
         setPondForm({ ...pondForm, [e.target.name]: e.target.value });
     };
+    const handleLocationChange = (longitude: number, latitude: number) => {
+        setPondForm(prev => ({ ...prev, latitude, longitude }));
+    }
     const handleSelectChange = (value: string) => {
         setPondForm({ ...pondForm, method: value });
     }
@@ -75,6 +89,12 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
             setPondForm({ ...pondForm, message: "* Invalid Device ID", status: "red" });
             return;
         }
+
+        if (!pondForm.latitude || !pondForm.longitude) {
+            setPondForm({ ...pondForm, message: "* Please select a location on the map", status: "red" });
+            return;
+        }
+
         setLoading(true);
         if (pondForm.enter_device_id) {
             console.log("device id:", pondForm.device_id);
@@ -86,12 +106,13 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
                 }
                 setPondForm({ ...pondForm, message: `Device (${pondForm.device_id}) found`, status: "green" });
                 setTimeout(() => {
-                    const { device_id, name, width, length, depth, method } = pondForm;
+                    const { device_id, name, width, length, depth, method, latitude, longitude } = pondForm;
                     axios.patch("/api/device", { device_id: pondForm.device_id, status: "ACTIVE" }).then(response => {
                         axios.post("/api/pond", {
-                            device_id, farm_id, name, width, length, depth, method
+                            device_id, farm_id, name, width, length, depth, method, latitude, longitude
                         }).then(response => {
-                            router.replace(`/redirect?w=/${page}`);
+                            router.push(`/farm?farm_id=/${page}`);
+                            window.location.reload();
                         }).catch(err => {
                             console.error(err);
                         })
@@ -102,11 +123,12 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
             });
         } else {
             setTimeout(() => {
-                const { name, width, length, depth, method } = pondForm;
+                const { name, width, length, depth, method, latitude, longitude } = pondForm;
                 axios.post("/api/pond", {
-                    farm_id, device_id: null, name, width, length, depth, method
+                    farm_id, device_id: null, name, width, length, depth, method, latitude, longitude
                 }).then(response => {
-                    router.replace(`/redirect?w=/${page}`);
+                    router.push(`/farm?farm_id=/${page}`);
+                    window.location.reload();
                 }).catch(err => {
                     console.error(err);
                 })
@@ -139,7 +161,7 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
         </DialogTrigger>
 
         {/* Dialog content */}
-        <DialogContent onInteractOutside={(e) => e.preventDefault()} className="sm:max-w-[625px] xl:max-w-[1150px] select-none">
+        <DialogContent onInteractOutside={(e) => e.preventDefault()} className="sm:max-w-[650px] select-none">
             <DialogHeader>
                 <DialogTitle className="font-semibold text-xl text-neutral-800 px-2">Add New Pond</DialogTitle>
             </DialogHeader>
@@ -172,15 +194,30 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
                         </div> */}
                     </div>
 
+                    {/* Map */}
+                    <div className="space-y-2 mt-4 xl:space-y-2 w-full h-fit">
+                        <Label className="text-md xl:text:lg">Location</Label>
+
+                        {/* Map */}
+                        <MapBuilder
+                            className={"h-[250px] xl:h-[300px] bg-slate-200"}
+                            vectorLayer={points}
+                            pin={true}
+                            center={[farm.longitude, farm.latitude]}
+                            onMapClick={(latitude, longitude) => handleLocationChange(longitude, latitude)}
+                            zoom={18.1}
+                        />
+                    </div>
+
                     {/* Pond dimensions */}
-                    <div className="flex flex-col space-y-[12px] my-5">
+                    {/* <div className="flex flex-col space-y-[12px] my-5">
                         <Label className="text-md">
                             Dimensions of Pond
                             <span className="text-sm"> (Optional)</span>
                         </Label>
 
                         {/* Input fields */}
-                        <div className="flex flex-row justify-between">
+                        {/* <div className="flex flex-row justify-between">
                             <div className="flex flex-row items-center space-x-2">
                                 <Label>Width</Label>
                                 <Input disabled={loading} onChange={handleInputChange} min={0} max={10000} maxLength={5} type="number" name="width" value={pondForm.width} step={1.0} />
@@ -197,10 +234,10 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
                                 <p className="hidden text-sm text-red-600"></p>
                             </div>
                         </div>
-                    </div>
+                    </div>  */}
 
                     {/* Device */}
-                    <div className={`flex flex-row space-x-5 border-2 p-3 rounded-2xl mt-10 xl:mt-[110px] mb-3 ${pondForm.enter_device_id ? "border-blue-400 bg-blue-100/30" : ""}`}>
+                    <div className={`flex flex-row space-x-5 border-2 p-3 rounded-2xl mt-2 xl:mt-[32px] mb-3 ${pondForm.enter_device_id ? "border-blue-400 bg-blue-100/30" : ""}`}>
                         <div className="flex flex-row space-x-2 items-center w-2/5">
                             <Switch disabled={loading} checked={pondForm.enter_device_id} onCheckedChange={handleCheckboxChange} />
                             <Label>Has device?</Label>
@@ -212,19 +249,6 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
 
                     {/* Error Message */}
                     {!!pondForm.message && <p className={` text-sm text-center ${pondForm.status === "red" ? 'text-red-600' : 'text-green-500'}`}>{pondForm.message}</p>}
-                </div>
-
-                {/* Map */}
-                <div className="px-2 space-y-2 xl:space-y-2 w-full h-fit xl:w-[500px]">
-                    <Label className="text-md xl:text:lg">Location</Label>
-
-                    {/* Map */}
-                    <MapBuilder
-                        vectorLayer={farm_plots}
-                        labelLayer={farm_labels}
-                        className={"h-[250px] xl:h-[300px] bg-slate-200"}
-                        zoom={18.1}
-                    />
                 </div>
 
             </div>
