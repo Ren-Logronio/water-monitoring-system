@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
       );
       const sortedByTime = results.sort((a, b) => moment(b.recorded_at).diff(moment(a.recorded_at)));
       return NextResponse.json(
-        { result: { ...sortedByTime[0], previous_value: sortedByTime[1].value } },
+        { result: { ...sortedByTime[0], previous_value: sortedByTime[1]?.value } },
         {
           status: 200,
         },
