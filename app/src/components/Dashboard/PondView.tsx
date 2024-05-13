@@ -169,7 +169,7 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
                         <p className="text-[14px]">Temperature</p>
                         { tempCurrentReading && <>
                             <span className="text-[20px]">{tempCurrentReading.value} °C</span>
-                            <span className="text-[12px] mt-1">{tempDifference !== 0 && `(${tempDifference})`}</span>
+                            {!!tempDifference && <span className="text-[12px] mt-1">{tempDifference !== 0 && `(${tempDifference})`}</span>}
                             <span className="text-[12px]">Last recorded reading</span>
                         </>}
                         { !tempCurrentReading && <div className="flex justify-center items-center h-full space-x-2">
@@ -182,7 +182,7 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
                         <p className="text-[14px]">pH</p>
                         { phCurrentReading && <>
                             <span className="text-[20px]">{phCurrentReading.value}</span>
-                            <span className="text-[12px] mt-1">{phDifference !== 0 && `(${phDifference})`}</span>
+                            {!!phDifference && <span className="text-[12px] mt-1">{phDifference !== 0 && `(${phDifference})`}</span>}
                             <span className="text-[12px]">Last recorded reading</span>
                         </>}
                         { !phCurrentReading && <div className="flex justify-center items-center h-full space-x-2">
@@ -195,7 +195,7 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
                         <p className="text-[14px]">Ammonia</p>
                         { ammoniaCurrentReading && <>
                             <span className="text-[20px]">{ammoniaCurrentReading.value} ppm</span>
-                            <span className="text-[12px] mt-1">{ammoniaDifference !== 0 && `(${ammoniaDifference})`}</span>
+                            {!!ammoniaDifference && <span className="text-[12px] mt-1">{ammoniaDifference !== 0 && `(${ammoniaDifference})`}</span>}
                             <span className="text-[12px]">Last recorded reading</span>
                         </>}
                         { !ammoniaCurrentReading && <div className="flex justify-center items-center h-full space-x-2">
@@ -208,7 +208,7 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
                         <p className="text-[14px]">Total Dissolved Solids</p>
                         { tdsCurrentReading && <>
                             <span className="text-[20px]">{tdsCurrentReading.value} ppm</span>
-                            <span className="text-[12px] mt-1">{tdsDifference !== 0 && `(${tdsDifference})`}</span>
+                            {!!tdsDifference && <span className="text-[12px] mt-1">{tdsDifference !== 0 && `(${tdsDifference})`}</span>}
                             <span className="text-[12px]">Last recorded reading</span>
                         </>
                         }
