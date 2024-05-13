@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
         const pond_id = request.nextUrl.searchParams.get('pond_id');
         const connection = await getMySQLConnection();
         const [pondFarm]: any = await connection.query(
-            "SELECT `ponds`.`pond_id`, `ponds`.`name` AS `pond_name`, `farms`.`name` AS `farm_name`, `farms`.`address_street`, `farms`.`address_city`, `farms`.`address_city`, `farms`.`address_province` FROM `ponds` LEFT JOIN `farms` ON `ponds`.`farm_id` = `farms`.`farm_id` WHERE `ponds`.`pond_id` = ?",
+            "SELECT `ponds`.`pond_id`, `ponds`.`latitude`, `ponds`.`longitude`, `ponds`.`name` AS `pond_name`, `farms`.`name` AS `farm_name`, `farms`.`address_street`, `farms`.`address_city`, `farms`.`address_city`, `farms`.`address_province` FROM `ponds` LEFT JOIN `farms` ON `ponds`.`farm_id` = `farms`.`farm_id` WHERE `ponds`.`pond_id` = ?",
             [pond_id]
         );
         console.log("RES:", pondFarm[0]);

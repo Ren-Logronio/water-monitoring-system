@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
         const query = request.nextUrl.searchParams.get('q');
         const connection = await getMySQLConnection();
         const [results, rows]: [results: any[], rows: any[]] = await connection.query(
-            "SELECT * FROM `farms` WHERE `name` LIKE ? OR `address_street` LIKE ? OR `address_city` LIKE ? OR `address_province` LIKE ?",
+            "SELECT * FROM `view_farmer_farm` WHERE `name` LIKE ? OR `address_street` LIKE ? OR `address_city` LIKE ? OR `address_province` LIKE ?",
             [`%${query}%`, `%${query}%`, `%${query}%`, `%${query}%`]
         );
         return NextResponse.json(

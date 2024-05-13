@@ -28,6 +28,7 @@ export const aggregateReadings = (readings: any, aggregation: any = "hour") => {
 
 export async function GET(request: NextRequest) {
     try {
+        console.log("WATER QUALITY TEST")
         // get start time
         const before = performance.now();
         const pond_id = request.nextUrl.searchParams.get("pond_id");
@@ -41,7 +42,7 @@ export async function GET(request: NextRequest) {
             if (!reading.ph || !reading.tds || !reading.ammonia || !reading.temperature) {
                 return { ...reading, wqi: null, classification: null };
             }
-            const wqi = calculateWQI(reading.ph, reading.tds, reading.ammonia, reading.temperature);
+            const wqi = calculateWQI({ ph: reading.ph, tds: reading.tds, ammonia: reading.ammonia, temperature: reading.temperature });
             const classification = classifyWQI(wqi);
             return { ...reading, timestamp: reading.recorded_at, wqi, classification };
         });

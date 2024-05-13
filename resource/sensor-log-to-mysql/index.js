@@ -1,5 +1,5 @@
 // import json file
-const sensorData = require('./water-monitoring-system-db.sensor-logs.json');
+const sensorData = require('./xx-water-monitoring-system-db.sensor-logs.json');
 
 // import mysql module
 const mysql = require('mysql2/promise');
@@ -8,7 +8,7 @@ const mysql = require('mysql2/promise');
 const moment = require('moment-timezone');
 
 async function runMigrate() {
-    const pond_id = 2;
+    const pond_id = 36;
     const connection = await mysql.createConnection({
         host: "localhost",
         user: "root",

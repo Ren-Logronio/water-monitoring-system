@@ -9,6 +9,7 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { createRef, useEffect, useState } from "react";
 import "./page.css";
+import Signature from "@/components/Signature";
 
 export default function PrintWaterQuality() {
     const printableRef = createRef<HTMLDivElement>();
@@ -71,7 +72,7 @@ export default function PrintWaterQuality() {
                         Date Range: {!moment(searchParams.get("from")).isSame(moment.unix(0)) ? `${moment(searchParams.get("from")).format("MMM DD, yyyy")} to` : " Until"} {moment(searchParams.get("to")).format("MMM DD, yyyy")}
                     </p>
                     <p>
-                        Date: {moment().format("MMM DD, yyyy, h:mm a")}
+                        Date Generated: {moment().format("MMM DD, yyyy, h:mm a")}
                     </p>
                 </div>
                 <table>
@@ -127,21 +128,21 @@ export default function PrintWaterQuality() {
                 </table>
                 <p className="font-medium">CURRENT WATER QUALITY &nbsp; - &nbsp; {
                     roundToSecondDecimal(
-                        calculateWQI(
-                            waterQualityReadings[0].ph,
-                            waterQualityReadings[0].tds,
-                            waterQualityReadings[0].ammonia,
-                            waterQualityReadings[0].temperature, 
-                        ) * 100
+                        calculateWQI({
+                            ph: waterQualityReadings[0].ph,
+                            tds: waterQualityReadings[0].tds,
+                            ammonia: waterQualityReadings[0].ammonia,
+                            temperature: waterQualityReadings[0].temperature
+                        }) * 100
                     )
                 }% ({
                     classifyWQI(
-                        calculateWQI(
-                            waterQualityReadings[0].ph,
-                            waterQualityReadings[0].tds,
-                            waterQualityReadings[0].ammonia,
-                            waterQualityReadings[0].temperature, 
-                        )
+                        calculateWQI({
+                            ph: waterQualityReadings[0].ph,
+                            tds: waterQualityReadings[0].tds,
+                            ammonia: waterQualityReadings[0].ammonia,
+                            temperature: waterQualityReadings[0].temperature
+                        })
                     )
                 }) </p>
                 <table>
@@ -154,6 +155,7 @@ export default function PrintWaterQuality() {
                             <th className="text-[14px] font-medium">Ammonia</th>
                             <th className="text-[14px] font-medium">TDS</th>
                             <th className="text-[14px] font-medium">Water Quality</th>
+                            <th className="text-[14px] font-medium">Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -166,12 +168,14 @@ export default function PrintWaterQuality() {
                                     <td className="text-center">{reading.ph}</td>
                                     <td className="text-center">{reading.ammonia} ppm</td>
                                     <td className="text-center">{reading.tds} ppm</td>
-                                    <td className="text-center">{roundToSecondDecimal(calculateWQI(reading.ph, reading.tds, reading.ammonia, reading.temperature) * 100)}% ({classifyWQI(calculateWQI(reading.ph, reading.tds, reading.ammonia, reading.temperature))})</td>
+                                    <td className="text-center">{roundToSecondDecimal(calculateWQI({ ph: reading.ph, tds: reading.tds, ammonia: reading.ammonia, temperature: reading.temperature }) * 100)}%</td>
+                                    <td>{classifyWQI(calculateWQI({ ph: reading.ph, tds: reading.tds, ammonia: reading.ammonia, temperature: reading.temperature }))}</td>
                                 </tr>
                             })
                         }
                     </tbody>
                 </table>
+                <Signature/>
             </>}
         </div>
     </div>

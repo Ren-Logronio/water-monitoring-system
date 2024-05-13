@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 import PondView from "./PondView";
 import { NinetyRing } from "react-svg-spinners";
@@ -11,6 +11,18 @@ import { useRouter } from "next/navigation";
 import AddPondDialog from "../ui/dialog/AddPond.dialog";
 import moment from "moment-timezone";
 import useFarm from "@/hooks/useFarm";
+import { polygonLayer } from "../Openlayers/utils/polygonLayer";
+import { labelLayer } from "../Openlayers/utils/labelLayer";
+import MapView from "../Openlayers/map";
+import { devNull } from "os";
+import { pointLayer } from "../Openlayers/utils/layer/pointLayer";
+import { Button } from "../ui/button";
+import useAddFarmModal from "@/hooks/useModal/useAddFarmModal";
+
+const { newMap: MapBuilder, selectedFeature } = MapView();
+const farm_plots = polygonLayer();
+const farm_labels = labelLayer();
+const farm_points = pointLayer();
 
 export default function Dashboard() {
     const router = useRouter();
@@ -23,6 +35,15 @@ export default function Dashboard() {
     const [datetime, setDatetime] = useState<string>("");
     const [timezone, setTimezone] = useState<string>("");
     const { selectedFarm } = useFarm();
+    const farmModal = useAddFarmModal();
+
+    const points = useMemo(() => {
+        return pointLayer();
+    }, [farm]);
+
+    const center = useMemo(() => {
+        return [farm.longitude, farm.latitude];
+    }, [farm]);
 
     useEffect(() => {
         setDatetime(moment().format("h:mm a, MMM D, yyyy"));
@@ -118,9 +139,14 @@ export default function Dashboard() {
 
             {/* No Farm Details */}
             {!loading && !farm.farm_id &&
-                <div className="min-w-full flex flex-col items-center">
-                    <h1 className="text-center">No Farm Details</h1>
-                    <FarmDetails />
+                <div className="min-w-full mt-[30vh] flex flex-col items-center select-none justify-center">
+                    <p className="text-center">Welcome to Water Quality Monitoring System&nbsp;
+                        <span className="font-semibold">{farm.name}</span>,
+                    </p>
+                    <p className="mb-8">Please begin by entering your farm details</p>
+                    <Button onClick={farmModal.open} variant="addBtn_orange_outline">
+                        + Enter Farm Details
+                    </Button>
                 </div>
             }
 
@@ -141,7 +167,18 @@ export default function Dashboard() {
                         <div className="flex flex-col mb-5 xl:mb-0">
 
                             {/* quick widgets */}
-                            <div className="grid grid-cols-4 w-full gap-3 gap-y-5">
+                            <div className="grid grid-cols-4 w-full gap-3 gap-y-5 relative">
+                                <div className="h-[20px] px-2 rounded-md bg-white text-[12px] top-0 absolute z-[1000]">
+                                    Map View
+                                </div>
+                                <MapBuilder
+                                    zoom={16.5}
+                                    vectorLayer={farm_points}
+                                    pinOnCenter={true}
+                                    pinOnCenterLabel="Farm Location"
+                                    center={[selectedFarm.longitude, selectedFarm.latitude]}
+                                    className="w-full h-full"
+                                />
 
                                 {/* # of time*/}
                                 <div className="bg-white border rounded-lg p-5 flex flex-row justify-center space-x-5 xl:space-x-0 xl:space-y-5 xl:flex-col items-center">
@@ -150,7 +187,7 @@ export default function Dashboard() {
                                     </svg>
                                     <div className="flex flex-col items-center space-x-1">
                                         <span>{datetime}</span>
-                                        <span>{timezone} Timezone</span>
+                                        {/* <span>{timezone} Timezone</span> */}
                                     </div>
                                 </div>
 
@@ -222,7 +259,7 @@ export default function Dashboard() {
             {/* Farm Details and approved but no ponds */}
             {!loading && farm.farm_id && farm.is_approved && ponds.ponds.length == 0 &&
                 <div className="min-w-full mt-[30vh] flex flex-col items-center select-none justify-center">
-                    <p className="text-center">It seems that you have no pond/s for&nbsp;
+                    <p className="text-center">It seems that you have no pond/s yet for&nbsp;
                         <span className="font-semibold">{farm.name}</span>,
                     </p>
                     <p className="mb-8">please begin by adding the pond</p>

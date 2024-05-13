@@ -106,7 +106,7 @@ export async function GET(request: NextRequest){
         }
 
         spreadsheet.sheet(0).cell('A6').value(`Date Range: ${dateRangeText.join(" ")}`);
-        spreadsheet.sheet(0).cell('C6').value(`Date: ${moment().format("MMM DD, yyyy, h:mm a")}`);
+        spreadsheet.sheet(0).cell('C6').value(`Date Generated: ${moment().format("MMM DD, yyyy, h:mm a")}`);
 
         spreadsheet.sheet(0).cell('B8').value(`${min} - ${max} ${pondParameterReadings[0].unit}`);
         spreadsheet.sheet(0).cell('B9').value(mean);
