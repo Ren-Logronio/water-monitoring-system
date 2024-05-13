@@ -16,10 +16,8 @@ import { Color } from "ol/color";
 import { styleAssigned } from "./utils/vectorStyle";
 import VectorSource from "ol/source/Vector";
 import { pinStyle } from "./utils/styles/pinStyle";
-
-
-
-
+import { addPoints } from "./utils/addPoints";
+import { removePoints } from "./utils/removePoints";
 
 const MapView = () => {
 
@@ -33,18 +31,22 @@ const MapView = () => {
     let vector_Source: VectorSource | null = null;
 
     // map component
-    const MapBuilder = React.memo(({ vectorLayer, labelLayer, className, zoom }: {
-        vectorLayer: VectorLayer<any>,
+    const MapBuilder = React.memo(({ vectorLayer, labelLayer, className, zoom, center, pin, onMapClick, pinOnCenter, pinOnCenterLabel }: {
+        vectorLayer: VectorLayer<any> | null,
         labelLayer?: VectorLayer<any>,
         className: HTMLAttributes<HTMLElement>['className'],
         zoom?: number,
-
+        center?: [number, number],
+        pin?: boolean,
+        pinOnCenter?: boolean,
+        pinOnCenterLabel?: string,
+        onMapClick?: (latitude: number, longitude: number) => void
     }) => {
 
         // set the vector layer
         vector_Layer = vectorLayer;
         // set the vector source
-        vector_Source = vectorLayer.getSource();
+        vector_Source = vectorLayer?.getSource() || null;
 
         // create a ref for the map
         const mapRef = useRef<HTMLDivElement>(null);
@@ -77,7 +79,7 @@ const MapView = () => {
                     }),
                 ],
                 view: new View({
-                    center: [125.106098, 5.959807],
+                    center: center ? center : [125.106098, 5.959807],
                     zoom: zoom ? zoom : 18.5,
                     //extent: [125.102278, 5.956575, 125.108819, 5.962964],
                 }),
@@ -87,14 +89,29 @@ const MapView = () => {
             // set the map object
             if (map) mapObj = map;
 
+            pinOnCenter && addPoints(center!, pinOnCenterLabel || "Farm Location", "pin");
+
             // add the vector & label layers to the map
-            map.addLayer(vectorLayer);
+            vectorLayer && map.addLayer(vectorLayer);
 
             // when the pointer is moved
             // change the cursor to pointer if the pointer is on a feature
             map.on("pointermove", (event) => {
                 const hit = map.forEachFeatureAtPixel(event.pixel, (feature) => feature);
                 map.getTargetElement().style.cursor = hit ? "pointer" : "";
+            });
+
+            // when the map is clicked
+            // get the location
+            map.on("click", (event) => {
+                if (!pin) return;
+                const hit = event.coordinate;
+                // add a pin to the map
+                removePoints("pin");
+                console.log("removed pin");
+                addPoints(hit, "", "pin");
+                onMapClick && onMapClick(hit[1], hit[0]);
+                console.log(`latitute: ${hit[1]}, longitude: ${hit[0]}`);
             });
 
             // add the select interaction to the map
@@ -105,6 +122,7 @@ const MapView = () => {
             // on component unmount remove the map refrences to avoid unexpected behaviour
             return () => {
                 // remove the map when the component is unmounted
+                removePoints("pin");
                 map.setTarget(undefined);
                 // remove the select interaction
                 // if (select) {
@@ -112,6 +130,12 @@ const MapView = () => {
                 // }
             };
         }, [handleFeatureSelection, zoom, labelLayer, vectorLayer]);
+
+        useEffect(() => {
+            if (!pin) {
+                removePoints("pin");
+            }
+        }, [pin])
 
 
         // map zoom level changes
