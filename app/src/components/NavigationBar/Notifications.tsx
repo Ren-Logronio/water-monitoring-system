@@ -2,7 +2,7 @@
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "../ui/button";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { format, set } from "date-fns";
 import axios from "axios";
 import { usePathname } from "next/navigation";
@@ -11,17 +11,24 @@ import { NinetyRing } from "react-svg-spinners";
 import moment from "moment-timezone";
 import Link from "next/link";
 import Image from "next/image";
+import { useToast } from "../ui/use-toast";
 
 export default function Notifications({ disabled = false }: Readonly<{ disabled: boolean }>) {
     const path = usePathname();
+    const { toast } = useToast();
     const [notificationCount, setNotificationCount] = useState<number>(0);
     const [open, setOpen] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [active, setActive] = useState<boolean>(false);
     const [poller, setPoller] = useState<any>(null);
-    const [userNotifications, setUserNotifications] = useState<any>([]);
+    const [userNotifications, setUserNotifications] = useState<any[]>([]);
     const [readingNotification, setReadingNotification] = useState<any>([]);
     const [notificationToggle, setNotificationToggle] = useState<"reading"|"all">("reading");
+    const [showResolvedNotifications, setShowResolvedNotifications] = useState<boolean>(false);
+
+    // newer comes first
+    const unresolvedUserNotifications = useMemo(() => userNotifications.sort((a,b) => moment(b.date_issued).diff(moment(a.date_issued))).filter((result: any) => !result?.is_resolved), [userNotifications]);
+    const resolvedUserNotifications = useMemo(() => userNotifications.sort((a,b) => moment(b.date_resolved).diff(moment(a.date_resolved))).filter((result: any) => result?.is_resolved), [userNotifications]);
 
     useEffect(() => {
         if (pathIsSignIn(path)) {
@@ -34,11 +41,44 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
         };
     }, [path]);
 
+    const getNotificationCount = () => {
+        return notificationCount;
+    }
+
     useEffect(() => {
+        axios.get("/api/notification/water-quality").then(({ data }) => {
+            setUserNotifications(data.results);
+            if (data?.results?.filter((result: any) => !result.is_resolved).length > 0) {
+                toast({
+                    title: "Notifications",
+                    description: `You have ${data.results.filter((result: any) => !result.is_resolved).length} unresolved notification(s)`,
+                });
+            };
+            setNotificationCount(data.results.filter((result: any) => !result.is_resolved).length);
+            setLoading(false);
+        }).catch(console.error);
         const setIntervalId = setInterval(() => {
             axios.get("/api/notification/water-quality").then(({ data }) => {
+                const results: any[] = data.results;
                 setUserNotifications(data.results);
-                setNotificationCount(data.results.filter((result: any) => !result.is_resolved).length);
+                setNotificationCount(prev => {
+                    console.log("Compare", {new: data.results.filter((result: any) => !result.is_resolved).length, old: prev});
+                    if (results.filter((result: any) => !result.is_resolved).length > prev) {
+                        console.log("New Notification");
+                        toast({
+                            title: "New Notification",
+                            description: `You have ${data.results.filter((result: any) => !result.is_resolved).length} new unresolved notification(s)`,
+                        });
+                    }
+                    if (data.results.filter((result: any) => !result.is_resolved).length < prev) {
+                        console.log("Notification Resolved");
+                        toast({
+                            title: "Notification Resolved",
+                            description: `You have ${prev - data.results.filter((result: any) => !result.is_resolved).length} resolved notification(s)`,
+                        });
+                    }
+                    return data.results.filter((result: any) => !result.is_resolved).length
+                });
                 setLoading(false);
             }).catch(console.error);
         }, 5000);
@@ -65,28 +105,78 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
                     </svg>
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="md:min-w-[400px] lg:min-w-[400px] max-w-[400px] mr-6">
-                <DropdownMenuLabel className="text-center">Notifications</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {userNotifications.map((notification: any) => <>
-                    <Link href={``} className="flex flex-row justify-start space-x-2 items-center p-1 hover:bg-gray-50">
-                        <div className="flex justify-center items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
-                                </svg>
-                        </div>
-                        <div className="flex flex-col">
-                            
-                            <div className="flex flex-col  w-full p-1">
-                                <p className="font-medium text-sm">Water Quality is <b>{notification?.water_quality}</b></p>
-                                <p>Status - {notification.is_resolved ? "Resolved" : "Unresolved"}</p>
-                                <p className="text-xs text-gray-500">{moment(notification.date_issued).from(moment())}</p>
-                                <p className="text-xs text-gray-500">{moment(notification.date_issued).format("MMM DD, yyyy - hh:mm a")}</p>
+            <DropdownMenuContent className="md:min-w-[400px] lg:min-w-[600px] max-w-[600px] mr-6 p-2 space-y-4">
+                <div>
+                    <DropdownMenuLabel className="text-center">Notifications</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                </div>
+                {!!unresolvedUserNotifications.length && <div>
+                    <span className="text-[14px] font-medium ml-3">Unresolved Notifications</span>
+                    {unresolvedUserNotifications.map((notification: any) => <>
+                        <Link href={``} className="flex flex-row justify-start space-x-2 items-center p-1 hover:bg-gray-200">
+                            <div className="flex justify-center items-center">
+                                    {
+                                        notification?.water_quality === "Poor" && 
+                                        <span className=" text-orange-500">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                                            </svg>
+                                        </span>
+                                    }
+                                    {
+                                        notification?.water_quality === "Very Poor" && <span className="text-red-800"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m0-10.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.25-8.25-3.286Zm0 13.036h.008v.008H12v-.008Z" />
+                                        </svg></span>
+                                    }
                             </div>
+                            <div className="flex flex-col w-full">
+                                
+                                <div className="flex flex-col  w-full p-1">
+                                    <p className="font-medium text-sm">{notification?.name}'s Water Quality - <b>{notification?.water_quality}</b></p>
+                                    
+                                    <p className="text-xs text-gray-500">{moment(notification.date_issued).from(moment())}</p>
+                                    <p className="text-xs text-gray-500">{moment(notification.date_issued).format("MMM DD, yyyy - hh:mm a")}</p>
+                                </div>
+                            </div>
+                            <div className="flex flex-col w-full font-bold text-[14px] pr-4">
+                                <p className="text-end text-red-500">{notification.is_resolved ? "Resolved" : "Unresolved"}</p>
+                                {notification?.water_quality === "Very Poor" && <p className="text-xs text-end text-red-800">Please take immediate action</p>}
+                            </div>
+                        </Link>
+                    </>)}
+                </div>}
+                {
+                    resolvedUserNotifications && <div>
+                        {!!unresolvedUserNotifications.length && <DropdownMenuSeparator className="mb-2"/>}
+                        <div className="flex flex-row pr-[40px]">
+                            <span className="text-[14px] font-medium ml-3">Resolved Notifications</span>
+                            {showResolvedNotifications ? <a onClick={() => setShowResolvedNotifications(false)} className="ml-auto underline cursor-pointer text-[14px]">Hide</a> : <a onClick={() => setShowResolvedNotifications(true)} className="ml-auto underline cursor-pointer text-[14px]">Show</a> }
                         </div>
-                        <></>
-                    </Link>
-                </>)}
+                            <div className="flex flex-col">
+                                {showResolvedNotifications && resolvedUserNotifications.map((notification: any) => <>
+                                    <Link href={``} className="flex flex-row justify-start space-x-2 items-center p-1 hover:bg-gray-200">
+                                        <div className="flex justify-center items-center text-green-800">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+                                            </svg>
+                                        </div>
+                                        <div className="flex flex-col w-full">
+                                            <div className="flex flex-col  p-1">
+                                                <p className="font-medium text-sm">{notification?.name}'s Water Quality - <b>{notification?.water_quality}</b></p>
+                                                <p className="text-xs text-gray-500">{moment(notification.date_issued).from(moment())}</p>
+                                                <p className="text-xs text-gray-500">{moment(notification.date_issued).format("MMM DD, yyyy - hh:mm a")}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-col w-full font-[500] text-end text-[14px] pr-4">
+                                            <p className="text-end text-green-800">{notification.is_resolved ? "Resolved" : "Unresolved"}</p>
+                                            <p className="text-xs text-green-900">Resolved {moment(notification.date_resolved).from(moment())}</p>
+                                            <p className="text-xs text-green-900">{moment(notification.date_resolved).format("MMM DD, yyyy - hh:mm a")}</p>
+                                        </div>
+                                    </Link>
+                                </>)}
+                            </div>
+                    </div>
+                }
             </DropdownMenuContent>
         </DropdownMenu>
     )
