@@ -7,12 +7,15 @@ import PondOptions from "./PondOptions";
 import useFarm from "@/hooks/useFarm";
 import { addPoints } from "../Openlayers/utils/addPoints";
 import { pointData } from "../Openlayers/utils/dummy/pointData";
+import { removePoints } from "../Openlayers/utils/removePoints";
+import { useRouter } from "next/navigation";
 
 
 export default function PondList({ farm_id }: { farm_id: number }) {
     const [ponds, setPonds] = useState<any[]>([])
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const router = useRouter();
 
 
     // for demo purposes
@@ -37,17 +40,14 @@ export default function PondList({ farm_id }: { farm_id: number }) {
                 const response = await axios.get(`/api/farm/pond?farm_id=${farm_id}`);
                 setPonds(response.data.results || []);
 
-                // for demo purposes
-                // add the points to the vector source
-                getPointData();
-
                 // get the coordinate data to add to the point vector source
                 response.data.results.forEach((pond: any) => {
-                    let coordinates = pond.coordinates; // longitude, latitude
+                    let coordinates = [pond.longitude, pond.latitude]; // longitude, latitude
                     let name = pond.name;
                     let id = pond.pond_id;
+                    console.log("pond: ", pond, "coordinates: ", coordinates, "name: ", name, "id: ", id);
                     // add the points to the vector source
-                    //addPoints(coordinates, name, id); // uncommment this line kung may data na from the database
+                    addPoints(coordinates, name, id); // uncommment this line kung may data na from the database
                 });
             } catch (error) {
                 console.error(error);
@@ -62,10 +62,14 @@ export default function PondList({ farm_id }: { farm_id: number }) {
 
     const handleRemovePond = (pond_id: number) => {
         setPonds(ponds.filter(pond => pond.pond_id !== pond_id));
+        router.push(`/farm?farm_id=${farm_id}`);
+        window.location.reload();
     };
 
     const handleEditPond = (updatedPond: any) => {
         setPonds(prevPonds => prevPonds.map(pond => pond.pond_id === updatedPond.pond_id ? updatedPond : pond));
+        router.push(`/farm?farm_id=${farm_id}`);
+        window.location.reload();
     };
 
 
