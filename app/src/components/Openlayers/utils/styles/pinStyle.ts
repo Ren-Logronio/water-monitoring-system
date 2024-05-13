@@ -13,7 +13,7 @@ export const pinStyle = (name: string, zoomLevel? : number) => {
         }),
 
         // show the text if the zoom level is greater than or equal to 18.5
-        text: zoomLevel! >= 18.5 ? new Text({
+        text: new Text({
             text: name,
             font: "12px Arial",
             fill: new Fill({
@@ -21,6 +21,6 @@ export const pinStyle = (name: string, zoomLevel? : number) => {
             }),
             offsetY: -15,
             offsetX: 35,
-        }) : undefined,
+        }),
     })
 };
