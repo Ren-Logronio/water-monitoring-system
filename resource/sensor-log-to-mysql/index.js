@@ -1,5 +1,5 @@
 // import json file
-const sensorData = require('./water-monitoring-system-db.sensor-logs.json');
+const sensorData = require('./xx-water-monitoring-system-db.sensor-logs.json');
 
 // import mysql module
 const mysql = require('mysql2/promise');
