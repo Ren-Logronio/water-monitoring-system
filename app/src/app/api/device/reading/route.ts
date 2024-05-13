@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
             "SELECT * FROM `pond_water_quality_notifications` WHERE `pond_id` = ? AND `is_resolved` = FALSE LIMIT 1", [pondId]
         );
 
-        const targetRecordedAt = moment().subtract(1, "hour").format();
+        const targetRecordedAt = moment(recorded_at).subtract(1, "hour").format();
 
         const [readings]: [results: any[], rows: any[]] = await connection.query(
             "SELECT * FROM `view_pond_readings` WHERE `pond_id` = ? AND `recorded_at` > ?",
@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
             if(wqi < 0.50) {
                 await connection.query(
                     "INSERT INTO `pond_water_quality_notifications` (`water_quality`, `pond_id`, `date_issued`) VALUES (?, ?, ?)",
-                    [classification, pondId, moment().format()]
+                    [classification, pondId, moment(recorded_at).format()]
                 )
             }
         } else if ((averageTemperature || averageTDS || averageAmmonia || averagePH) && (waterQualityNotifications && waterQualityNotifications.length > 0)) {
