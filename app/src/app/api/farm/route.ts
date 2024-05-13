@@ -36,10 +36,10 @@ export async function POST(request: NextRequest) {
         const cookieToken = cookies().get('token')?.value;
         const connection = await getMySQLConnection();
         const { user_id } = await getUserInfo(cookieToken);
-        const { name, address_street, address_city, address_province } = await request.json();
+        const { name, address_street, address_city, address_province, latitude, longitude } = await request.json();
         const [results, rows]: [results: any, rows: any[]] = await connection.query(
-            "INSERT INTO `farms` (`name`, `address_street`, `address_city`, `address_province`) VALUES (?, ?, ?, ?)",
-            [name, address_street, address_city, address_province]
+            "INSERT INTO `farms` (`name`, `address_street`, `address_city`, `address_province`, `latitude`, `longitude`) VALUES (?, ?, ?, ?, ?, ?)",
+            [name, address_street, address_city, address_province, latitude, longitude]
         );
         const lastInsertedId = results.insertId;
         const [results2, rows2]: [results: any, rows: any[]] = await connection.query(
