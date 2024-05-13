@@ -41,10 +41,10 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const connection = await getMySQLConnection();
-    const {device_id, farm_id, name, width, length, depth, method } = await req.json();
+    const {device_id, farm_id, name, width, length, depth, method, latitude, longitude } = await req.json();
     await connection.query(
-      "INSERT INTO `ponds` (`device_id`, `farm_id`, `name`, `width`, `length`, `depth`, `method`) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [(device_id || null), farm_id, name, width, length, depth, method]
+      "INSERT INTO `ponds` (`device_id`, `farm_id`, `name`, `width`, `length`, `depth`, `method`, `latitude`, `longitude`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      [(device_id || null), farm_id, name, width, length, depth, method, latitude, longitude]
     );
     return NextResponse.json(
       { message: "Pond inserted successfully" },
@@ -65,11 +65,11 @@ export async function POST(req: NextRequest) {
 
 export async function PATCH(request: NextRequest) {
   try {
-    const {pond_id, device_id, name, width, length, depth, method } = await request.json();
+    const {pond_id, device_id, name, width, length, depth, method, latitude, longitude } = await request.json();
     const connection = await getMySQLConnection();
     const pondUpdateResult = await connection.query(
-      "UPDATE `ponds` SET `device_id` = ?, `name` = ?, `width` = ?, `length` = ?, `depth` = ?, `method` = ? WHERE `pond_id` = ?",
-      [device_id, name, width, length, depth, method, pond_id]
+      "UPDATE `ponds` SET `device_id` = ?, `name` = ?, `width` = ?, `length` = ?, `depth` = ?, `method` = ?, `latitude` = ?, `longitude` = ? WHERE `pond_id` = ?",
+      [device_id, name, width, length, depth, method, latitude, longitude, pond_id]
     );
     return NextResponse.json(
       { message: "Pond updated successfully" },
