@@ -4,6 +4,7 @@ import Style from "ol/style/Style";
 import Text from "ol/style/Text";
 
 export const pinStyle = (name: string, zoomLevel? : number) => {
+
     return new Style({
         image: new Icon({
             anchor: [0.5, 1],
@@ -13,14 +14,14 @@ export const pinStyle = (name: string, zoomLevel? : number) => {
         }),
 
         // show the text if the zoom level is greater than or equal to 18.5
-        text: new Text({
+        text: zoomLevel && zoomLevel > 17.5 ?  new Text({
             text: name,
             font: "12px Arial",
             fill: new Fill({
                 color: "white",
             }),
             offsetY: -15,
-            offsetX: 35,
-        }),
+            offsetX: 70,
+        }) : undefined,
     })
 };
