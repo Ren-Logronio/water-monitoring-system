@@ -22,11 +22,11 @@ export async function GET(request: NextRequest) {
                 status: 200,
             },
         );
-    } catch (e) {
+    } catch (e: any) {
         console.log(e);
         return NextResponse.json(
             {
-                message: "Something went wrong while getting the readings info"
+                message: e.message || "Something went wrong while getting the readings info"
             },
             {
                 status: 500,

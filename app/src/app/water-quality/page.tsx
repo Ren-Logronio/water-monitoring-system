@@ -1,5 +1,6 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import DaterangePopover from "@/components/ui/daterange";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -125,6 +126,9 @@ export default function WaterQuality() {
                             {/* <SelectItem value="light">Light</SelectItem> */}
                         </SelectContent>
                     </Select>
+                    <div>
+
+                    </div>
                 </div>
                 <div className="flex flex-row space-x-2">
                     <DaterangePopover onChange={(dateFrom, dateTo, mode) => {
@@ -163,6 +167,7 @@ export default function WaterQuality() {
                         <TableHead>Hourly Avg. TDS</TableHead>
                         <TableHead>Hourly Avg. Ammonia</TableHead>
                         <TableHead>Water Quality</TableHead>
+                        <TableHead>Status</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -176,7 +181,17 @@ export default function WaterQuality() {
                                 <TableCell>{reading.ph}</TableCell>
                                 <TableCell>{reading.tds} ppm</TableCell>
                                 <TableCell>{reading.ammonia} ppm</TableCell>
-                                <TableCell>{roundToSecondDecimal(reading.wqi * 100)}% ({reading.classification})</TableCell>
+                                <TableCell>{roundToSecondDecimal(reading.wqi * 100)}%</TableCell>
+                                <TableCell>
+                                    <Badge variant="default" className={
+                                        `${
+                                            reading.classification === "Excellent" ? "border-green-400 text-green-700" :
+                                            reading.classification === "Good" ? "border-green-300 text-green-700" :
+                                            reading.classification === "Fair" ? "border-yellow-400 text-yellow-700" :
+                                            reading.classification === "Poor" ? "border-red-400 text-red-700" : "border-red-500 text-red-700" 
+                                        }`
+                                    }>{reading.classification}</Badge>
+                                </TableCell>
                             </TableRow>
                         ))
                     }

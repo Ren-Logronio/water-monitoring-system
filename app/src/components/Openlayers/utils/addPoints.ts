@@ -6,7 +6,7 @@ import Feature from "ol/Feature";
 import { Point } from "ol/geom";
 import { pinStyle } from "./styles/pinStyle";
 
-export const addPoints = (coordinate: any, name: string, id: number) => {
+export const addPoints = (coordinate: any, name: string, id: string | number) => {
     // get the point vector source
     const pointVectorSource = useVectorSourceStore.getState().pointVectorSource;
 
@@ -30,5 +30,6 @@ export const addPoints = (coordinate: any, name: string, id: number) => {
 
     // add the feature to the vector source
     pointVectorSource.addFeature(feature);
-
+    return id;
 }
+

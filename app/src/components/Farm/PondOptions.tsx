@@ -1,3 +1,5 @@
+"use client";
+
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialogNoX";
 import { Button } from "../ui/button";
 import { useMemo, useState } from "react";
@@ -15,6 +17,9 @@ import MapView from "../Openlayers/map";
 import { polygonLayer } from "../Openlayers/utils/polygonLayer";
 import { labelLayer } from "../Openlayers/utils/labelLayer";
 import useFarm from "@/hooks/useFarm";
+import { pointLayer } from "../Openlayers/utils/layer/pointLayer";
+import { removePoints } from "../Openlayers/utils/removePoints";
+import { useRouter } from "next/navigation";
 
 
 // Pond Interface
@@ -35,19 +40,26 @@ interface Pond {
 
 // instantiate the map component outside the component to prevent unnecessary re-renders
 const { newMap: MapBuilder, selectedFeature } = MapView();
-const farm_plots = polygonLayer();
-const farm_labels = labelLayer();
+
 
 
 export default function PondOptions({ pond_id, updateCallback, deleteCallback, pond_data }: { pond_id: number, updateCallback: (pond: Pond) => void, deleteCallback: (pond_id: number) => void, pond_data: any }) {
     const ponds = pond_data;
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+    const [openDisconnectDialog, setOpenDisconnectDialog] = useState(false);
     const [openEditDialog, setOpenEditDialog] = useState(false);
     const { selectedFarm: farm } = useFarm();
-
+    const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [currentPond, setCurrentPond] = useState<any>(null);
 
+    const point_layer = useMemo(() => {
+        return pointLayer();
+    }, [openEditDialog, pond_id, pond_data]);
+
+    const thisPond = useMemo(() => {
+        return pond_data.find((pond: any) => pond.pond_id === pond_id);
+    }, [openEditDialog, pond_id, pond_data]);
 
     // function to handle delete pond
     const handleDelete = () => {
@@ -123,9 +135,9 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
                 }
                 setCurrentPond({ ...currentPond, message: `Device (${currentPond.device_id}) found`, status: "green" });
                 setTimeout(() => {
-                    const { device_id, name, width, length, depth, method } = currentPond;
+                    const { device_id, name, width, length, depth, method, latitude, longitude } = currentPond;
                     axios.patch("/api/device", { device_id: currentPond.device_id, status: "ACTIVE" }).then(response => {
-                        axios.patch("/api/pond", { pond_id, device_id, name, width, length, depth, method }).then(response => {
+                        axios.patch("/api/pond", { pond_id, device_id, name, width, length, depth, method, latitude, longitude }).then(response => {
                             setLoading(false);
                             updateCallback({ ...currentPond, device_id: currentPond.device_id, status: "ACTIVE" });
                             setOpenEditDialog(false);
@@ -139,8 +151,8 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
             });
         } else {
             setTimeout(() => {
-                const { name, width, length, depth, method } = currentPond;
-                axios.patch("/api/pond", { pond_id, name, width, length, depth, method }).then(response => {
+                const { name, width, length, depth, method, latitude, longitude } = currentPond;
+                axios.patch("/api/pond", { pond_id, name, width, length, depth, method, latitude, longitude }).then(response => {
                     setLoading(false);
                     updateCallback({ ...currentPond, name, width, length, depth, method });
                     setOpenEditDialog(false);
@@ -149,6 +161,19 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
                 });
             }, 2000)
         }
+    }
+
+    const handleDisconnectDevice = (device_id: string) => {
+        console.log("trigger")
+        setLoading(true);
+        axios.delete(`/api/device?device_id=${device_id}`).then(res => {
+            updateCallback({ ...currentPond, device_id: null, status: "INACTIVE" });
+        }).catch(err => {
+            setOpenDisconnectDialog(false);
+            console.log(err);
+        }).finally(() => {
+            setLoading(false);
+        });
     }
 
     // if (!farm || farm?.role !== "OWNER") {
@@ -184,19 +209,33 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
             {
                 pond_data.find((pond: any) => pond.pond_id === pond_id)
                 && pond_data.find((pond: any) => pond.pond_id === pond_id).device_id &&
-                <Button onClick={() => {
-                    setLoading(true);
-                }} variant="ghost" className="flex flex-row space-x-2">
-                    {loading ?
-                        <><NinetyRing color="currentColor" /><p>Disconnecting..</p></>
-                        :
-                        "Disconnect Device"}
-                </Button>
+                <Dialog open={openDisconnectDialog} onOpenChange={setOpenDisconnectDialog}>
+                    <DialogContent onInteractOutside={(e: any) => { e.preventDefault() }}>
+                        <DialogHeader>
+                            <DialogTitle>Disconnect Device</DialogTitle>
+                        </DialogHeader>
+                        <div className="flex flex-col space-x-2">
+                            <p>Are you sure you want to disconnect this pond's device?</p>
+                            <p className="mt-4 text-[11px] font-medium">Device: {pond_data.find((pond: any) => pond.pond_id === pond_id).device_id}</p>
+                        </div>
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button disabled={loading} variant="ghost">Cancel</Button>
+                            </DialogClose>
+                            <Button disabled={loading} onClick={() => { handleDisconnectDevice(pond_data.find((pond: any) => pond.pond_id === pond_id).device_id) }} variant="deleteBtn" className="flex flex-row space-x-2">
+                                {loading ?
+                                    <><NinetyRing color="currentColor" /><p>Disconnecting..</p></>
+                                    :
+                                    "Disconnect"}
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             }
 
             {/* Edit Dialog */}
             <Dialog open={openEditDialog} onOpenChange={setOpenEditDialog}>
-                <DialogContent onInteractOutside={(e) => e.preventDefault()} className="sm:max-w-[625px] xl:max-w-[1100px] select-none">
+                <DialogContent onInteractOutside={(e) => e.preventDefault()} className="sm:max-w-[625px] select-none">
                     <DialogHeader>
                         <DialogTitle className="font-semibold text-xl text-neutral-800 px-2">Edit Pond</DialogTitle>
                     </DialogHeader>
@@ -212,52 +251,27 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
                                     <Label className="text-md">Pond Name</Label>
                                     <Input disabled={loading} name="name" autoComplete="false" spellCheck="false" value={currentPond?.name} onChange={handleInputChange} />
                                 </div>
-
-                                {/* Type of farming */}
-                                <div className="flex flex-col space-y-2 my-1 xl:my-0">
-                                    <Label className="text-md">Type of Farming</Label>
-                                    <Select disabled={loading} name="method" value={currentPond?.method} onValueChange={handleSelectChange} >
-                                        <SelectTrigger className="w-[180px] border-2 border-blue-400 bg-blue-50 focus-visible:ring-blue-200/40 focus-visible:ring-4 shadow-none rounded-2xl">
-                                            <SelectValue placeholder="Select..." />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="SEMI-INTENSIVE">Semi-Intensive</SelectItem>
-                                            <SelectItem value="INTENSIVE">Intensive</SelectItem>
-                                            <SelectItem value="TRADITIONAL">Traditional</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
                             </div>
+                            <div className="space-y-2 xl:space-y-2 w-full mt-4 h-fit">
+                                <Label className="text-md xl:text:lg">Location</Label>
 
-                            {/* Pond dimensions */}
-                            <div className="flex flex-col space-y-[12px] my-5">
-                                <Label className="text-md">
-                                    Dimensions of Pond
-                                    <span className="text-sm"> (Optional)</span>
-                                </Label>
+                                <MapBuilder
+                                    vectorLayer={point_layer}
+                                    pin={true}
+                                    center={[thisPond.longitude, thisPond.latitude] as [number, number]}
+                                    pinOnCenter={true}
+                                    onMapClick={(latitude, longitude) => setCurrentPond((prev: any) => ({ ...prev, latitude, longitude }))}
+                                    className={"h-[250px] xl:h-[300px] bg-slate-200"}
+                                    zoom={17}
+                                />
 
-                                {/* Input fields */}
-                                <div className="flex flex-row justify-between">
-                                    <div className="flex flex-row items-center space-x-2">
-                                        <Label>Width</Label>
-                                        <Input disabled={loading} min={0} max={10000} maxLength={5} type="number" name="width" step={1.0} value={currentPond?.width} onChange={handleInputChange} />
-                                        <p className="hidden text-sm text-red-600"></p>
-                                    </div>
-                                    <div className="flex flex-row items-center space-x-2">
-                                        <Label>Length</Label>
-                                        <Input disabled={loading} min={0} max={10000} maxLength={5} type="number" name="length" step={1.0} value={currentPond?.length} onChange={handleInputChange} />
-                                        <p className="hidden text-sm text-red-600"></p>
-                                    </div>
-                                    <div className="flex flex-row items-center space-x-2">
-                                        <Label>Depth</Label>
-                                        <Input disabled={loading} min={0} max={10000} maxLength={5} type="number" name="depth" step={1.0} value={currentPond?.depth} onChange={handleInputChange} />
-                                        <p className="hidden text-sm text-red-600"></p>
-                                    </div>
-                                </div>
                             </div>
 
                             {/* Device */}
-                            <div className={`flex flex-row space-x-5 border-2 p-3 rounded-2xl mt-10 xl:mt-[100px] mb-3 ${0 ? "border-blue-400 bg-blue-100/30" : ""}`}>
+                            <>
+                                { 
+                                !pond_data.find((pond: any) => pond.pond_id === pond_id).device_id &&
+                                <div className={`flex flex-row space-x-5 border-2 p-3 rounded-2xl mt-4 xl:mt-[40px] mb-3 ${0 ? "border-blue-400 bg-blue-100/30" : ""}`}>
                                 <div className="flex flex-row space-x-2 items-center w-2/5">
                                     <Switch disabled={loading} onCheckedChange={handleSwitchChange} name="has_device" />
                                     <Label>Has device?</Label>
@@ -265,23 +279,13 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
 
                                 <Input onChange={handleInputChange} value={currentPond?.device_id! || ""} name="device_id" placeholder="Device ID" disabled={currentPond?.device_id === null || loading}
                                     className={`bg-white ${!!currentPond?.message ? "border-red-300" : "border-slate-200"}`} autoComplete="false" spellCheck="false" />
-                            </div>
+                                </div>
+                            }
+                            </>
+                            
 
                             {/* Error Message */}
                             {!!currentPond?.message && <p className={` text-sm text-center ${currentPond?.status === "red" ? 'text-red-600' : 'text-green-500'}`}>{currentPond?.message}</p>}
-
-                        </div>
-
-                        {/* Map */}
-                        <div className="px-2 space-y-2 xl:space-y-2 w-full h-fit xl:w-[500px]">
-                            <Label className="text-md xl:text:lg">Location</Label>
-
-                            <MapBuilder
-                                vectorLayer={farm_plots}
-                                labelLayer={farm_labels}
-                                className={"h-[250px] xl:h-[300px] bg-slate-200"}
-                                zoom={18.1}
-                            />
 
                         </div>
                     </div>
@@ -308,6 +312,11 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
                     </svg>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
+                    {
+                        pond_data.find((pond: any) => pond.pond_id === pond_id)
+                        && pond_data.find((pond: any) => pond.pond_id === pond_id).device_id &&
+                        <DropdownMenuItem onClick={() => setOpenDisconnectDialog(true)}>Disconnect Device</DropdownMenuItem>
+                    }
                     <DropdownMenuItem onClick={() => handleEdit(pond_id)}>Edit</DropdownMenuItem>
                     <DropdownMenuItem onClick={() => setOpenDeleteDialog(true)}>Delete</DropdownMenuItem>
                 </DropdownMenuContent>

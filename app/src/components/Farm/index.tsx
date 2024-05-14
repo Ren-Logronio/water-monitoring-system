@@ -9,6 +9,7 @@ import useFarm from "@/hooks/useFarm";
 // map component
 import MapView from "../Openlayers/map";
 import { pointLayer } from "../Openlayers/utils/layer/pointLayer";
+import { useSearchParams } from "next/navigation";
 
 // instantiate the map component outside the component to prevent unnecessary re-renders
 const { newMap: MapBuilder } = MapView();
@@ -16,11 +17,29 @@ const farm_points = pointLayer();
 
 
 export default function Farm() {
-    const { selectedFarm, farmsLoading } = useFarm();
+    const { farms, selectedFarm, farmsLoading, setSelectedFarm } = useFarm();
+    const search = useSearchParams();
+
+    useEffect(() => {
+        if (farms && (farms?.length <= 0)) return;
+        const farm_id = search.get("farm_id");
+        if (farm_id) {
+            setSelectedFarm(farms.find((farm: any) => farm.farm_id === parseInt(farm_id)) || {});
+        }
+    }, [search]);
+
+    const farm_points = useMemo(() => {
+        return pointLayer();
+    }, [farmsLoading, selectedFarm]);
+
+    const center: [number, number] = useMemo(() => {
+        return [selectedFarm.longitude, selectedFarm.latitude];
+    }, [selectedFarm, farmsLoading])
 
     const loading = useMemo(() => {
         return farmsLoading;
     }, [farmsLoading]);
+
     const farm = useMemo(() => {
         return selectedFarm;
     }, [selectedFarm]);
@@ -58,6 +77,8 @@ export default function Farm() {
 
                         <MapBuilder
                             vectorLayer={farm_points}
+                            zoom={17.7}
+                            center={center}
                             className="w-full h-[500px]"
                         />
                         {/* Pond List */}

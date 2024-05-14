@@ -13,8 +13,8 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
 
     useEffect(() => {
         setParameters([]);
+        setCurrentReadings([]);
         setLoading(true);
-
         // get parameters from the server
         axios.get(`/api/parameter?pond_id=${pond_id}`).then(response => {
             // if no parameters found
@@ -93,7 +93,8 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
 
     const wqi = useMemo(() => {
         if (phCurrentReading && tempCurrentReading && tdsCurrentReading && ammoniaCurrentReading) {
-            return calculateWQI(phCurrentReading.value, tempCurrentReading.value, tdsCurrentReading.value, ammoniaCurrentReading.value);
+            // (ph: number, tds: number, ammonia: number, temperature: number)
+            return calculateWQI({ ph: phCurrentReading.value, tds: tdsCurrentReading.value, ammonia: ammoniaCurrentReading.value, temperature: tempCurrentReading.value });
         }
         return null;
     }, [phCurrentReading, tempCurrentReading, tdsCurrentReading, ammoniaCurrentReading]);
@@ -108,7 +109,6 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
 
     return (
         <div className="h-full">
-
             {/* while fetching data */}
             {loading &&
                 <div className="flex justify-center items-center h-40 space-x-2">
@@ -169,7 +169,7 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
                         <p className="text-[14px]">Temperature</p>
                         { tempCurrentReading && <>
                             <span className="text-[20px]">{tempCurrentReading.value} °C</span>
-                            <span className="text-[12px] mt-1">{tempDifference !== 0 && `(${tempDifference})`}</span>
+                            {!!tempDifference && <span className="text-[12px] mt-1">{tempDifference !== 0 && `(${tempDifference})`}</span>}
                             <span className="text-[12px]">Last recorded reading</span>
                         </>}
                         { !tempCurrentReading && <div className="flex justify-center items-center h-full space-x-2">
@@ -182,7 +182,7 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
                         <p className="text-[14px]">pH</p>
                         { phCurrentReading && <>
                             <span className="text-[20px]">{phCurrentReading.value}</span>
-                            <span className="text-[12px] mt-1">{phDifference !== 0 && `(${phDifference})`}</span>
+                            {!!phDifference && <span className="text-[12px] mt-1">{phDifference !== 0 && `(${phDifference})`}</span>}
                             <span className="text-[12px]">Last recorded reading</span>
                         </>}
                         { !phCurrentReading && <div className="flex justify-center items-center h-full space-x-2">
@@ -195,7 +195,7 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
                         <p className="text-[14px]">Ammonia</p>
                         { ammoniaCurrentReading && <>
                             <span className="text-[20px]">{ammoniaCurrentReading.value} ppm</span>
-                            <span className="text-[12px] mt-1">{ammoniaDifference !== 0 && `(${ammoniaDifference})`}</span>
+                            {!!ammoniaDifference && <span className="text-[12px] mt-1">{ammoniaDifference !== 0 && `(${ammoniaDifference})`}</span>}
                             <span className="text-[12px]">Last recorded reading</span>
                         </>}
                         { !ammoniaCurrentReading && <div className="flex justify-center items-center h-full space-x-2">
@@ -208,7 +208,7 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
                         <p className="text-[14px]">Total Dissolved Solids</p>
                         { tdsCurrentReading && <>
                             <span className="text-[20px]">{tdsCurrentReading.value} ppm</span>
-                            <span className="text-[12px] mt-1">{tdsDifference !== 0 && `(${tdsDifference})`}</span>
+                            {!!tdsDifference && <span className="text-[12px] mt-1">{tdsDifference !== 0 && `(${tdsDifference})`}</span>}
                             <span className="text-[12px]">Last recorded reading</span>
                         </>
                         }

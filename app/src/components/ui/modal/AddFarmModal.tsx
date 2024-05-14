@@ -9,33 +9,50 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialogNoX";
 import { Button } from "@/components/ui/button";
-import { Separator } from "../ui/separator";
-import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { Label } from "../ui/label";
-import { Command, CommandInput, CommandItem, CommandList } from "../ui/command";
-import { useEffect, useState } from "react";
-import { Checkbox } from "../ui/checkbox";
+import { Separator } from "@/components/ui/separator";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Command, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { useEffect, useMemo, useState } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
 import axios from "axios";
-import { ScrollArea } from "../ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { set } from "date-fns";
-import { Input } from "../ui/input";
+import { Input } from "@/components/ui/input";
 import { NinetyRing } from "react-svg-spinners";
 import { useRouter } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import useFarm from "@/hooks/useFarm";
+import MapView from "@/components/Openlayers/map";
+import { pointLayer } from "@/components/Openlayers/utils/layer/pointLayer";
+
+const { newMap: MapBuilder, selectedFeature } = MapView();
 
 export default function FarmDetails() {
     const router = useRouter();
+    const {appendFarm, setSelectedFarm} = useFarm();
     const [enabledGroup, setEnabledGroup] = useState<"default" | "search">("default");
     const [existingFarmForm, setExistingFarmForm] = useState<{ searchResults: any[], selectedFarm: any, isOwner: boolean, error: string }>({ searchResults: [], selectedFarm: {}, isOwner: false, error: "" });
-    const [newFarmForm, setNewFarmForm] = useState<{ name: string, address_street: string, address_city: string, address_province: string, error: string }>({ name: "", address_street: "", address_city: "", address_province: "", error: "" });
+    const [newFarmForm, setNewFarmForm] = useState<{ name: string, address_street: string, address_city: string, address_province: string, error: string, longitude: number | null, latitude: number | null }>({ name: "", address_street: "", address_city: "", address_province: "", error: "", longitude: null, latitude: null });
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [searchPressTimeout, setSearchPressTimeout] = useState<any>(null);
 
+    const points = useMemo(() => {
+        return pointLayer();
+    }, [dialogOpen]);
+
     const handleSubmit = (e: any) => {
         e.preventDefault();
         console.log(e);
-        setLoading(true)
+        setLoading(true);
+
+        if (!newFarmForm.latitude || !newFarmForm.longitude) {
+            setNewFarmForm({ ...newFarmForm, error: "Please select a location" });
+            setLoading(false);
+            return;
+        }
+
         if (enabledGroup === "search") {
             if (!existingFarmForm.selectedFarm.farm_id) {
                 setExistingFarmForm({ ...existingFarmForm, error: "Please select a farm" });
@@ -45,8 +62,9 @@ export default function FarmDetails() {
             axios.post("/api/farm/farmer", { farm: existingFarmForm.selectedFarm, isOwner: existingFarmForm.isOwner }).then(response => {
                 console.log(response.data);
                 setTimeout(() => {
-                    console.log("Refreshing");
-                    router.replace("/redirect?w=/dashboard");
+                    appendFarm(response.data.result);
+                    setSelectedFarm(response.data.result);
+                    setDialogOpen(false);
                 }, 2000)
             }).catch(error => {
                 console.error(error);
@@ -60,13 +78,18 @@ export default function FarmDetails() {
             axios.post("/api/farm", newFarmForm).then(response => {
                 console.log(response.data);
                 setTimeout(() => {
-                    console.log("Refreshing");
-                    router.replace("/redirect?w=/dashboard");
+                    appendFarm(response.data.result);
+                    setSelectedFarm(response.data.result);
+                    setDialogOpen(false);
                 }, 2000)
             }).catch(error => {
                 console.error(error);
             })
         }
+    };
+
+    const handleLocationChange = (longitude: number, latitude: number) => {
+        setNewFarmForm(prev => ({ ...prev, latitude, longitude }));
     };
 
     const handleSearchChange = (e: any) => {
@@ -111,7 +134,8 @@ export default function FarmDetails() {
                 <Button variant="outline">Enter Farm Details</Button>
             </DialogTrigger>
             <DialogContent onInteractOutside={e => e.preventDefault()} className="max-w-full sm:max-w-[600px]">
-                <RadioGroup onValueChange={handleRadioSelect} defaultValue={enabledGroup} className="space-y-4">
+                <RadioGroup onValueChange={handleRadioSelect} defaultValue={enabledGroup} className="flex flex-row space-x-4">
+                    <div className="flex flex-col space-y-4">
                     <div className="flex flex-col space-y-2">
                         <div className="flex items-center space-x-2">
                             <RadioGroupItem value="search" id="r1" />
@@ -170,23 +194,26 @@ export default function FarmDetails() {
                     {newFarmForm.error && <p className="text-red-600 text-center text-sm">{newFarmForm.error}</p>}
                     <div className="flex flex-row justify-end items-center space-x-4">
                         <Label className={`text-end ${enabledGroup === "search" && "text-neutral-400"}`}>Farm Name</Label>
-                        <Input onChange={handleInputChange} disabled={enabledGroup === "search"} value={newFarmForm.name} name="name" placeholder="Enter farm name.." className="max-w-[80%]" required />
+                        <Input aria-required={true} onChange={handleInputChange} disabled={enabledGroup === "search"} value={newFarmForm.name} name="name" placeholder="Enter farm name.." className="max-w-[80%]" required />
                     </div>
                     <div className="space-y-2">
                         <Label className={`text-start ${enabledGroup === "search" && "text-neutral-400"}`}>Address</Label>
                         <div className="flex flex-row justify-end items-center space-x-4">
                             <Label className={`text-end ${enabledGroup === "search" && "text-neutral-400"}`}>Street</Label>
-                            <Input onChange={handleInputChange} disabled={enabledGroup === "search"} value={newFarmForm.address_street} name="address_street" placeholder="Enter street.." className="max-w-[80%]" required />
+                            <Input aria-required={true} onChange={handleInputChange} disabled={enabledGroup === "search"} value={newFarmForm.address_street} name="address_street" placeholder="Enter street.." className="max-w-[80%]" required />
                         </div>
                         <div className="flex flex-row justify-end items-center space-x-4">
                             <Label className={`text-end ${enabledGroup === "search" && "text-neutral-400"}`}>City</Label>
-                            <Input onChange={handleInputChange} disabled={enabledGroup === "search"} value={newFarmForm.address_city} name="address_city" placeholder="Enter city.." className="max-w-[80%]" required />
+                            <Input aria-required={true} onChange={handleInputChange} disabled={enabledGroup === "search"} value={newFarmForm.address_city} name="address_city" placeholder="Enter city.." className="max-w-[80%]" required />
                         </div>
                         <div className="flex flex-row justify-end items-center space-x-4">
                             <Label className={`text-end ${enabledGroup === "search" && "text-neutral-400"}`}>Province</Label>
-                            <Input onChange={handleInputChange} disabled={enabledGroup === "search"} value={newFarmForm.address_province} name="address_province" placeholder="Enter province.." className="max-w-[80%]" required />
+                            <Input aria-required={true} onChange={handleInputChange} disabled={enabledGroup === "search"} value={newFarmForm.address_province} name="address_province" placeholder="Enter province.." className="max-w-[80%]" required />
                         </div>
                     </div>
+
+                    </div>
+                    
                 </RadioGroup>
                 <DialogFooter>
                     <DialogClose asChild>
