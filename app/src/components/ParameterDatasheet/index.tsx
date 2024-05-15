@@ -177,7 +177,7 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
                             && thresholds.length && 
                             <p className="text-[14px] italic">Optimal {params.parameter && `${params.parameter[0].toUpperCase()}${params.parameter.slice(1)}`} Range: {
                                 thresholdRange && thresholdRange.length && thresholdRange
-                                    .map(threshold => threshold || { target: 0 }).map(threshold => `${threshold.type === "GT" ? ">" : "<"} ${threshold?.target}`).join(" and ")
+                                    .map(threshold => threshold || { target: 0 }).map(threshold => `${threshold.type === "GT" ? "<" : ">"} ${threshold?.target}`).join(" and ")
                             } {thresholdRange && !thresholdRange && "None"} { rowData[0]?.unit.toLowerCase() !== "ph" && rowData[0]?.unit}
                             </p>}
                             {/* <AddReading pond_id={pond_id} /> */}
