@@ -38,6 +38,7 @@ export default function PondList({ farm_id }: { farm_id: number }) {
             // get the ponds from the database
             try {
                 const response = await axios.get(`/api/farm/pond?farm_id=${farm_id}`);
+                console.log("RESULTING PONDS", response.data.results);
                 setPonds(response.data.results || []);
 
                 // get the coordinate data to add to the point vector source
