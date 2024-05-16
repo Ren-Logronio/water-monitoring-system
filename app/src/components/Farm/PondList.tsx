@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 export default function PondList({ farm_id }: { farm_id: number }) {
     const [ponds, setPonds] = useState<any[]>([])
     const [loading, setLoading] = useState(true);
+    const { selectedFarm } = useFarm();
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
 
@@ -97,7 +98,7 @@ export default function PondList({ farm_id }: { farm_id: number }) {
                             </div>
 
                             {/* dropdown options */}
-                            <PondOptions pond_id={pond.pond_id} updateCallback={handleEditPond} deleteCallback={handleRemovePond} pond_data={ponds} />
+                            {(selectedFarm.role === "OWNER" || "") && <PondOptions pond_id={pond.pond_id} updateCallback={handleEditPond} deleteCallback={handleRemovePond} pond_data={ponds} />}
                         </div>
 
                         <div className="flex flex-col mt-1">
@@ -118,7 +119,7 @@ export default function PondList({ farm_id }: { farm_id: number }) {
                         </div>
                     </div>
                 })}
-                <AddPondDialog farm_id={farm_id} page="farm" />
+                {(selectedFarm.role === "OWNER" || "") && <AddPondDialog farm_id={farm_id} page="farm" />}
             </div>
             }
         </div>)
