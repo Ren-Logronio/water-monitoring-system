@@ -76,7 +76,7 @@ const MapView = () => {
                         visible: true,
                         source: new BingMaps({
                             key: BING_API_KEY!,
-                            imagerySet: "Aerial",
+                            imagerySet: "AerialWithLabels",
                             maxZoom: 19,
                         }),
                     }),

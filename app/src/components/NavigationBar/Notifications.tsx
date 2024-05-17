@@ -115,6 +115,8 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
                         <p>No Notifications to Show</p>
                     </div>
                 }
+
+
                 {!!unresolvedUserNotifications.length && <div>
                     <span className="text-[14px] font-medium ml-3">Unresolved Notifications</span>
                     {unresolvedUserNotifications.map((notification: any) => <>
@@ -137,7 +139,7 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
                             <div className="flex flex-col w-full">
 
                                 <div className="flex flex-col  w-full p-1">
-                                    <p className="font-medium text-sm">{notification?.name}'s Water Quality - <b>{notification?.water_quality}</b></p>
+                                    <p className="font-medium text-sm">{notification?.name}&apos;s Water Quality - <b>{notification?.water_quality}</b></p>
 
                                     <p className="text-xs text-gray-500">{moment(notification.date_issued).from(moment())}</p>
                                     <p className="text-xs text-gray-500">{moment(notification.date_issued).format("MMM DD, yyyy - hh:mm a")}</p>
@@ -167,7 +169,7 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
                                     </div>
                                     <div className="flex flex-col w-full">
                                         <div className="flex flex-col  p-1">
-                                            <p className="font-medium text-sm">{notification?.name}'s Water Quality - <b>{notification?.water_quality}</b></p>
+                                            <p className="font-medium text-sm">{notification?.name}&apos;s Water Quality - <b>{notification?.water_quality}</b></p>
                                             <p className="text-xs text-gray-500">{moment(notification.date_issued).from(moment())}</p>
                                             <p className="text-xs text-gray-500">{moment(notification.date_issued).format("MMM DD, yyyy - hh:mm a")}</p>
                                         </div>

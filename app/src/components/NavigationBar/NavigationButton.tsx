@@ -15,8 +15,8 @@ export default function NavigationButton({ disabled, path, imagePath, text, shor
     };
 
     return (
-        <Button onClick={() => handleClick()} disabled={pathName.startsWith(path) || disabled} variant="ghost"
-            className={`font-semibold md:justify-start transition-all text-start text-md text-[14px] size-[65px] mx-auto md:mx-0 md:size-auto text-[#205083] hover:text-[#205083] hover:bg-[#DEEAF7] space-x-1 disabled:bg-[#DEEAF7] disabled:text-[#205083] disabled:opacity-100`}>
+        <Button onClick={() => handleClick()} disabled={disabled} variant="ghost"
+            className={`select-none font-semibold md:justify-start transition-all text-start text-md text-[14px] size-[65px] mx-auto md:mx-0 md:size-auto text-[#205083] hover:text-[#205083] hover:bg-[#DEEAF7] space-x-1 ${pathName.startsWith(path) && "bg-[#DEEAF7] text-[#205083]"} disabled:opacity-50`}>
             {!!imagePath && <img src={imagePath} className="h-[20px] aspect-auto px-1" />}
             {!imagePath && <p className="flex md:hidden text-xs font-semibold">{shortcut}</p>}
             <p className="transition-all hidden md:block">{text || ""}</p>
