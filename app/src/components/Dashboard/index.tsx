@@ -138,7 +138,7 @@ export default function Dashboard() {
             }
 
             {/* No Farm Details */}
-            {!loading && !farm.farm_id &&
+            {!loading && !selectedFarm.farm_id &&
                 <div className="min-w-full mt-[30vh] flex flex-col items-center select-none justify-center">
                     <p className="text-center">Welcome to Water Quality Monitoring System&nbsp;
                         <span className="font-semibold">{farm.name}</span>,
@@ -151,7 +151,7 @@ export default function Dashboard() {
             }
 
             {/* Farm Details but not approved */}
-            {!loading && farm.farm_id && !farm.is_approved &&
+            {!loading && selectedFarm.farm_id && !selectedFarm.is_approved &&
                 <div className="min-w-full flex flex-col items-center">
                     <NinetyRing width={25} height={25} />
                     <h1 className="text-center">Waiting approval...</h1>

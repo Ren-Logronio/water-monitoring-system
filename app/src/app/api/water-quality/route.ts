@@ -1,12 +1,12 @@
 import getMySQLConnection from "@/db/mysql";
 import { calculateWQI, classifyWQI } from "@/utils/SimpleFuzzyLogicWaterQuality";
-import moment from "moment";
+import moment from "moment-timezone";
 import { NextRequest, NextResponse } from "next/server";
 
-export const aggregateReadings = (readings: any, aggregation: any = "hour") => {
+const aggregateReadings = (readings: any, aggregation: any = "hour") => {
     const aggReadings = readings.map(
         (readings: any) => ({
-            ...readings, 
+            ...readings,
             recorded_at: moment(readings.recorded_at).startOf(aggregation).format()
         })
     );
@@ -34,21 +34,29 @@ export async function GET(request: NextRequest) {
         const pond_id = request.nextUrl.searchParams.get("pond_id");
         const connection = await getMySQLConnection();
         const [readings]: any = await connection.query(
-            `SELECT * FROM view_pond_readings WHERE pond_id = ?`, 
+            `SELECT * FROM view_pond_readings WHERE pond_id = ?`,
             [pond_id]
         );
         const aggReadings = aggregateReadings(readings);
+        // const aggReadingsWithWQI = aggReadings.map((reading: any) => {
+        //     if (!reading.ph || !reading.tds || !reading.ammonia || !reading.temperature) {
+        //         return { ...reading, wqi: null, classification: null };
+        //     }
+        //     const wqi = calculateWQI({ ph: reading.ph, tds: reading.tds, ammonia: reading.ammonia, temperature: reading.temperature });
+        //     const classification = classifyWQI(wqi);
+        //     return { ...reading, timestamp: reading.recorded_at, wqi, classification };
+        // });
         const aggReadingsWithWQI = aggReadings.map((reading: any) => {
             if (!reading.ph || !reading.tds || !reading.ammonia || !reading.temperature) {
                 return { ...reading, wqi: null, classification: null };
             }
             const wqi = calculateWQI({ ph: reading.ph, tds: reading.tds, ammonia: reading.ammonia, temperature: reading.temperature });
             const classification = classifyWQI(wqi);
-            return { ...reading, timestamp: reading.recorded_at, wqi, classification };
+            return { ...reading, timestamp: reading.recorded_at_start, wqi, classification };
         });
         const after = performance.now();
         console.log("Time taken to process request", after - before, "ms");
-        return NextResponse.json({results: aggReadingsWithWQI}, { status: 200 });
+        return NextResponse.json({ results: aggReadingsWithWQI }, { status: 200 });
     } catch (error: any) {
         return NextResponse.json({ error: error?.message || "An error occurred" }, { status: 500 });
     }

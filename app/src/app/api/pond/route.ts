@@ -27,10 +27,9 @@ export async function GET(req: NextRequest) {
         status: 200,
       },
     );
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
     return NextResponse.json(
-      { message: "Something went wrong while getting the pond info" },
+      { message: error.message || "Something went wrong while getting the pond info" },
       {
         status: 500,
       },

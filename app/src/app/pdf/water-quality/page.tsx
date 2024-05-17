@@ -61,6 +61,7 @@ export default function PrintWaterQuality() {
                 <div className="flex flex-row justify-between">
                     <Image src="/logo-msugensan.png" alt="logo" width={100} height={100} />
                     <div className="flex flex-col justify-center items-center">
+                        <span>Mindanao State University - General Santos</span>
                         <span className="text-center">{farm?.farm_name}</span>
                         <span className="text-center"> {[farm?.address_street, farm?.address_city, farm?.address_province].join(", ") || "Mindanao State University General Santos"}</span>
                     </div>
@@ -78,7 +79,7 @@ export default function PrintWaterQuality() {
                 <table>
                     <thead className="border-0 border-b border-black">
                         <tr>
-                            <th className="text-[14px] font-medium">Sample Size</th>
+                            <th className="text-[14px] font-medium">Number of Recorded Readings</th>
                             <th className="text-[14px] font-medium">Parameters</th>
                             <th className="text-[14px] font-medium">Min.</th>
                             <th className="text-[14px] font-medium">Max.</th>

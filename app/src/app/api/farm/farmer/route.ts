@@ -81,8 +81,12 @@ export async function POST(request: NextRequest) {
             "INSERT INTO `user_notifications` (`user_id`, `action`, `message`) VALUES (?, ?, ?)",
             [user_id, "INFO", `You have been added as a ${role} to ${farm.name}, please wait for the farm owner's verification..`]
         );
+        const [farms]: any = await connection.query(
+            "SELECT * FROM `view_farmer_farm` WHERE `user_id` = ? AND `farm_id` = ?",
+            [user_id, farm.farm_id]
+        );
         return NextResponse.json(
-            { results },
+            { results, result: farms[0] },
             {
                 status: 200,
             },
