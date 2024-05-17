@@ -118,6 +118,13 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
         return null;
     }, [phCurrentReading, tempCurrentReading, tdsCurrentReading, ammoniaCurrentReading]);
 
+
+    useEffect(() => {
+        console.log("WQI: ", wqi);
+        console.log("p", parameters);
+    }, [wqi, parameters]);
+
+
     const wqiClassification = useMemo(() => {
         return wqi && classifyWQI(wqi);
     }, [wqi]);
@@ -262,14 +269,14 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
                     {parameters.filter(i => !i.hidden).length > 0 &&
                         <>
                             <div className="transition-all grid grid-cols-1 xl:grid-cols-2 gap-4">
-                                {parameters.filter(i => !i.hidden).map(parameter =>
+                                {/* {parameters.filter(i => !i.hidden).map(parameter =>
                                     // render parameter component with data
                                     <Parameter
                                         key={parameter.parameter_id}
                                         parameter={parameter}
                                         hideCallback={handleHideParameter} />
                                 )
-                                }
+                                } */}
                             </div>
                         </>
                     }
