@@ -34,11 +34,11 @@ export async function GET(request: NextRequest) {
         const pond_id = request.nextUrl.searchParams.get("pond_id");
         const connection = await getMySQLConnection();
         const [readings]: any = await connection.query(
-            `SELECT * FROM view_pond_hourly_readings WHERE pond_id = ?`,
+            `SELECT * FROM view_pond_readings WHERE pond_id = ?`,
             [pond_id]
         );
-        // const aggReadings = aggregateReadings(readings);
-        // const aggReadingsWithWQI = readings.map((reading: any) => {
+        const aggReadings = aggregateReadings(readings);
+        // const aggReadingsWithWQI = aggReadings.map((reading: any) => {
         //     if (!reading.ph || !reading.tds || !reading.ammonia || !reading.temperature) {
         //         return { ...reading, wqi: null, classification: null };
         //     }
@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
         //     const classification = classifyWQI(wqi);
         //     return { ...reading, timestamp: reading.recorded_at, wqi, classification };
         // });
-        const aggReadingsWithWQI = readings.map((reading: any) => {
+        const aggReadingsWithWQI = aggReadings.map((reading: any) => {
             if (!reading.ph || !reading.tds || !reading.ammonia || !reading.temperature) {
                 return { ...reading, wqi: null, classification: null };
             }

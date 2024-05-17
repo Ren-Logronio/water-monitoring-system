@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
             "SELECT * FROM `pond_water_quality_notifications` WHERE `pond_id` = ? AND `is_resolved` = FALSE LIMIT 1", [pondId]
         );
 
-        const targetRecordedAt = moment(recorded_at).subtract(1, "hour").format();
+        const targetRecordedAt = moment(recorded_at).subtract(1, "hour").format('YYYY-MM-DD HH:mm:ss');
 
         const [readings]: [results: any[], rows: any[]] = await connection.query(
             "SELECT * FROM `view_pond_readings` WHERE `pond_id` = ? AND `recorded_at` > ?",
@@ -84,20 +84,20 @@ export async function POST(request: NextRequest) {
                 [
                     param.parameter_id,
                     Number(parameters[param.parameter]),
-                    moment(recorded_at).format(),
+                    moment(recorded_at).format("YYYY-MM-DD HH:mm:ss"),
                 ]
             );
         });
 
         console.log("NOTIFICATIONS", waterQualityNotifications);
         console.log("AVERAGES", averageTemperature, averageTDS, averageAmmonia, averagePH);
-        
+
         if ((averageTemperature || averageTDS || averageAmmonia || averagePH) && (waterQualityNotifications && waterQualityNotifications.length <= 0)) {
             // (ph: number, tds: number, ammonia: number, temperature: number)
             const wqi = calculateWQI({ ph: averagePH, tds: averageTDS, ammonia: averageAmmonia, temperature: averageTemperature });
             console.log("WQI AFTER DEVICE INSERT", wqi);
             const classification = classifyWQI(wqi);
-            if(wqi < 0.50) {
+            if (wqi < 0.50) {
                 await connection.query(
                     "INSERT INTO `pond_water_quality_notifications` (`water_quality`, `pond_id`, `date_issued`) VALUES (?, ?, ?)",
                     [classification, pondId, moment(recorded_at).format()]
@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
             const wqi = calculateWQI({ ph: averagePH, tds: averageTDS, ammonia: averageAmmonia, temperature: averageTemperature });
             console.log("WQI AFTER DEVICE INSERT", wqi);
             const classification = classifyWQI(wqi);
-            if(wqi > 0.5) {
+            if (wqi > 0.5) {
                 await connection.query(
                     "UPDATE `pond_water_quality_notifications` SET `date_resolved` = ?, is_resolved = TRUE WHERE `notification_id` = ?",
                     [moment().format(), waterQualityNotifications[0].notification_id]
