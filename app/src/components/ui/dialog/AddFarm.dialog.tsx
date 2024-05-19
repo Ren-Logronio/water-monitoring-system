@@ -30,13 +30,13 @@ import { pointLayer } from "@/components/Openlayers/utils/layer/pointLayer";
 
 const { newMap: MapBuilder, selectedFeature } = MapView();
 
-export default function FarmDetails({open, setOpen = () => {}}: {open?: boolean, setOpen?: Dispatch<SetStateAction<boolean>>}) {
+export default function FarmDetails({ open, setOpen = () => { } }: { open?: boolean, setOpen?: Dispatch<SetStateAction<boolean>> }) {
     const router = useRouter();
     const pathname = usePathname();
     const { farm, appendFarm, setSelectedFarm } = useFarm();
     const [enabledGroup, setEnabledGroup] = useState<"default" | "search">("default");
     const [existingFarmForm, setExistingFarmForm] = useState<{ searchResults: any[], selectedFarm: any, isOwner: boolean, error: string }>({ searchResults: [], selectedFarm: {}, isOwner: false, error: "" });
-    const [newFarmForm, setNewFarmForm] = useState<{ name: string, address_street: string, address_city: string, address_province: string, latitude: number, longitude: number, error: string }>({ name: "", address_street: "", address_city: "", address_province: "", error: "", latitude: 0, longitude: 0});
+    const [newFarmForm, setNewFarmForm] = useState<{ name: string, address_street: string, address_city: string, address_province: string, latitude: number, longitude: number, error: string }>({ name: "", address_street: "", address_city: "", address_province: "", error: "", latitude: 0, longitude: 0 });
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [searchPressTimeout, setSearchPressTimeout] = useState<any>(null);
@@ -62,11 +62,7 @@ export default function FarmDetails({open, setOpen = () => {}}: {open?: boolean,
     const handleSubmit = (e: any) => {
         e.preventDefault();
         console.log(e);
-        if (!newFarmForm.latitude || !newFarmForm.longitude) {
-            setNewFarmForm({ ...newFarmForm, error: "Please select a location" });
-            setLoading(false);
-            return;
-        }
+
         setLoading(true)
         if (enabledGroup === "search") {
             if (!existingFarmForm.selectedFarm.farm_id) {
@@ -86,6 +82,11 @@ export default function FarmDetails({open, setOpen = () => {}}: {open?: boolean,
                 console.error(error);
             })
         } else {
+            if (!newFarmForm.latitude || !newFarmForm.longitude) {
+                setNewFarmForm({ ...newFarmForm, error: "Please select a location" });
+                setLoading(false);
+                return;
+            }
             if (!newFarmForm.name || !newFarmForm.address_street || !newFarmForm.address_city || !newFarmForm.address_province) {
                 setNewFarmForm({ ...newFarmForm, error: "Please fill in all fields" });
                 setLoading(false);

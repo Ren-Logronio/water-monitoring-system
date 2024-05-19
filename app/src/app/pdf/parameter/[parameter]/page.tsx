@@ -246,15 +246,9 @@ export default function PrintParameter() {
                             </td>
                             <td>
                                 {
-                                    threshold && threshold.length > 0 && threshold.map((thresh: any, idx: number) => {
-                                        if (reading?.value >= thresh.min && reading?.value <= thresh.max) {
-                                            return <span key={idx} className="text-green-500">Optimal</span>
-                                        } else if (reading?.value < thresh.min) {
-                                            return <span key={idx} className="text-red-500">Poor</span>
-                                        } else if (reading?.value > thresh.max) {
-                                            return <span key={idx} className="text-red-500">Poor</span>
-                                        }
-                                    })
+                                    threshold && threshold.length > 0 && threshold.find((thresh: any, idx: number) => {
+                                        return (thresh?.type === "LT" && reading?.value < thresh.target) || (thresh?.type === "GT" && reading?.value > thresh.target) 
+                                    }) ? "Poor" : "Optimal"
                                 }
                             </td>
                         </tr>)

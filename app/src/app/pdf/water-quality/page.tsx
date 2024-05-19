@@ -7,7 +7,7 @@ import { create } from "domain";
 import moment from "moment";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import { createRef, useEffect, useState } from "react";
+import { createRef, useEffect, useMemo, useState } from "react";
 import "./page.css";
 import Signature from "@/components/Signature";
 
@@ -22,8 +22,22 @@ export default function PrintWaterQuality() {
     const dateTo = searchParams.get("to");
 
     useEffect(() => {
-        axios.get(`/api/pond/current-readings?pond_id=${pond_id}`).then((response: any) => {
-            !!response.data.results?.length && setWaterQualityReadings(response.data.results.filter((result: any) => moment(result.recorded_at).isBetween(moment(dateFrom), moment(dateTo).add(1, "hour"), "hour")));
+        axios.get(`/api/water-quality?pond_id=${pond_id}`).then((response: any) => {
+            !!response.data.results?.length && setWaterQualityReadings(
+                response.data.results
+                    .filter(
+                        (result: any) => moment(result.timestamp).isBetween(moment(dateFrom), moment(dateTo).add(1, "hour"), "hour")
+                    ).map((result: any) => {
+                        const wqi = calculateWQI({
+                            ph: result.ph,
+                            temperature: result.temperature,
+                            ammonia: result.ammonia,
+                            tds: result.tds,
+                        });
+                        const classification = classifyWQI(wqi);
+                        return { ...result, wqi: roundToSecondDecimal(wqi * 100), classification };
+                    })
+            );
             axios.get(`/api/pond/farm?pond_id=${pond_id}`).then(response => {
                 if (response.data.result) {
                     setFarm(response.data.result);
@@ -40,7 +54,7 @@ export default function PrintWaterQuality() {
 
     useEffect(() => {
         if (loading || !printableRef?.current) return;
-        const timeout = setTimeout( async () => {
+        const timeout = setTimeout(async () => {
             window.onafterprint = () => {
                 window.close();
             }
@@ -51,16 +65,31 @@ export default function PrintWaterQuality() {
         };
     }, [loading]);
 
+    const maxTemperature = useMemo
+    const minMaxes = useMemo(() => {
+        return {
+            temperature: {
+                min: waterQualityReadings.reduce((acc, curr) => Math.min(acc, curr.temperature), Infinity),
+                max: waterQualityReadings.reduce((acc, curr) => Math.max(acc, curr.temperature), -Infinity),
+            },
+            ph: {
+                min: waterQualityReadings.reduce((acc, curr) => Math.min(acc, curr.ph), Infinity),
+                max: waterQualityReadings.reduce((acc, curr) => Math.max(acc))
+            }
+        }
+    }, [waterQualityReadings])
+
     return <div className="max-w-full h-full flex flex-col items-center bg-white">
         <title>{`Water Quality Report ${moment().format("MMM-DD-yyyy_h:mm-a")}`}</title>
         <div ref={printableRef} className="flex flex-col min-w-[800px] max-w-[800px] h-screen mx-auto bg-white p-4 space-y-9">
             {
                 loading && <div className="w-full h-full flex-1 flex justify-center items-center">Please Wait...</div>
             }
-            { !loading && <>
+            {!loading && <>
                 <div className="flex flex-row justify-between">
                     <Image src="/logo-msugensan.png" alt="logo" width={100} height={100} />
                     <div className="flex flex-col justify-center items-center">
+                        <span>Mindanao State University - General Santos</span>
                         <span className="text-center">{farm?.farm_name}</span>
                         <span className="text-center"> {[farm?.address_street, farm?.address_city, farm?.address_province].join(", ") || "Mindanao State University General Santos"}</span>
                     </div>
@@ -78,24 +107,20 @@ export default function PrintWaterQuality() {
                 <table>
                     <thead className="border-0 border-b border-black">
                         <tr>
-                            <th className="text-[14px] font-medium">Sample Size</th>
+                            <th className="text-[14px] font-medium">Number of Recorded Readings</th>
                             <th className="text-[14px] font-medium">Parameters</th>
                             <th className="text-[14px] font-medium">Min.</th>
                             <th className="text-[14px] font-medium">Max.</th>
-                            <th className="text-[14px] font-medium">Mean</th>
-                            <th className="text-[14px] font-medium">Std. Deviation</th>
-                            <th className="text-[14px] font-medium">Rate Of Change</th>
+                            <th className="text-[14px] font-medium">Average</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td className="text-center">{waterQualityReadings.length}</td>
                             <td className="text-start">Temperature</td>
-                            <td className="text-end">{roundToSecondDecimal(waterQualityReadings.reduce((acc, curr) => Math.min(acc, curr.temperature), Infinity))}</td>
-                            <td className="text-end">{roundToSecondDecimal(waterQualityReadings.reduce((acc, curr) => Math.max(acc, curr.temperature), -Infinity))}</td>
+                            <td className="text-end">{ }</td>
+                            <td className="text-end">{roundToSecondDecimal()}</td>
                             <td className="text-end">{roundToSecondDecimal(waterQualityReadings.reduce((acc, curr) => acc + curr.temperature, 0) / waterQualityReadings.length)}</td>
-                            <td className="text-end">{roundToSecondDecimal(Math.sqrt(waterQualityReadings.reduce((acc, curr) => acc + Math.pow(curr.temperature - (waterQualityReadings.reduce((acc, curr) => acc + curr.temperature, 0) / waterQualityReadings.length), 2), 0) / waterQualityReadings.length))}</td>
-                            <td className="text-end">{roundToSecondDecimal((waterQualityReadings[0].temperature - waterQualityReadings[waterQualityReadings.length - 1].temperature) / waterQualityReadings.length)}</td>
                         </tr>
                         <tr>
                             <td className="text-end"></td>
@@ -103,8 +128,6 @@ export default function PrintWaterQuality() {
                             <td className="text-end">{roundToSecondDecimal(waterQualityReadings.reduce((acc, curr) => Math.min(acc, curr.ph), Infinity))}</td>
                             <td className="text-end">{roundToSecondDecimal(waterQualityReadings.reduce((acc, curr) => Math.max(acc, curr.ph), -Infinity))}</td>
                             <td className="text-end">{roundToSecondDecimal(waterQualityReadings.reduce((acc, curr) => acc + curr.ph, 0) / waterQualityReadings.length)}</td>
-                            <td className="text-end">{roundToSecondDecimal(Math.sqrt(waterQualityReadings.reduce((acc, curr) => acc + Math.pow(curr.ph - (waterQualityReadings.reduce((acc, curr) => acc + curr.ph, 0) / waterQualityReadings.length), 2), 0) / waterQualityReadings.length))}</td>
-                            <td className="text-end">{roundToSecondDecimal((waterQualityReadings[0].ph - waterQualityReadings[waterQualityReadings.length - 1].ph) / waterQualityReadings.length)}</td>
                         </tr>
                         <tr>
                             <td className="text-end"></td>
@@ -112,8 +135,6 @@ export default function PrintWaterQuality() {
                             <td className="text-end">{roundToSecondDecimal(waterQualityReadings.reduce((acc, curr) => Math.min(acc, curr.ammonia), Infinity))}</td>
                             <td className="text-end">{roundToSecondDecimal(waterQualityReadings.reduce((acc, curr) => Math.max(acc, curr.ammonia), -Infinity))}</td>
                             <td className="text-end">{roundToSecondDecimal(waterQualityReadings.reduce((acc, curr) => acc + curr.ammonia, 0) / waterQualityReadings.length)}</td>
-                            <td className="text-end">{roundToSecondDecimal(Math.sqrt(waterQualityReadings.reduce((acc, curr) => acc + Math.pow(curr.ammonia - (waterQualityReadings.reduce((acc, curr) => acc + curr.ammonia, 0) / waterQualityReadings.length), 2), 0) / waterQualityReadings.length))}</td>
-                            <td className="text-end">{roundToSecondDecimal((waterQualityReadings[0].ammonia - waterQualityReadings[waterQualityReadings.length - 1].ammonia) / waterQualityReadings.length)}</td>
                         </tr>
                         <tr>
                             <td className="text-end"></td>
@@ -121,8 +142,6 @@ export default function PrintWaterQuality() {
                             <td className="text-end">{roundToSecondDecimal(waterQualityReadings.reduce((acc, curr) => Math.min(acc, curr.tds), Infinity))}</td>
                             <td className="text-end">{roundToSecondDecimal(waterQualityReadings.reduce((acc, curr) => Math.max(acc, curr.tds), -Infinity))}</td>
                             <td className="text-end">{roundToSecondDecimal(waterQualityReadings.reduce((acc, curr) => acc + curr.tds, 0) / waterQualityReadings.length)}</td>
-                            <td className="text-end">{roundToSecondDecimal(Math.sqrt(waterQualityReadings.reduce((acc, curr) => acc + Math.pow(curr.tds - (waterQualityReadings.reduce((acc, curr) => acc + curr.tds, 0) / waterQualityReadings.length), 2), 0) / waterQualityReadings.length))}</td>
-                            <td className="text-end">{roundToSecondDecimal((waterQualityReadings[0].tds - waterQualityReadings[waterQualityReadings.length - 1].tds) / waterQualityReadings.length)}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -136,15 +155,15 @@ export default function PrintWaterQuality() {
                         }) * 100
                     )
                 }% ({
-                    classifyWQI(
-                        calculateWQI({
-                            ph: waterQualityReadings[0].ph,
-                            tds: waterQualityReadings[0].tds,
-                            ammonia: waterQualityReadings[0].ammonia,
-                            temperature: waterQualityReadings[0].temperature
-                        })
-                    )
-                }) </p>
+                        classifyWQI(
+                            calculateWQI({
+                                ph: waterQualityReadings[0].ph,
+                                tds: waterQualityReadings[0].tds,
+                                ammonia: waterQualityReadings[0].ammonia,
+                                temperature: waterQualityReadings[0].temperature
+                            })
+                        )
+                    }) </p>
                 <table>
                     <thead className="border-0 border-b border-black">
                         <tr>
@@ -162,20 +181,20 @@ export default function PrintWaterQuality() {
                         {
                             waterQualityReadings.map((reading, index) => {
                                 return <tr key={index}>
-                                    <td className="text-center">{moment(reading.recorded_at).format("MMM DD, yyyy")}</td>
-                                    <td className="text-center">{moment(reading.recorded_at).format("h:mm a")}</td>
+                                    <td className="text-center">{moment(reading.timestamp).format("MMM DD, yyyy")}</td>
+                                    <td className="text-center">{moment(reading.timestamp).format("h:mm a")}</td>
                                     <td className="text-center">{reading.temperature} °C</td>
                                     <td className="text-center">{reading.ph}</td>
                                     <td className="text-center">{reading.ammonia} ppm</td>
                                     <td className="text-center">{reading.tds} ppm</td>
-                                    <td className="text-center">{roundToSecondDecimal(calculateWQI({ ph: reading.ph, tds: reading.tds, ammonia: reading.ammonia, temperature: reading.temperature }) * 100)}%</td>
-                                    <td>{classifyWQI(calculateWQI({ ph: reading.ph, tds: reading.tds, ammonia: reading.ammonia, temperature: reading.temperature }))}</td>
+                                    <td className="text-center">{reading.wqi}</td>
+                                    <td className="text-center">{reading.classification}</td>
                                 </tr>
                             })
                         }
                     </tbody>
                 </table>
-                <Signature/>
+                <Signature />
             </>}
         </div>
     </div>

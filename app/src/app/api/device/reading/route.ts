@@ -46,35 +46,31 @@ export async function POST(request: NextRequest) {
             "SELECT * FROM `pond_water_quality_notifications` WHERE `pond_id` = ? AND `is_resolved` = FALSE LIMIT 1", [pondId]
         );
 
-        const targetRecordedAt = moment(recorded_at).subtract(1, "hour").format();
+        // const targetRecordedAt = moment(recorded_at).subtract(1, "hour").format('YYYY-MM-DD HH:mm:ss');
 
-        const [readings]: [results: any[], rows: any[]] = await connection.query(
-            "SELECT * FROM `view_pond_readings` WHERE `pond_id` = ? AND `recorded_at` > ?",
-            [pondId, targetRecordedAt]
-        );
+        // const [readings]: [results: any[], rows: any[]] = await connection.query(
+        //     "SELECT * FROM `view_pond_readings` WHERE `pond_id` = ? AND `recorded_at` > ?",
+        //     [pondId, targetRecordedAt]
+        // );
 
-        console.log("READINGS", readings);
+        // console.log("READINGS", readings);
 
-        readings.push({
-            temperature: Number(parameters.TMP),
-            tds: Number(parameters.TDS),
-            ammonia: Number(parameters.AMN),
-            ph: Number(parameters.PH),
-            recorded_at: moment(recorded_at).format(),
-        })
+        // readings.push({
+        //     temperature: Number(parameters.TMP),
+        //     tds: Number(parameters.TDS),
+        //     ammonia: Number(parameters.AMN),
+        //     ph: Number(parameters.PH),
+        //     recorded_at: moment(recorded_at).format(),
+        // })
 
-        const averageTemperature = readings.reduce((acc: number, reading: any) => {
-            return acc + reading.temperature;
-        }, 0) / readings.length;
-        const averageTDS = readings.reduce((acc: number, reading: any) => {
-            return acc + reading.tds;
-        }, 0) / readings.length;
-        const averageAmmonia = readings.reduce((acc: number, reading: any) => {
-            return acc + reading.ammonia;
-        }, 0) / readings.length;
-        const averagePH = readings.reduce((acc: number, reading: any) => {
-            return acc + reading.ph;
-        }, 0) / readings.length;
+        const temperatureValue = parameters["TMP"];
+        const tdsValue = parameters["TDS"];
+        const ammoniaValue = parameters["AMN"];
+        const phValue = parameters["PH"];
+
+        const wqi = calculateWQI({ ph: phValue, tds: tdsValue, ammonia: ammoniaValue, temperature: temperatureValue });
+        console.log("WQI AFTER DEVICE INSERT", wqi);
+        const classification = classifyWQI(wqi);
 
         // const [thresholds]: any = await connection.query("SELECT * FROM `parameter_thresholds`");
         pondParameters.forEach(async (param: any) => {
@@ -84,30 +80,23 @@ export async function POST(request: NextRequest) {
                 [
                     param.parameter_id,
                     Number(parameters[param.parameter]),
-                    moment(recorded_at).format(),
+                    moment(recorded_at).format("YYYY-MM-DD HH:mm:ss"),
                 ]
             );
         });
 
         console.log("NOTIFICATIONS", waterQualityNotifications);
-        console.log("AVERAGES", averageTemperature, averageTDS, averageAmmonia, averagePH);
-        
-        if ((averageTemperature || averageTDS || averageAmmonia || averagePH) && (waterQualityNotifications && waterQualityNotifications.length <= 0)) {
-            // (ph: number, tds: number, ammonia: number, temperature: number)
-            const wqi = calculateWQI({ ph: averagePH, tds: averageTDS, ammonia: averageAmmonia, temperature: averageTemperature });
-            console.log("WQI AFTER DEVICE INSERT", wqi);
-            const classification = classifyWQI(wqi);
-            if(wqi < 0.50) {
+        console.log("AVERAGES", temperatureValue, tdsValue, ammoniaValue, phValue);
+
+        if ((temperatureValue || tdsValue || ammoniaValue || phValue) && (waterQualityNotifications && waterQualityNotifications.length <= 0)) {
+            if (wqi < 0.45) {
                 await connection.query(
                     "INSERT INTO `pond_water_quality_notifications` (`water_quality`, `pond_id`, `date_issued`) VALUES (?, ?, ?)",
                     [classification, pondId, moment(recorded_at).format()]
                 )
             }
-        } else if ((averageTemperature || averageTDS || averageAmmonia || averagePH) && (waterQualityNotifications && waterQualityNotifications.length > 0)) {
-            const wqi = calculateWQI({ ph: averagePH, tds: averageTDS, ammonia: averageAmmonia, temperature: averageTemperature });
-            console.log("WQI AFTER DEVICE INSERT", wqi);
-            const classification = classifyWQI(wqi);
-            if(wqi > 0.5) {
+        } else if ((temperatureValue || tdsValue || ammoniaValue || phValue) && (waterQualityNotifications && waterQualityNotifications.length > 0)) {
+            if (wqi > 0.55) {
                 await connection.query(
                     "UPDATE `pond_water_quality_notifications` SET `date_resolved` = ?, is_resolved = TRUE WHERE `notification_id` = ?",
                     [moment().format(), waterQualityNotifications[0].notification_id]

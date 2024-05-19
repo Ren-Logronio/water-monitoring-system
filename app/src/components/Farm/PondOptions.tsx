@@ -215,7 +215,7 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
                             <DialogTitle>Disconnect Device</DialogTitle>
                         </DialogHeader>
                         <div className="flex flex-col space-x-2">
-                            <p>Are you sure you want to disconnect this pond's device?</p>
+                            <p>Are you sure you want to disconnect this pond&#39;s device?</p>
                             <p className="mt-4 text-[11px] font-medium">Device: {pond_data.find((pond: any) => pond.pond_id === pond_id).device_id}</p>
                         </div>
                         <DialogFooter>
@@ -235,7 +235,7 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
 
             {/* Edit Dialog */}
             <Dialog open={openEditDialog} onOpenChange={setOpenEditDialog}>
-                <DialogContent onInteractOutside={(e) => e.preventDefault()} className="sm:max-w-[625px] select-none">
+                <DialogContent onInteractOutside={(e) => e.preventDefault()} className="sm:max-w-[650px] select-none">
                     <DialogHeader>
                         <DialogTitle className="font-semibold text-xl text-neutral-800 px-2">Edit Pond</DialogTitle>
                     </DialogHeader>
@@ -243,7 +243,7 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
                     <div className="flex flex-col xl:flex-row xl:space-x-2 space-y-3 xl:space-y-0">
 
                         {/* Pond details */}
-                        <div className="px-2 xl:w-[550px]">
+                        <div className="px-2 xl:w-[600px]">
                             {/* Row 1 */}
                             <div className="flex flex-row justify-between space-x-5 my-5 xl:my-0">
                                 {/* Pond name */}
@@ -269,20 +269,19 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
 
                             {/* Device */}
                             <>
-                                { 
-                                !pond_data.find((pond: any) => pond.pond_id === pond_id).device_id &&
-                                <div className={`flex flex-row space-x-5 border-2 p-3 rounded-2xl mt-4 xl:mt-[40px] mb-3 ${0 ? "border-blue-400 bg-blue-100/30" : ""}`}>
-                                <div className="flex flex-row space-x-2 items-center w-2/5">
-                                    <Switch disabled={loading} onCheckedChange={handleSwitchChange} name="has_device" />
-                                    <Label>Has device?</Label>
-                                </div>
+                                {
+                                    !pond_data.find((pond: any) => pond.pond_id === pond_id).device_id &&
+                                    <div className={`flex flex-row space-x-5 border-2 p-3 rounded-2xl mt-4 xl:mt-[40px] mb-3 ${0 ? "border-blue-400 bg-blue-100/30" : ""}`}>
+                                        <div className="flex flex-row space-x-2 items-center w-2/5">
+                                            <Switch disabled={loading} onCheckedChange={handleSwitchChange} name="has_device" />
+                                            <Label>Has device?</Label>
+                                        </div>
 
-                                <Input onChange={handleInputChange} value={currentPond?.device_id! || ""} name="device_id" placeholder="Device ID" disabled={currentPond?.device_id === null || loading}
-                                    className={`bg-white ${!!currentPond?.message ? "border-red-300" : "border-slate-200"}`} autoComplete="false" spellCheck="false" />
-                                </div>
-                            }
+                                        <Input onChange={handleInputChange} value={currentPond?.device_id! || ""} name="device_id" placeholder="Device ID" disabled={currentPond?.device_id === null || loading}
+                                            className={`bg-white ${!!currentPond?.message ? "border-red-300" : "border-slate-200"}`} autoComplete="false" spellCheck="false" />
+                                    </div>
+                                }
                             </>
-                            
 
                             {/* Error Message */}
                             {!!currentPond?.message && <p className={` text-sm text-center ${currentPond?.status === "red" ? 'text-red-600' : 'text-green-500'}`}>{currentPond?.message}</p>}

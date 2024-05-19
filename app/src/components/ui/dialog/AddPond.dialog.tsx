@@ -53,6 +53,11 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
     const [dialogOpen, setDialogOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
+    // error messages
+    const errorNoLocation = "* Please select a location on the map";
+    const errorDeviceNotExist = "This device id may not exists, or had not established a connection with the system";
+    const errorInvalidDeviceID = "* Invalid Device ID"
+
     const farm = useMemo(() => {
         return selectedFarm;
     }, [selectedFarm, dialogOpen]);
@@ -79,19 +84,19 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
     const handleLocationChange = (longitude: number, latitude: number) => {
         setPondForm(prev => ({ ...prev, latitude, longitude }));
     }
-    const handleSelectChange = (value: string) => {
-        setPondForm({ ...pondForm, method: value });
-    }
+    // const handleSelectChange = (value: string) => {
+    //     setPondForm({ ...pondForm, method: value });
+    // }
+
     const handleSubmit = () => {
-        console.log(selectedFeature());
 
         if (pondForm.enter_device_id && !/^[\w\d]{8,8}-[\w\d]{4,4}-[\w\d]{4,4}-[\w\d]{4,4}-[\w\d]{12,12}$/i.test(pondForm.device_id)) {
-            setPondForm({ ...pondForm, message: "* Invalid Device ID", status: "red" });
+            setPondForm({ ...pondForm, message: errorInvalidDeviceID, status: "red" });
             return;
         }
 
         if (!pondForm.latitude || !pondForm.longitude) {
-            setPondForm({ ...pondForm, message: "* Please select a location on the map", status: "red" });
+            setPondForm({ ...pondForm, message: errorNoLocation, status: "red" });
             return;
         }
 
@@ -100,7 +105,7 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
             console.log("device id:", pondForm.device_id);
             axios.get(`/api/device?device_id=${pondForm.device_id}`).then(response => {
                 if (response.data.results && response.data.results.length <= 0) {
-                    setPondForm({ ...pondForm, message: "This device id may not exists, or had not established a connection with the system" });
+                    setPondForm({ ...pondForm, message: errorDeviceNotExist });
                     setLoading(false);
                     return;
                 }
@@ -217,7 +222,7 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
                         </Label>
 
                         {/* Input fields */}
-                        {/* <div className="flex flex-row justify-between">
+                    {/* <div className="flex flex-row justify-between">
                             <div className="flex flex-row items-center space-x-2">
                                 <Label>Width</Label>
                                 <Input disabled={loading} onChange={handleInputChange} min={0} max={10000} maxLength={5} type="number" name="width" value={pondForm.width} step={1.0} />
@@ -244,7 +249,7 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
                         </div>
 
                         <Input disabled={loading || !pondForm.enter_device_id} onChange={handleInputChange} value={pondForm.device_id} name="device_id" placeholder="Device ID"
-                            className={`bg-white ${!!pondForm.message ? "border-red-300" : "border-slate-200"}`} autoComplete="false" spellCheck="false" />
+                            className={`bg-white ${!!pondForm.message && pondForm.message == errorInvalidDeviceID ? "border-red-300" : "border-slate-200"}`} autoComplete="false" spellCheck="false" />
                     </div>
 
                     {/* Error Message */}

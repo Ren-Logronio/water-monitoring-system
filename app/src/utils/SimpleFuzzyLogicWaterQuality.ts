@@ -10,14 +10,14 @@ export function calculateMembership(param: number, thresholds: number[]) {
 }
 
 export const weights = {
-    'ph': 0.25,
+    'ph': 0.10,
     'tds': 0.25,
     'ammonia': 0.25,
-    'temperature': 0.25
+    'temperature': 0.40
 };
 
 export const phThresholds = [4, 7, 10];
-export const tdsThresholds = [-25, 250, 900];
+export const tdsThresholds = [-25, 250, 400];
 export const ammoniaThresholds = [-999999999, 150, 300];
 export const temperatureThresholds = [20, 25, 31];
 

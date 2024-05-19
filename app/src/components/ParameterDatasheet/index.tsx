@@ -68,6 +68,8 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
 
     const [currentPage, setCurrentPage] = useState(1);
 
+    useEffect(() => { console.log(thresholdRange)}, [thresholdRange])
+
     
 
     const filteredDate = useMemo(() => {
@@ -176,8 +178,8 @@ export default function ParameterDatasheet({ pond_id, setSelectedPond, ponds, po
                             { thresholds 
                             && thresholds.length && 
                             <p className="text-[14px] italic">Optimal {params.parameter && `${params.parameter[0].toUpperCase()}${params.parameter.slice(1)}`} Range: {
-                                thresholdRange && thresholdRange.length && thresholdRange
-                                    .map(threshold => threshold || { target: 0 }).map(threshold => `${threshold.type === "GT" ? ">" : "<"} ${threshold?.target}`).join(" and ")
+                                thresholdRange && thresholdRange.length && thresholdRange.filter(i => !!i).sort((a,b) => a.type === "GT" ? 1 : -1)
+                                    .map(threshold => threshold || { target: 0 }).map(threshold => `${(threshold.type === "LT" || "") && (threshold?.target || 0)} ${threshold.type === "GT" ? ">" : "<"} ${(threshold.type === "GT" || "") && (threshold?.target || 0)}`).join(" and ")
                             } {thresholdRange && !thresholdRange && "None"} { rowData[0]?.unit.toLowerCase() !== "ph" && rowData[0]?.unit}
                             </p>}
                             {/* <AddReading pond_id={pond_id} /> */}

@@ -43,10 +43,13 @@ const MapView = () => {
         onMapClick?: (latitude: number, longitude: number) => void
     }) => {
 
-        // set the vector layer
-        vector_Layer = vectorLayer;
-        // set the vector source
-        vector_Source = vectorLayer?.getSource() || null;
+        // if vector layer is provided
+        if (vectorLayer) {
+            // set the vector layer
+            vector_Layer = vectorLayer;
+            // set the vector source
+            vector_Source = vectorLayer?.getSource() || null;
+        }
 
         // create a ref for the map
         const mapRef = useRef<HTMLDivElement>(null);
@@ -73,7 +76,7 @@ const MapView = () => {
                         visible: true,
                         source: new BingMaps({
                             key: BING_API_KEY!,
-                            imagerySet: "Aerial",
+                            imagerySet: "AerialWithLabels",
                             maxZoom: 19,
                         }),
                     }),

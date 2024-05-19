@@ -138,7 +138,7 @@ export default function Dashboard() {
             }
 
             {/* No Farm Details */}
-            {!loading && !farm.farm_id &&
+            {!loading && !selectedFarm.farm_id &&
                 <div className="min-w-full mt-[30vh] flex flex-col items-center select-none justify-center">
                     <p className="text-center">Welcome to Water Quality Monitoring System&nbsp;
                         <span className="font-semibold">{farm.name}</span>,
@@ -150,11 +150,11 @@ export default function Dashboard() {
                 </div>
             }
 
-            {/* Farm Details but not approved */}
-            {!loading && farm.farm_id && !farm.is_approved &&
-                <div className="min-w-full flex flex-col items-center">
+            {/* Staff is not approved yet */}
+            {!loading && selectedFarm.farm_id && !selectedFarm.is_approved &&
+                <div className="min-w-full mt-[30vh] flex flex-col items-center select-none justify-center">
                     <NinetyRing width={25} height={25} />
-                    <h1 className="text-center">Waiting approval...</h1>
+                    <h1 className="text-center text-lg font-semibold">Waiting approval...</h1>
                     <p className="text-center">It seems that you have farm details but is unverified by the current owner of the farm</p>
                 </div>
             }
@@ -168,17 +168,17 @@ export default function Dashboard() {
 
                             {/* quick widgets */}
                             <div className="grid grid-cols-4 w-full gap-3 gap-y-5 relative">
-                                <div className="h-[20px] px-2 rounded-md bg-white text-[12px] top-0 absolute z-[1000]">
+                                {/* <div className="h-[20px] px-2 rounded-md bg-white text-[12px] top-0 absolute z-[1000]">
                                     Map View
-                                </div>
-                                <MapBuilder
+                                </div> */}
+                                {/* <MapBuilder
                                     zoom={16.5}
                                     vectorLayer={farm_points}
                                     pinOnCenter={true}
                                     pinOnCenterLabel="Farm Location"
                                     center={[selectedFarm.longitude, selectedFarm.latitude]}
                                     className="w-full h-full"
-                                />
+                                /> */}
 
                                 {/* # of time*/}
                                 <div className="bg-white border rounded-lg p-5 flex flex-row justify-center space-x-5 xl:space-x-0 xl:space-y-5 xl:flex-col items-center">
@@ -257,7 +257,7 @@ export default function Dashboard() {
             }
 
             {/* Farm Details and approved but no ponds */}
-            {!loading && farm.farm_id && farm.is_approved && ponds.ponds.length == 0 &&
+            {!loading && farm?.farm_id && farm?.is_approved && ponds?.ponds?.length == 0 &&
                 <div className="min-w-full mt-[30vh] flex flex-col items-center select-none justify-center">
                     <p className="text-center">It seems that you have no pond/s yet for&nbsp;
                         <span className="font-semibold">{farm.name}</span>,
