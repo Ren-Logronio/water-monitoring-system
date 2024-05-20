@@ -4,12 +4,20 @@ import roundToSecondDecimal from "@/utils/RoundToNDecimals";
 import { calculateWQI, classifyWQI } from "@/utils/SimpleFuzzyLogicWaterQuality";
 import axios from "axios";
 import { create } from "domain";
-import moment from "moment";
+import moment, { min } from "moment";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { createRef, useEffect, useMemo, useState } from "react";
 import "./page.css";
 import Signature from "@/components/Signature";
+
+
+type minMaxTimeStampObject = {
+    min: number,
+    max: number,
+    minTimestamp?: string,
+    maxTimestamp?: string,
+}
 
 export default function PrintWaterQuality() {
     const printableRef = createRef<HTMLDivElement>();
@@ -67,16 +75,38 @@ export default function PrintWaterQuality() {
 
     const maxTemperature = useMemo
     const minMaxes = useMemo(() => {
-        return {
+        const temp: {
+            temperature: minMaxTimeStampObject,
+            ph: minMaxTimeStampObject,
+            tds: minMaxTimeStampObject,
+            ammonia: minMaxTimeStampObject,
+        } = {
             temperature: {
                 min: waterQualityReadings.reduce((acc, curr) => Math.min(acc, curr.temperature), Infinity),
                 max: waterQualityReadings.reduce((acc, curr) => Math.max(acc, curr.temperature), -Infinity),
             },
             ph: {
                 min: waterQualityReadings.reduce((acc, curr) => Math.min(acc, curr.ph), Infinity),
-                max: waterQualityReadings.reduce((acc, curr) => Math.max(acc))
-            }
-        }
+                max: waterQualityReadings.reduce((acc, curr) => Math.max(acc, curr.ph), -Infinity),
+            },
+            tds: {
+                min: waterQualityReadings.reduce((acc, curr) => Math.min(acc, curr.tds), Infinity),
+                max: waterQualityReadings.reduce((acc, curr) => Math.max(acc, curr.tds), -Infinity),
+            },
+            ammonia: {
+                min: waterQualityReadings.reduce((acc, curr) => Math.min(acc, curr.ammonia), Infinity),
+                max: waterQualityReadings.reduce((acc, curr) => Math.max(acc, curr.ammonia), -Infinity),
+            },
+        };
+        temp.temperature.minTimestamp = waterQualityReadings.find((reading) => reading.temperature === temp.temperature.min)?.timestamp;
+        temp.temperature.maxTimestamp = waterQualityReadings.find((reading) => reading.temperature === temp.temperature.max)?.timestamp;
+        temp.ph.minTimestamp = waterQualityReadings.find((reading) => reading.ph === temp.ph.min)?.timestamp;
+        temp.ph.maxTimestamp = waterQualityReadings.find((reading) => reading.ph === temp.ph.max)?.timestamp;
+        temp.tds.minTimestamp = waterQualityReadings.find((reading) => reading.tds === temp.tds.min)?.timestamp;
+        temp.tds.maxTimestamp = waterQualityReadings.find((reading) => reading.tds === temp.tds.max)?.timestamp;
+        temp.ammonia.minTimestamp = waterQualityReadings.find((reading) => reading.ammonia === temp.ammonia.min)?.timestamp;
+        temp.ammonia.maxTimestamp = waterQualityReadings.find((reading) => reading.ammonia === temp.ammonia.max)?.timestamp;
+        return temp;
     }, [waterQualityReadings])
 
     return <div className="max-w-full h-full flex flex-col items-center bg-white">
@@ -107,37 +137,32 @@ export default function PrintWaterQuality() {
                 <table>
                     <thead className="border-0 border-b border-black">
                         <tr>
-                            <th className="text-[14px] font-medium">Number of Recorded Readings</th>
                             <th className="text-[14px] font-medium">Parameters</th>
+                            <th className="text-[14px] font-medium">Average</th>
                             <th className="text-[14px] font-medium">Min.</th>
                             <th className="text-[14px] font-medium">Max.</th>
-                            <th className="text-[14px] font-medium">Average</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td className="text-center">{waterQualityReadings.length}</td>
                             <td className="text-start">Temperature</td>
-                            <td className="text-end">{ }</td>
-                            <td className="text-end">{roundToSecondDecimal()}</td>
                             <td className="text-end">{roundToSecondDecimal(waterQualityReadings.reduce((acc, curr) => acc + curr.temperature, 0) / waterQualityReadings.length)}</td>
+                            <td className="text-end">{roundToSecondDecimal(minMaxes.temperature.min)} ({moment(minMaxes.temperature.minTimestamp).format("MMM DD, yyyy - hh:mm a")})</td>
+                            <td className="text-end">{roundToSecondDecimal(minMaxes.temperature.max)} ({moment(minMaxes.temperature.maxTimestamp).format("MMM DD, yyyy - hh:mm a")})</td>
                         </tr>
                         <tr>
-                            <td className="text-end"></td>
                             <td className="text-start">pH</td>
-                            <td className="text-end">{roundToSecondDecimal(waterQualityReadings.reduce((acc, curr) => Math.min(acc, curr.ph), Infinity))}</td>
-                            <td className="text-end">{roundToSecondDecimal(waterQualityReadings.reduce((acc, curr) => Math.max(acc, curr.ph), -Infinity))}</td>
                             <td className="text-end">{roundToSecondDecimal(waterQualityReadings.reduce((acc, curr) => acc + curr.ph, 0) / waterQualityReadings.length)}</td>
+                            <td className="text-end">{roundToSecondDecimal(minMaxes.ph.min)} ({moment(minMaxes.ph.minTimestamp).format("MMM DD, yyyy - hh:mm a")})</td>
+                            <td className="text-end">{roundToSecondDecimal(minMaxes.ph.max)} ({moment(minMaxes.ph.maxTimestamp).format("MMM DD, yyyy - hh:mm a")})</td>
                         </tr>
                         <tr>
-                            <td className="text-end"></td>
                             <td className="text-start">Ammonia</td>
-                            <td className="text-end">{roundToSecondDecimal(waterQualityReadings.reduce((acc, curr) => Math.min(acc, curr.ammonia), Infinity))}</td>
-                            <td className="text-end">{roundToSecondDecimal(waterQualityReadings.reduce((acc, curr) => Math.max(acc, curr.ammonia), -Infinity))}</td>
-                            <td className="text-end">{roundToSecondDecimal(waterQualityReadings.reduce((acc, curr) => acc + curr.ammonia, 0) / waterQualityReadings.length)}</td>
+                            <td className="text-end">{roundToSecondDecimal(waterQualityReadings.reduce((acc, curr) => acc + curr.temperature, 0) / waterQualityReadings.length)}</td>
+                            <td className="text-end">{roundToSecondDecimal(minMaxes.ammonia.min)} ({moment(minMaxes.ammonia.minTimestamp).format("MMM DD, yyyy - hh:mm a")})</td>
+                            <td className="text-end">{roundToSecondDecimal(minMaxes.ammonia.max)} ({moment(minMaxes.ammonia.maxTimestamp).format("MMM DD, yyyy - hh:mm a")})</td>
                         </tr>
                         <tr>
-                            <td className="text-end"></td>
                             <td className="text-start">Total Dissolved Solids</td>
                             <td className="text-end">{roundToSecondDecimal(waterQualityReadings.reduce((acc, curr) => Math.min(acc, curr.tds), Infinity))}</td>
                             <td className="text-end">{roundToSecondDecimal(waterQualityReadings.reduce((acc, curr) => Math.max(acc, curr.tds), -Infinity))}</td>
