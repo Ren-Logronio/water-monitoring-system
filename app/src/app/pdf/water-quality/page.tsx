@@ -31,6 +31,7 @@ export default function PrintWaterQuality() {
 
     useEffect(() => {
         axios.get(`/api/water-quality?pond_id=${pond_id}`).then((response: any) => {
+            console.log("knknkjn", response.data.results);
             !!response.data.results?.length && setWaterQualityReadings(
                 response.data.results
                     .filter(
