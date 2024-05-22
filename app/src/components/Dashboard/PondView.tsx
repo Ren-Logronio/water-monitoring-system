@@ -5,6 +5,7 @@ import Parameter from "./Parameter";
 import { Badge } from "../ui/badge";
 import { calculateWQI, classifyWQI, wqiClassificationColorHex } from "@/utils/SimpleFuzzyLogicWaterQuality";
 import { PieChart, Pie } from "recharts";
+import Image from "next/image";
 
 export default function PondView({ pond_id }: { pond_id?: string }) {
     const [parameters, setParameters] = useState<any[]>([]);
@@ -142,106 +143,153 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
                 </div>
             }
 
-            {
-                !loading &&
+            {!loading &&
                 // currentReadings.length >= 4 && 
-                <div className={`grid mb-2 grid-cols-3 xl:grid-cols-5 gap-4 ${parameters.every(p => !p?.unshowable) && 'min-h-[200px]'}`}>
-                    {
-                        parameters.every(p => !p?.unshowable) &&
-                        <div className=" flex flex-col justify-center items-center border p-3 relative">
-                            {
-                                wqi && <>
-                                    {/* <RadialBarChart data={[{
-                                    name: 'WQI',
-                                    value: wqi * 100,
-                                    fill: '#8884d8',
-                                }]} innerRadius={"60%"} outerRadius={"75%"} width={200} height={200} startAngle={180} endAngle={0}>
-                                    <RadialBar background dataKey='value' />
-                                </RadialBarChart> */}
-                                    <PieChart width={200} height={150}>
-                                        <Pie
-                                            data={[
-                                                { name: 'WQI', value: wqi * 100, fill: (wqiClassification && wqiClassificationColorHex[wqiClassification] || "#4584B5") },
-                                                { name: 'Rest', value: 100 - (wqi * 100), fill: "#1A2127" }
-                                            ]}
-                                            dataKey="value"
-                                            cx="50%" cy="50%"
-                                            innerRadius={60} outerRadius={75}
-                                            fill="#8884d8"
-                                            startAngle={180}
-                                            endAngle={0} />
-                                    </PieChart>
-                                    <div className="absolute top-1/2 -translate-y-6 flex flex-col justify-center items-center">
-                                        <p className=" text-[20px]">{(wqi * 100).toFixed(2)} %</p>
-                                        <p className=" text-[14px]">Water Quality</p>
-                                        <p className=" font-semibold">{wqiClassification}</p>
+                <div className={`grid mb-2 grid-cols-3 xl:grid-cols-5 gap-7 align-middle items-center ${parameters.every(p => !p?.unshowable) && 'min-h-[200px]'}`}>
+
+                    {/* water quality index */}
+                    {parameters.every(p => !p?.unshowable) &&
+                        <div className="flex flex-row col-span-3 xl:col-span-2 justify-center items-center border rounded-2xl px-3 relative space-x-7">
+
+                            {wqi &&
+                                <>
+                                    <div className="flex flex-col  justify-center items-center">
+
+                                        <PieChart width={200} height={200}>
+                                            <Pie
+                                                data={[
+                                                    { name: 'WQI', value: wqi * 100, fill: (wqiClassification && wqiClassificationColorHex[wqiClassification] || "#4584B5") },
+                                                    { name: 'Rest', value: 100 - (wqi * 100), fill: "#1A2127" }
+                                                ]}
+                                                dataKey="value"
+                                                cx="50%" cy="70%"
+                                                innerRadius={75} outerRadius={95}
+                                                fill="#8884d8"
+                                                startAngle={180}
+                                                endAngle={0} />
+                                        </PieChart>
+
+                                        <div className="absolute top-1/2 translate-y-2 flex flex-col justify-center items-center">
+                                            <p className="text-[25px] font-semibold">{(wqi * 100).toFixed(2)} %</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex flex-col space-y-2 h-full w-[30%] align-middle justify-center">
+                                        <p className="text-lg">Water Quality:</p>
+                                        <p className="font-bold text-2xl">{wqiClassification?.toString().toUpperCase()}</p>
                                     </div>
                                 </>
                             }
-                            {
-                                !wqi && parameters.some(p => p?.unshowable) && <div>
+
+                            {!wqi && parameters.some(p => p?.unshowable) &&
+                                <div>
                                     Inconclusive
                                 </div>
                             }
-                            {
-                                !wqi && !parameters.every(p => !p?.unshowable) && <div className="flex justify-center items-center h-full space-x-2">
+
+                            {!wqi && !parameters.every(p => !p?.unshowable) &&
+                                <div className="flex justify-center items-center h-full space-x-2">
                                     <NinetyRing />
                                 </div>
                             }
-                        </div>}
-                    {parameters.find(p => p?.parameter?.toLowerCase() === "tmp")
-                        && !parameters.find(p => p?.parameter?.toLowerCase() === "tmp").unshowable
-                        && <div className=" flex flex-col justify-center items-center border p-3">
-                            <p className="text-[14px]">Temperature</p>
-                            {tempCurrentReading && <>
-                                <span className="text-[20px]">{tempCurrentReading.value} °C</span>
-                                {!!tempDifference && <span className="text-[12px] mt-1">{tempDifference !== 0 && `(${tempDifference})`}</span>}
-                                <span className="text-[12px]">Last recorded reading</span>
-                            </>}
-                            {!tempCurrentReading && <div className="flex justify-center items-center h-full space-x-2">
-                                <NinetyRing />
-                            </div>}
-                        </div>}
-                    {parameters.find(p => p?.parameter?.toLowerCase() === "ph")
-                        && !parameters.find(p => p?.parameter?.toLowerCase() === "ph").unshowable
-                        && <div className=" flex flex-col justify-center items-center border p-3">
-                            <p className="text-[14px]">pH</p>
-                            {phCurrentReading && <>
-                                <span className="text-[20px]">{phCurrentReading.value}</span>
-                                {!!phDifference && <span className="text-[12px] mt-1">{phDifference !== 0 && `(${phDifference})`}</span>}
-                                <span className="text-[12px]">Last recorded reading</span>
-                            </>}
-                            {!phCurrentReading && <div className="flex justify-center items-center h-full space-x-2">
-                                <NinetyRing />
-                            </div>}
-                        </div>}
-                    {parameters.find(p => p?.parameter?.toLowerCase() === "amn")
-                        && !parameters.find(p => p?.parameter?.toLowerCase() === "amn").unshowable
-                        && <div className=" flex flex-col justify-center items-center border p-3">
-                            <p className="text-[14px]">Ammonia</p>
-                            {ammoniaCurrentReading && <>
-                                <span className="text-[20px]">{ammoniaCurrentReading.value} ppm</span>
-                                {!!ammoniaDifference && <span className="text-[12px] mt-1">{ammoniaDifference !== 0 && `(${ammoniaDifference})`}</span>}
-                                <span className="text-[12px]">Last recorded reading</span>
-                            </>}
-                            {!ammoniaCurrentReading && <div className="flex justify-center items-center h-full space-x-2">
-                                <NinetyRing />
-                            </div>}
-                        </div>}
-                    {parameters.find(p => p?.parameter?.toLowerCase() === "tds")
-                        && !parameters.find(p => p?.parameter?.toLowerCase() === "tds").unshowable
-                        && <div className=" flex flex-col justify-center items-center border p-3">
-                            <p className="text-[14px]">Total Dissolved Solids</p>
-                            {tdsCurrentReading && <>
-                                <span className="text-[20px]">{tdsCurrentReading.value} ppm</span>
-                                {!!tdsDifference && <span className="text-[12px] mt-1">{tdsDifference !== 0 && `(${tdsDifference})`}</span>}
-                                <span className="text-[12px]">Last recorded reading</span>
-                            </>
+                        </div>
+                    }
+
+                    {/* average readings */}
+                    <div className={`col-span-3 h-fit ${parameters.filter(i => !i.hidden).length > 0 ? "hide" : ""}`}>
+
+                        <div className="w-full mb-5">
+                            <p className="text-xl">Average readings</p>
+                        </div>
+
+
+                        {/* parameters */}
+                        <div className="grid grid-cols-2 2xl:grid-cols-4 gap-x-3 gap-y-3">
+
+                            {/* total dissolved solids */}
+                            {parameters.find(p => p?.parameter?.toLowerCase() === "tds") && !parameters.find(p => p?.parameter?.toLowerCase() === "tds").unshowable &&
+                                <div className="flex flex-row justify-center items-center border rounded-xl p-3 space-x-5">
+                                    <Image src="/icon-particles.png" width={45} height={45} alt="TDS" />
+
+                                    <div className="flex flex-col">
+                                        <p className="text-sm">Total Diss. Solids</p>
+                                        {tdsCurrentReading &&
+                                            <span className="text-[20px] font-semibold">{tdsCurrentReading.value} ppm</span>
+                                        }
+                                    </div>
+
+                                    {!tdsCurrentReading &&
+                                        <div className="flex justify-center items-center h-full space-x-2">
+                                            <NinetyRing />
+                                        </div>
+                                    }
+                                </div>
                             }
-                            {!tdsCurrentReading && <div className="flex justify-center items-center h-full space-x-2">
-                                <NinetyRing />
-                            </div>}
-                        </div>}
+
+                            {/* temperature */}
+                            {parameters.find(p => p?.parameter?.toLowerCase() === "tmp") && !parameters.find(p => p?.parameter?.toLowerCase() === "tmp").unshowable &&
+                                <div className="flex flex-row justify-center items-center border rounded-xl p-3 space-x-5">
+                                    <Image src="/icon-temp.png" width={45} height={45} alt="TDS" />
+
+                                    <div className="flex flex-col">
+                                        <p className="text-sm">Temperature</p>
+                                        {tempCurrentReading &&
+                                            <span className="text-[20px] font-semibold">{tempCurrentReading.value} °C</span>
+                                        }
+                                    </div>
+
+                                    {!tempCurrentReading &&
+                                        <div className="flex justify-center items-center h-full space-x-2">
+                                            <NinetyRing />
+                                        </div>
+                                    }
+                                </div>
+                            }
+
+                            {/* pH */}
+                            {parameters.find(p => p?.parameter?.toLowerCase() === "ph") && !parameters.find(p => p?.parameter?.toLowerCase() === "ph").unshowable &&
+                                <div className="flex flex-row justify-center items-center border rounded-xl p-3 space-x-5">
+                                    <Image src="/icon-ph.png" width={45} height={45} alt="TDS" />
+
+                                    <div className="flex flex-col">
+                                        <p className="text-sm">pH level</p>
+                                        {phCurrentReading &&
+                                            <span className="text-[20px] font-semibold">{phCurrentReading.value}</span>
+                                        }
+                                    </div>
+
+                                    {!phCurrentReading &&
+                                        <div className="flex justify-center items-center h-full space-x-2">
+                                            <NinetyRing />
+                                        </div>
+                                    }
+                                </div>
+                            }
+
+                            {/* ammonia */}
+                            {parameters.find(p => p?.parameter?.toLowerCase() === "amn") && !parameters.find(p => p?.parameter?.toLowerCase() === "amn").unshowable &&
+                                <div className="flex flex-row justify-center items-center border rounded-xl p-3 space-x-5">
+                                    <Image src="/icon-ammonia.png" width={45} height={45} alt="TDS" />
+
+                                    <div className="flex flex-col">
+                                        <p className="text-sm">Ammonia</p>
+                                        {ammoniaCurrentReading &&
+                                            <span className="text-[20px] font-semibold">{ammoniaCurrentReading.value} ppm</span>
+                                        }
+                                    </div>
+
+                                    {!ammoniaCurrentReading &&
+                                        <div className="flex justify-center items-center h-full space-x-2">
+                                            <NinetyRing />
+                                        </div>
+                                    }
+                                </div>
+                            }
+
+                        </div>
+
+                    </div>
+
                 </div>
             }
 
