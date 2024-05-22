@@ -23,6 +23,7 @@ export default function PrintWaterQuality() {
 
     useEffect(() => {
         axios.get(`/api/water-quality?pond_id=${pond_id}`).then((response: any) => {
+            console.log("knknkjn", response.data.results);
             !!response.data.results?.length && setWaterQualityReadings(
                 response.data.results
                     .filter(
@@ -74,7 +75,7 @@ export default function PrintWaterQuality() {
             },
             ph: {
                 min: waterQualityReadings.reduce((acc, curr) => Math.min(acc, curr.ph), Infinity),
-                max: waterQualityReadings.reduce((acc, curr) => Math.max(acc))
+                max: waterQualityReadings.reduce((acc, curr) => Math.max(acc, curr.ph), -Infinity),
             }
         }
     }, [waterQualityReadings])
@@ -89,7 +90,7 @@ export default function PrintWaterQuality() {
                 <div className="flex flex-row justify-between">
                     <Image src="/logo-msugensan.png" alt="logo" width={100} height={100} />
                     <div className="flex flex-col justify-center items-center">
-                        <span>Mindanao State University - General Santos</span>
+                        {/* <span>Mindanao State University - General Santos</span> */}
                         <span className="text-center">{farm?.farm_name}</span>
                         <span className="text-center"> {[farm?.address_street, farm?.address_city, farm?.address_province].join(", ") || "Mindanao State University General Santos"}</span>
                     </div>
@@ -119,7 +120,7 @@ export default function PrintWaterQuality() {
                             <td className="text-center">{waterQualityReadings.length}</td>
                             <td className="text-start">Temperature</td>
                             <td className="text-end">{ }</td>
-                            <td className="text-end">{roundToSecondDecimal()}</td>
+                            <td className="text-end">{roundToSecondDecimal(0)}</td>
                             <td className="text-end">{roundToSecondDecimal(waterQualityReadings.reduce((acc, curr) => acc + curr.temperature, 0) / waterQualityReadings.length)}</td>
                         </tr>
                         <tr>
