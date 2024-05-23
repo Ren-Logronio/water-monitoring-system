@@ -191,18 +191,10 @@ export default function PrintParameter() {
                     </tr>
                     <tr className="border-0 border-b border-black">
                         <th className=" text-[14px] font-medium border-0 border-r border-black">
-                            Mean
+                            Average {parameter}
                         </th>
                         <td className="text-center">
                             {mean}
-                        </td>
-                    </tr>
-                    <tr className="border-0 border-b border-black">
-                        <th className="text-[14px] font-medium border-0 border-r border-black">
-                            Standard Deviation
-                        </th>
-                        <td className="text-center">
-                            {standardDeviation}
                         </td>
                     </tr>
                     <tr className="border-0 border-b border-black">
