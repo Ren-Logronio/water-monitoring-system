@@ -33,7 +33,7 @@ export default function Test() {
         <div className="flex flex-row space-x-4 pr-4">
             <div className="flex flex-col space-y-4 w-full">
                 <Label>Ph</Label>
-                <Slider value={params.ph} max={12} onValueChange={handleSetValue("ph")}></Slider>
+                <Slider value={params.ph} max={12} onValueChange={handleSetValue("ph")} step={0.1}></Slider>
             </div>
             <p className="flex flex-col text-end justify-end items-end w-[200px]">{params.ph[0]} </p>
         </div>
