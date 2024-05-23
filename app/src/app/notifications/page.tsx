@@ -51,7 +51,8 @@ export default function NotificationLogs(){
     }, [selectedFarm])
 
     return <div className="flex flex-col p-4 w-full space-y-3">
-        {!loading && currentPond && Object.keys(currentPond).length && <><Select value={String(currentPond.pond_id)} onValueChange={(value: any) => {setCurrentPond(ponds.find((pond:any) => pond.pond_id === Number(value)))}}>
+        {!loading && currentPond && Object.keys(currentPond).length && <><div className="flex flex-row justify-start space-x-3">
+            <Select value={String(currentPond.pond_id)} onValueChange={(value: any) => {setCurrentPond(ponds.find((pond:any) => pond.pond_id === Number(value)))}}>
             <SelectTrigger className="w-[180px] border-2 border-orange-300 bg-orange-50 focus-visible:ring-blue-200/40 focus-visible:ring-4 shadow-none rounded-2xl">
                 <SelectValue placeholder="Select Pond" />
             </SelectTrigger>
@@ -64,8 +65,51 @@ export default function NotificationLogs(){
                 {/* <SelectItem value="light">Light</SelectItem> */}
             </SelectContent>
         </Select>
+        <div className="flex flex-row space-x-2 max-w-[800px] items-center">
+            <span className="text-[12px]">Water Quality Range:</span>
+                    <div className="flex flex-col flex-1 min-w-[400px]">
+                        <div className="flex flex-row relative justify-between text-[11px]">
+                            <span className="w-[25%] text-center">Very Poor</span>
+                            <span className="w-[25%] text-center">Poor</span>
+                            <span className="w-[25%] text-center">Fair</span>
+                            <span className="w-[15%] text-center">Good</span>
+                            <span className="w-[10%] text-center">Excellent</span>
+                        </div>
+                        <div className="flex flex-row justify-evenly">
+                            <div className="h-[3px] w-[25%] bg-red-600"></div>
+                            <div className="h-[3px] w-[25%] bg-orange-400"></div>
+                            <div className="h-[3px] w-[25%] bg-yellow-400"></div>
+                            <div className="h-[3px] w-[15%] bg-green-600"></div>
+                            <div className="h-[3px] w-[10%] bg-green-500"></div>
+                        </div>
+                        <div className="flex flex-row justify-between">
+                            <div className="flex flex-row text-[11px] justify-start items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3 h-3">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                                </svg>
+                                <span>0%</span>
+                            </div>
+                            <div className="flex flex-row text-[11px] justify-start items-start">
+                                <span>25%</span>
+                            </div>
+                            <div className="flex flex-row text-[11px] justify-start items-start">
+                                <span>50%</span>
+                            </div>
+                            <div className="flex flex-row text-[11px] justify-start items-start">
+                                <span>75%</span>
+                            </div>
+                            <div className="flex flex-row text-[11px] justify-end">
+                                <span>100%</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3 h-3">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+            </div>
         <div className="flex flex-col">
-            <p className="m-0 font-semibold text-[16px] text-center">Water Quality Graph</p>
+            <p className="m-0 font-semibold text-[16px] text-center">Water Quality</p>
             <ResponsiveContainer width="100%" height="25%" className="p-3 min-h-[300px]">
                 <LineChart data={waterQualityReadings.map(
                     (reading: any) => ({ date: moment(reading.timestamp).format("MMM DD, yyyy - hh:mm a"), ["Water Quality Index"]: roundToSecondDecimal(reading.wqi * 100) })
