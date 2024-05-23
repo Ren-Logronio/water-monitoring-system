@@ -27,38 +27,55 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
             setParameters(response.data.results.map((i: any) => {
                 return i.count > 0 ? { ...i, hidden: false, unshowable: false } : { ...i, hidden: true, context: "No Readings", unshowable: true };
             }));
-            response.data.results.forEach(async (parameter: any) => {
-                if (parameter.count > 0) {
-                    await axios.get(`/api/reading/current?parameter_id=${parameter.parameter_id}`).then(response => {
-                        if (!response.data.result) {
-                            return;
-                        }
-                        setCurrentReadings(prev => [...prev.filter((reading) => reading.reading_id !== response.data.result.reading_id), { ...response.data.result, ...parameter }]);
-                    }).catch(error => {
-                        console.error(error);
-                    });
+            // get current readings
+            axios.get(`/api/water-quality?pond_id=${pond_id}`).then(response => {
+                if (!response.data.results || response.data.results.length <= 0) {
+                    return;
                 }
+                setCurrentReadings(response.data.results);
+            }).catch((e: any) => {
+                console.error(e);
+            }).finally(() => {
+                // set loading state to false
+                setLoading(false);
             });
+            // response.data.results.forEach(async (parameter: any) => {
+            //     if (parameter.count > 0) {
+            //         await axios.get(`/api/reading/current?parameter_id=${parameter.parameter_id}`).then(response => {
+            //             if (!response.data.result) {
+            //                 return;
+            //             }
+            //             setCurrentReadings(prev => [...prev.filter((reading) => reading.reading_id !== response.data.result.reading_id), { ...response.data.result, ...parameter }]);
+            //         }).catch(error => {
+            //             console.error(error);
+            //         });
+            //     }
+            // });
             currentReadingsInterval = setInterval(() => {
-                response.data.results.forEach(async (parameter: any) => {
-                    if (parameter.count > 0) {
-                        await axios.get(`/api/reading/current?parameter_id=${parameter.parameter_id}`).then(response => {
-                            if (!response.data.result) {
-                                return;
-                            }
-                            console.log("CURRENT READING RELOAD: ", response.data.result);
-                            setCurrentReadings(prev => [...prev.filter((reading) => reading.reading_id !== response.data.result.reading_id), { ...response.data.result, ...parameter }]);
-                        }).catch(error => {
-                            console.error(error);
-                        });
+                axios.get(`/api/water-quality?pond_id=${pond_id}`).then(response => {
+                    if (!response.data.results || response.data.results.length <= 0) {
+                        return;
                     }
-                });
+                    setCurrentReadings(response.data.results);
+                }).catch((e: any) => {
+                    console.error(e);
+                })
+                // response.data.results.forEach(async (parameter: any) => {
+                //     if (parameter.count > 0) {
+                //         await axios.get(`/api/reading/current?parameter_id=${parameter.parameter_id}`).then(response => {
+                //             if (!response.data.result) {
+                //                 return;
+                //             }
+                //             console.log("CURRENT READING RELOAD: ", response.data.result);
+                //             setCurrentReadings(prev => [...prev.filter((reading) => reading.reading_id !== response.data.result.reading_id), { ...response.data.result, ...parameter }]);
+                //         }).catch(error => {
+                //             console.error(error);
+                //         });
+                //     }
+                // });
             }, 30000);
         }).catch(error => {
             console.error(error);
-        }).finally(() => {
-            // set loading state to false
-            setLoading(false);
         });
         return () => {
             clearInterval(currentReadingsInterval);
@@ -77,58 +94,29 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
         }));
     };
 
-    const phCurrentReading = useMemo(() => currentReadings.find((reading) => reading.parameter === "PH"), [currentReadings]);
-    // calculate +/-[difference] display is +[difference] or -[difference]
-    const phDifference = useMemo(() => {
-        if (phCurrentReading && phCurrentReading.previous_value) {
-            const difference = phCurrentReading.value - phCurrentReading.previous_value;
-            return difference > 0 ? `+${difference}` : difference;
-        }
-        return null;
-    }, [phCurrentReading]);
-    const tempCurrentReading = useMemo(() => currentReadings.find((reading) => reading.parameter === "TMP"), [currentReadings]);
-    const tempDifference = useMemo(() => {
-        if (tempCurrentReading && tempCurrentReading.previous_value) {
-            const difference = tempCurrentReading.value - tempCurrentReading.previous_value;
-            return difference > 0 ? `+${difference}` : difference;
-        }
-        return null;
-    }, [tempCurrentReading]);
-    const tdsCurrentReading = useMemo(() => currentReadings.find((reading) => reading.parameter === "TDS"), [currentReadings]);
-    const tdsDifference = useMemo(() => {
-        if (tdsCurrentReading && tdsCurrentReading.previous_value) {
-            const difference = tdsCurrentReading.value - tdsCurrentReading.previous_value;
-            return difference > 0 ? `+${difference}` : difference;
-        }
-        return null;
-    }, [tdsCurrentReading]);
-    const ammoniaCurrentReading = useMemo(() => currentReadings.find((reading) => reading.parameter === "AMN"), [currentReadings]);
-    const ammoniaDifference = useMemo(() => {
-        if (ammoniaCurrentReading && ammoniaCurrentReading.previous_value) {
-            const difference = ammoniaCurrentReading.value - ammoniaCurrentReading.previous_value;
-            return difference > 0 ? `+${difference}` : difference;
-        }
-        return null;
-    }, [ammoniaCurrentReading]);
+    // const phCurrentReading = useMemo(() => currentReadings.find((reading) => reading.parameter === "PH"), [currentReadings]);
+    // const tempCurrentReading = useMemo(() => currentReadings.find((reading) => reading.parameter === "TMP"), [currentReadings]);
+    // const tdsCurrentReading = useMemo(() => currentReadings.find((reading) => reading.parameter === "TDS"), [currentReadings]);
+    // const ammoniaCurrentReading = useMemo(() => currentReadings.find((reading) => reading.parameter === "AMN"), [currentReadings]);
 
-    const wqi = useMemo(() => {
-        if (phCurrentReading && tempCurrentReading && tdsCurrentReading && ammoniaCurrentReading) {
-            // (ph: number, tds: number, ammonia: number, temperature: number)
-            return calculateWQI({ ph: phCurrentReading.value, tds: tdsCurrentReading.value, ammonia: ammoniaCurrentReading.value, temperature: tempCurrentReading.value });
-        }
-        return null;
-    }, [phCurrentReading, tempCurrentReading, tdsCurrentReading, ammoniaCurrentReading]);
+    // const wqi = useMemo(() => {
+    //     if (phCurrentReading && tempCurrentReading && tdsCurrentReading && ammoniaCurrentReading) {
+    //         // (ph: number, tds: number, ammonia: number, temperature: number)
+    //         return calculateWQI({ ph: phCurrentReading.value, tds: tdsCurrentReading.value, ammonia: ammoniaCurrentReading.value, temperature: tempCurrentReading.value });
+    //     }
+    //     return null;
+    // }, [phCurrentReading, tempCurrentReading, tdsCurrentReading, ammoniaCurrentReading]);
 
 
-    useEffect(() => {
-        console.log("WQI: ", wqi);
-        console.log("p", parameters);
-    }, [wqi, parameters]);
+    // useEffect(() => {
+    //     console.log("WQI: ", wqi);
+    //     console.log("p", parameters);
+    // }, [wqi, parameters]);
 
 
-    const wqiClassification = useMemo(() => {
-        return wqi && classifyWQI(wqi);
-    }, [wqi]);
+    // const wqiClassification = useMemo(() => {
+    //     return wqi && classifyWQI(wqi);
+    // }, [wqi]);
 
     useEffect(() => {
         console.log("CURRENT READINGS: ", currentReadings)
@@ -151,15 +139,15 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
                     {parameters.every(p => !p?.unshowable) &&
                         <div className="flex flex-row col-span-3 xl:col-span-2 justify-center items-center border rounded-2xl px-3 relative space-x-7">
 
-                            {wqi &&
+                            {currentReadings[currentReadings.length - 1]?.wqi &&
                                 <>
                                     <div className="flex flex-col  justify-center items-center">
 
                                         <PieChart width={200} height={200}>
                                             <Pie
                                                 data={[
-                                                    { name: 'WQI', value: wqi * 100, fill: (wqiClassification && wqiClassificationColorHex[wqiClassification] || "#4584B5") },
-                                                    { name: 'Rest', value: 100 - (wqi * 100), fill: "#1A2127" }
+                                                    { name: 'WQI', value: currentReadings[currentReadings.length - 1]?.wqi * 100, fill: (currentReadings[currentReadings.length - 1]?.classification && wqiClassificationColorHex[currentReadings[currentReadings.length - 1]?.classification] || "#4584B5") },
+                                                    { name: 'Rest', value: 100 - (currentReadings[currentReadings.length - 1]?.wqi * 100), fill: "#1A2127" }
                                                 ]}
                                                 dataKey="value"
                                                 cx="50%" cy="70%"
@@ -170,24 +158,24 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
                                         </PieChart>
 
                                         <div className="absolute top-1/2 translate-y-2 flex flex-col justify-center items-center">
-                                            <p className="text-[25px] font-semibold">{(wqi * 100).toFixed(2)} %</p>
+                                            <p className="text-[25px] font-semibold">{(currentReadings[currentReadings.length - 1].wqi * 100).toFixed(2)} %</p>
                                         </div>
                                     </div>
 
                                     <div className="flex flex-col space-y-2 h-full w-[30%] align-middle justify-center">
                                         <p className="text-lg">Water Quality:</p>
-                                        <p className="font-bold text-2xl">{wqiClassification?.toString().toUpperCase()}</p>
+                                        <p className="font-bold text-2xl">{currentReadings[currentReadings.length - 1]?.classification.toString().toUpperCase()}</p>
                                     </div>
                                 </>
                             }
 
-                            {!wqi && parameters.some(p => p?.unshowable) &&
+                            {!currentReadings[currentReadings.length - 1]?.wqi && parameters.some(p => p?.unshowable) &&
                                 <div>
                                     Inconclusive
                                 </div>
                             }
 
-                            {!wqi && !parameters.every(p => !p?.unshowable) &&
+                            {!currentReadings[currentReadings.length - 1]?.wqi && !parameters.every(p => !p?.unshowable) &&
                                 <div className="flex justify-center items-center h-full space-x-2">
                                     <NinetyRing />
                                 </div>
@@ -198,9 +186,11 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
                     {/* average readings */}
                     <div className={`col-span-3 h-fit ${parameters.filter(i => !i.hidden).length > 0 ? "hide" : ""}`}>
 
+                        {
+                            parameters.some(parameter => !parameter.unshowable) &&
                         <div className="w-full mb-5">
-                            <p className="text-xl">Average readings</p>
-                        </div>
+                            <p className="text-[16px]">Average readings last 60 minutes</p>
+                        </div>}
 
 
                         {/* parameters */}
@@ -213,12 +203,12 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
 
                                     <div className="flex flex-col">
                                         <p className="text-sm">Total Diss. Solids</p>
-                                        {tdsCurrentReading &&
-                                            <span className="text-[20px] font-semibold">{tdsCurrentReading.value} ppm</span>
+                                        {currentReadings[currentReadings.length - 1]?.tds &&
+                                            <span className="text-[20px] font-semibold">{currentReadings[currentReadings.length - 1]?.tds} ppm</span>
                                         }
                                     </div>
 
-                                    {!tdsCurrentReading &&
+                                    {!currentReadings[currentReadings.length - 1]?.tds &&
                                         <div className="flex justify-center items-center h-full space-x-2">
                                             <NinetyRing />
                                         </div>
@@ -233,12 +223,12 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
 
                                     <div className="flex flex-col">
                                         <p className="text-sm">Temperature</p>
-                                        {tempCurrentReading &&
-                                            <span className="text-[20px] font-semibold">{tempCurrentReading.value} °C</span>
+                                        {currentReadings[currentReadings.length - 1]?.temperature &&
+                                            <span className="text-[20px] font-semibold">{currentReadings[currentReadings.length - 1]?.temperature} °C</span>
                                         }
                                     </div>
 
-                                    {!tempCurrentReading &&
+                                    {!currentReadings[currentReadings.length - 1]?.temperature &&
                                         <div className="flex justify-center items-center h-full space-x-2">
                                             <NinetyRing />
                                         </div>
@@ -253,12 +243,12 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
 
                                     <div className="flex flex-col">
                                         <p className="text-sm">pH level</p>
-                                        {phCurrentReading &&
-                                            <span className="text-[20px] font-semibold">{phCurrentReading.value}</span>
+                                        {currentReadings[currentReadings.length - 1]?.ph &&
+                                            <span className="text-[20px] font-semibold">{currentReadings[currentReadings.length - 1]?.ph}</span>
                                         }
                                     </div>
 
-                                    {!phCurrentReading &&
+                                    {!currentReadings[currentReadings.length - 1]?.ph &&
                                         <div className="flex justify-center items-center h-full space-x-2">
                                             <NinetyRing />
                                         </div>
@@ -273,12 +263,12 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
 
                                     <div className="flex flex-col">
                                         <p className="text-sm">Ammonia</p>
-                                        {ammoniaCurrentReading &&
-                                            <span className="text-[20px] font-semibold">{ammoniaCurrentReading.value} ppm</span>
+                                        {currentReadings[currentReadings.length - 1]?.ammonia &&
+                                            <span className="text-[20px] font-semibold">{currentReadings[currentReadings.length - 1]?.ammonia} ppm</span>
                                         }
                                     </div>
 
-                                    {!ammoniaCurrentReading &&
+                                    {!currentReadings[currentReadings.length - 1]?.ammonia &&
                                         <div className="flex justify-center items-center h-full space-x-2">
                                             <NinetyRing />
                                         </div>
@@ -317,14 +307,14 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
                     {parameters.filter(i => !i.hidden).length > 0 &&
                         <>
                             <div className="transition-all grid grid-cols-1 xl:grid-cols-2 gap-4">
-                                {/* {parameters.filter(i => !i.hidden).map(parameter =>
+                                {parameters.filter(i => !i.hidden).map(parameter =>
                                     // render parameter component with data
                                     <Parameter
                                         key={parameter.parameter_id}
                                         parameter={parameter}
                                         hideCallback={handleHideParameter} />
                                 )
-                                } */}
+                                }
                             </div>
                         </>
                     }
