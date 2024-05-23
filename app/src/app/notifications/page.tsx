@@ -4,6 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import useFarm from "@/hooks/useFarm";
 import roundToSecondDecimal from "@/utils/RoundToNDecimals";
+import { calculateMembership, temperatureThresholds } from "@/utils/SimpleFuzzyLogicWaterQuality";
 import axios from "axios";
 import { set } from "date-fns";
 import moment from "moment";
@@ -25,28 +26,29 @@ export default function NotificationLogs(){
     useEffect(() => {
         if (!Object.keys(selectedFarm).length) return;
         setLoading(true);
-        axios.get(`/api/pond${selectedFarm?.farm_id && `?farmid=${selectedFarm?.farm_id}`}`).then(response => {
+        axios.get(`/api/pond${selectedFarm?.farm_id && `?farmid=${selectedFarm?.farm_id}`}`).then(async (response: any) => {
             setPonds(response.data.results);
-            setLoading(false);
             if (searchParams.has("pond_id")) {
                 console.log("TEST CURRENT POND", response.data.results.find((pond: any) => pond.pond_id === Number(searchParams.get("pond_id"))))
                 setCurrentPond(response.data.results.find((pond: any) => pond.pond_id === Number(searchParams.get("pond_id"))));
-                axios.get(`/api/pond/current-readings?pond_id=${searchParams.get("pond_id")}`).then(response => {
+                await axios.get(`/api/pond/current-readings?pond_id=${searchParams.get("pond_id")}`).then(response => {
                     setWaterQualityReadings(response.data.results.sort((a: any,b: any) => moment(a.timestamp).diff(moment(b.timestamp))));
                 }).catch(error => {
                     console.error(error);
-                }); 
+                });
             } else {
                 setCurrentPond(response.data.results[0]);
-                axios.get(`/api/pond/current-readings?pond_id=${response.data.results[0].pond_id}`).then(response => {
+                await axios.get(`/api/pond/current-readings?pond_id=${response.data.results[0].pond_id}`).then(response => {
                     setWaterQualityReadings(response.data.results.sort((a: any,b: any) => moment(a.timestamp).diff(moment(b.timestamp))));
                 }).catch(error => {
                     console.error(error);
                 });
             }
-            axios.get("/api/notification/water-quality").then(({ data }) => {
+            await axios.get("/api/notification/water-quality").then(({ data }) => {
                 data?.results && setNotifications(data.results);
-            }).catch(console.error);
+            }).catch(console.error).finally(() => {
+                setLoading(false);
+            });
         }).catch(console.error);
     }, [selectedFarm])
 
@@ -112,12 +114,12 @@ export default function NotificationLogs(){
             <p className="m-0 font-semibold text-[16px] text-center">Water Quality (%)</p>
             <ResponsiveContainer width="100%" height="25%" className="p-3 min-h-[300px]">
                 <LineChart data={waterQualityReadings.map(
-                    (reading: any) => ({ date: moment(reading.timestamp).format("MMM DD, yyyy - hh:mm a"), ["Water Quality Index"]: roundToSecondDecimal(reading.wqi * 100) })
+                    (reading: any) => ({ date: moment(reading.timestamp).format("MMM DD - hh:mm a"), ["Water Quality Index"]: roundToSecondDecimal(reading.wqi * 100) })
                 )}
                     margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                     <XAxis dataKey="date" />
                     <YAxis dataKey="Water Quality Index" min={0} max={100} />
-                    <CartesianGrid strokeDasharray="3 3" />
+                    <CartesianGrid strokeDasharray="15 9" />
                     <Tooltip />
                     <Line type="monotone" dataKey="Water Quality Index" label="Water Quality Index" stroke="#8884d8" fill="#8884d8" />
                     <ReferenceArea y1={25} y2={50} fill="orange" fillOpacity={0.1} stroke="" />
@@ -127,8 +129,8 @@ export default function NotificationLogs(){
                             <ReferenceArea key={notification.notification_id} 
                                 x1={waterQualityReadings.indexOf(waterQualityReadings.find(reading => moment(reading.timestamp).isSame(moment(notification.date_issued), "minutes")))} 
                                 x2={notification.is_resolved ? waterQualityReadings.indexOf(waterQualityReadings.find(reading => moment(reading.timestamp).isSame(moment(notification.date_resolved)), "minutes")) : waterQualityReadings.length - 1}
-                                fill={notification.water_quality === "POOR" ? "orange" : "red"} 
-                                fillOpacity={searchParams.has("notification_id") && Number(searchParams.get("notification_id")) === notification.notification_id ? 0.5 : 0.1}
+                                fill={notification.is_resolved ? "lightgreen" : notification.water_quality === "POOR" ? "orange" : "red"} 
+                                fillOpacity={searchParams.has("notification_id") && Number(searchParams.get("notification_id")) === notification.notification_id ? 0.5 : 0.2}
                                 stroke="" />
                         </>)
                     }
@@ -142,6 +144,11 @@ export default function NotificationLogs(){
                     <TableHead>Notification</TableHead>
                     <TableHead>Date Issued</TableHead>
                     <TableHead>Time Issued</TableHead>
+                    <TableHead>Temperature</TableHead>
+                    <TableHead>Ammonia</TableHead>
+                    <TableHead>TDS</TableHead>
+                    <TableHead>pH</TableHead>
+                    <TableHead>Water Quality (%)</TableHead>
                     <TableHead>Status</TableHead>
                 </TableRow>
             </TableHeader>
@@ -153,18 +160,42 @@ export default function NotificationLogs(){
                 }
                 {
                     notifications.filter(notification => notification.pond_id === currentPond.pond_id).map((notification: any, index: number) => {
+                        const concerningReading = waterQualityReadings.find(reading => moment(reading.timestamp).isSame(moment(notification.date_issued), "minutes"));
                         return <TableRow onClick={() => router.push(`/notifications?notification_id=${notification.notification_id}`)} key={notification.notification_id} className={`cursor-pointer ${searchParams.has("notification_id") && Number(searchParams.get("notification_id")) === notification.notification_id && "bg-orange-200"}`}>
                             <TableCell>{index + 1}</TableCell>
                             <TableCell>{notification?.name}&apos;s Water Quality - <span className={`font-semibold ${notification.water_quality === "POOR" ? "text-orange-500" : notification.water_quality === "VERY POOR" ? "text-red-500" : ""}`}>{notification?.water_quality}</span></TableCell>
                             <TableCell>{moment(notification.date_issued).format("MMM DD, yyyy")}</TableCell>
                             <TableCell>{moment(notification.date_issued).format("hh:mm A")}</TableCell>
+                            <TableCell style={{
+                                backgroundColor: concerningReading?.temperature && `rgba(255, 0, 0, ${0.2 - calculateMembership(concerningReading.temperature, temperatureThresholds)})`
+                            }}>
+                                {concerningReading?.temperature ? `${roundToSecondDecimal(concerningReading.temperature)} °C` : "N/A"}
+                            </TableCell>
+                            <TableCell style={{
+                                backgroundColor: concerningReading?.ammonia && `rgba(255, 0, 0, ${0.2 - calculateMembership(concerningReading.ammonia, [150, 300])})`
+                            }}>
+                                {concerningReading?.ammonia ? `${roundToSecondDecimal(concerningReading.ammonia)} ppm` : "N/A"}
+                            </TableCell>
+                            <TableCell style={{
+                                backgroundColor: concerningReading?.tds && `rgba(255, 0, 0, ${0.2 - calculateMembership(concerningReading.tds, [1000, 2000])})`
+                            }}>
+                                {concerningReading?.tds ? `${roundToSecondDecimal(concerningReading.tds)} ppm` : "N/A"}
+                            </TableCell>
+                            <TableCell style={{
+                                backgroundColor: concerningReading?.ph && `rgba(255, 0, 0, ${0.2 - calculateMembership(concerningReading.ph, [6.5, 7.5, 8.5])})`
+                            }}>
+                                {concerningReading?.ph ? roundToSecondDecimal(concerningReading.ph) : "N/A"}
+                            </TableCell>
+                            <TableCell>
+                                {concerningReading?.wqi ? `${roundToSecondDecimal(concerningReading.wqi * 100)} %` : "N/A"}
+                            </TableCell>
                             <TableCell className={`${notification.is_resolved ? "text-green-700" : "text-red-500"} font-semibold`}
                             >{notification.is_resolved ? `Resolved at ${moment(notification.date_resolved).format("MMM DD, yyyy - hh:mm A")}` : "Unresolved"}</TableCell>
                         </TableRow>
                     })
                 }
             </TableBody>
-        </Table></>
+            </Table></>
         }
     </div>
 }
