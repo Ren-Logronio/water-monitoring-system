@@ -144,7 +144,7 @@ export default function PrintWaterQuality() {
                 <table className="max-w-[200px]">
                     <thead className="border-0 border-b border-black">
                         <tr>
-                            <th className="text-[14px] font-medium">Number of Samples</th>
+                            <th className="text-[14px] font-medium">Number of Recorded Readings</th>
                         </tr>
                     </thead>
                     <tbody>
