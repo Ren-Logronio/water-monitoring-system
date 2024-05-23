@@ -105,13 +105,13 @@ export default function PondList({ farm_id }: { farm_id: number }) {
                             <p className="text-sm">{pond.method[0].toUpperCase() + pond.method.slice(1).toLowerCase()} pond</p>
 
                             {/* Badges */}
-                            <div className="flex flex-row mt-4 space-x-2">
+                            <div key={pond.pond_id} className="flex flex-row mt-4 space-x-2">
                                 {/* Farm plot */}
-                                <Badge key={pond} variant={"default"} className="m-0 w-fit">
+                                <Badge variant={"default"} className="m-0 w-fit">
                                     Pond plot: {pond.device_id || "No Device"}
                                 </Badge>
 
-                                <Badge key={pond} variant={"default"} className="m-0 w-fit">
+                                <Badge variant={"default"} className="m-0 w-fit">
                                     Status: {pond.status || "No Device"}
                                 </Badge>
                             </div>
