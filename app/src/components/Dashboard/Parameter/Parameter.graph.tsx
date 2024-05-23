@@ -130,7 +130,7 @@ const ParameterGraph: FC<Props> = ({ readings, parameter, hover, thresholds, agg
             <LineChart
                 data={data}
                 margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
-                className={`transition-all ${!hover && 'blur-[0.6px]'}`}
+                className={`transition-all ${!hover && 'blur-[0.9px]'}`}
             >
                 <CartesianGrid strokeDasharray="1 1" />
                 <XAxis dataKey="date" color="#aaaaaa" />
@@ -144,7 +144,7 @@ const ParameterGraph: FC<Props> = ({ readings, parameter, hover, thresholds, agg
                             <ReferenceLine
                                 y={Number(threshold.target)}
                                 fontSize={1}
-                                label={threshold.action === "ALRT" ? "Alert" : threshold.action === "WARN" ? "Warning" : undefined}
+                                // label={threshold.action === "ALRT" ? "Alert" : threshold.action === "WARN" ? "Warning" : undefined}
                                 stroke={threshold.action === "ALRT" ? "#ff0000" : threshold.action === "WARN" ? "#e8a72e" : "#293447"}
                                 strokeDasharray="3 3" />
                             <ReferenceArea
