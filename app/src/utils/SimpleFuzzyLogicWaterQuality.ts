@@ -16,10 +16,10 @@ export const weights = {
     'temperature': 0.40
 };
 
-export const phThresholds = [4, 7, 10];
-export const tdsThresholds = [-25, 250, 400];
+export const phThresholds = [6.5, 7.5, 8.5];
+export const tdsThresholds = [100, 350, 600];
 export const ammoniaThresholds = [-999999999, 150, 300];
-export const temperatureThresholds = [20, 25, 31];
+export const temperatureThresholds = [20, 25, 30];
 
 
 export function calculateWQI(parameters: { ph: number, tds: number, ammonia: number, temperature: number }) {
@@ -82,7 +82,7 @@ export function classifyWQI(wqi: number) {
     }
 }
 
-export const wqiClassificationColorHex = {
+export const wqiClassificationColorHex: any = {
     "Excellent": "#00FF00",
     "Good": "#00A86B",
     "Fair": "#FFD700",
