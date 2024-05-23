@@ -1,7 +1,7 @@
 'use client';
 
 import { FC, useEffect, useMemo } from "react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, ReferenceArea } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, ReferenceArea } from 'recharts';
 import { format } from "date-fns";
 import moment from "moment";
 
@@ -126,7 +126,7 @@ const ParameterGraph: FC<Props> = ({ readings, parameter, hover, thresholds, agg
     }), [aggReadings]);
 
     return (
-        <ResponsiveContainer width="100%" height="100%" className="p-3">
+        <ResponsiveContainer width="100%" height="100%" className="p-3 shadow-none border rounded-xl">
             <LineChart
                 data={data}
                 margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
