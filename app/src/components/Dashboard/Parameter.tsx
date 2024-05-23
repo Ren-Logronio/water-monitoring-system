@@ -130,7 +130,7 @@ export default function Parameter({ parameter, hideCallback }: { parameter: any,
             {!loading && readings.length > 0 &&
                 <>
                     <div className={`absolute z-40 size-full flex flex-col justify-end transition-all ${hover ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-                        <div className={`${action === "ALRT" ? `text-red-900` : action === "WARN" ? `text-orange-900` : "text-blue-900"} mx-7 mb-4`}>
+                        <div className={`${action === "ALRT" ? `text-red-900` : action === "WARN" ? `text-orange-900` : "text-blue-900"} mx-3 mb-2`}>
                             <h1 className="text-[20px] leading-[28px] font-medium">{parameter.name}</h1>
                             <div className="flex flex-row items-center space-x-2">
                                 <p className="text-[40px] leading-[32px] m-0 font-semibold">{readings[readings.length - 1].value}</p>
