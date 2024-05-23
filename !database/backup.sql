@@ -21,22 +21,20 @@ USE `water-monitoring-system-db`;
 
 -- Dumping structure for table water-monitoring-system-db.devices
 CREATE TABLE IF NOT EXISTS `devices` (
-  `device_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `status` varchar(8) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'IDLE',
+  `device_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'IDLE',
   `last_established_connection` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`device_id`),
   KEY `device_status` (`status`),
   CONSTRAINT `device_status` FOREIGN KEY (`status`) REFERENCES `device_statuses` (`status`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.devices: ~1 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.devices: ~0 rows (approximately)
 DELETE FROM `devices`;
-INSERT INTO `devices` (`device_id`, `status`, `last_established_connection`) VALUES
-	('a507f4f4-4089-4b44-a2d9-671d27f52666', 'ACTIVE', '2024-05-13 23:25:20');
 
 -- Dumping structure for table water-monitoring-system-db.device_statuses
 CREATE TABLE IF NOT EXISTS `device_statuses` (
-  `status` varchar(8) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -50,27 +48,26 @@ INSERT INTO `device_statuses` (`status`) VALUES
 -- Dumping structure for table water-monitoring-system-db.farms
 CREATE TABLE IF NOT EXISTS `farms` (
   `farm_id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `address_street` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `address_city` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `address_province` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `address_street` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `address_city` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `address_province` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `latitude` decimal(10,8) DEFAULT NULL,
   `longitude` decimal(11,8) DEFAULT NULL,
   PRIMARY KEY (`farm_id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.farms: ~2 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.farms: ~1 rows (approximately)
 DELETE FROM `farms`;
 INSERT INTO `farms` (`farm_id`, `name`, `address_street`, `address_city`, `address_province`, `latitude`, `longitude`) VALUES
-	(15, 'MSU College of Fisheries Research Station', 'Siguel Road', 'General Santos City', 'South Cotabato', 5.95996127, 125.10584247),
-	(17, 'name', 'street', 'city', 'province', 5.97777559, 125.11271080);
+	(15, 'MSU College of Fisheries Research Station', 'Siguel Road', 'General Santos City', 'South Cotabato', 5.95996127, 125.10584247);
 
 -- Dumping structure for table water-monitoring-system-db.farm_farmer
 CREATE TABLE IF NOT EXISTS `farm_farmer` (
   `farm_id` int NOT NULL,
   `farmer_id` int NOT NULL,
-  `role` char(5) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'STAFF',
+  `role` char(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'STAFF',
   `is_approved` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`farm_id`,`farmer_id`),
   KEY `farm_farmer_id` (`farmer_id`),
@@ -80,15 +77,14 @@ CREATE TABLE IF NOT EXISTS `farm_farmer` (
   CONSTRAINT `farmer_farm_id` FOREIGN KEY (`farm_id`) REFERENCES `farms` (`farm_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.farm_farmer: ~2 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.farm_farmer: ~1 rows (approximately)
 DELETE FROM `farm_farmer`;
 INSERT INTO `farm_farmer` (`farm_id`, `farmer_id`, `role`, `is_approved`) VALUES
-	(15, 1, 'OWNER', 1),
-	(17, 1, 'OWNER', 1);
+	(15, 1, 'OWNER', 1);
 
 -- Dumping structure for table water-monitoring-system-db.farm_farmer_roles
 CREATE TABLE IF NOT EXISTS `farm_farmer_roles` (
-  `role` char(5) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role` char(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`role`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -102,7 +98,7 @@ INSERT INTO `farm_farmer_roles` (`role`) VALUES
 CREATE TABLE IF NOT EXISTS `parameters` (
   `parameter_id` int NOT NULL AUTO_INCREMENT,
   `pond_id` int DEFAULT NULL,
-  `parameter` varchar(3) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `parameter` varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`parameter_id`),
   KEY `parameter_pond_id` (`pond_id`),
   KEY `parameter_parameter` (`parameter`),
@@ -110,23 +106,19 @@ CREATE TABLE IF NOT EXISTS `parameters` (
   CONSTRAINT `parameter_pond_id` FOREIGN KEY (`pond_id`) REFERENCES `ponds` (`pond_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.parameters: ~8 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.parameters: ~4 rows (approximately)
 DELETE FROM `parameters`;
 INSERT INTO `parameters` (`parameter_id`, `pond_id`, `parameter`) VALUES
 	(141, 36, 'TMP'),
 	(142, 36, 'PH'),
 	(143, 36, 'TDS'),
-	(144, 36, 'AMN'),
-	(149, 38, 'TMP'),
-	(150, 38, 'PH'),
-	(151, 38, 'TDS'),
-	(152, 38, 'AMN');
+	(144, 36, 'AMN');
 
 -- Dumping structure for table water-monitoring-system-db.parameter_list
 CREATE TABLE IF NOT EXISTS `parameter_list` (
-  `parameter` varchar(3) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `unit` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `parameter` varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `unit` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`parameter`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -141,9 +133,9 @@ INSERT INTO `parameter_list` (`parameter`, `name`, `unit`) VALUES
 -- Dumping structure for table water-monitoring-system-db.parameter_thresholds
 CREATE TABLE IF NOT EXISTS `parameter_thresholds` (
   `threshold_id` int NOT NULL AUTO_INCREMENT,
-  `parameter` varchar(3) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `type` char(2) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `action` char(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `parameter` varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `type` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `action` char(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `target` double NOT NULL DEFAULT '0',
   `error` double NOT NULL DEFAULT '0',
   PRIMARY KEY (`threshold_id`),
@@ -155,19 +147,20 @@ CREATE TABLE IF NOT EXISTS `parameter_thresholds` (
   CONSTRAINT `default_threshold_type` FOREIGN KEY (`type`) REFERENCES `parameter_threshold_types` (`type`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.parameter_thresholds: ~6 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.parameter_thresholds: ~7 rows (approximately)
 DELETE FROM `parameter_thresholds`;
 INSERT INTO `parameter_thresholds` (`threshold_id`, `parameter`, `type`, `action`, `target`, `error`) VALUES
 	(1, 'TMP', 'GT', 'WARN', 30, 0.5),
 	(2, 'TMP', 'LT', 'WARN', 20, 0.5),
 	(3, 'AMN', 'GT', 'ALRT', 300, 0.5),
-	(4, 'PH', 'GT', 'ALRT', 9, 0.2),
-	(5, 'PH', 'LT', 'ALRT', 6, 0.2),
-	(6, 'TDS', 'GT', 'WARN', 600, 10);
+	(4, 'PH', 'GT', 'ALRT', 8.5, 0.2),
+	(5, 'PH', 'LT', 'ALRT', 6.5, 0.2),
+	(6, 'TDS', 'GT', 'WARN', 600, 10),
+	(7, 'TDS', 'LT', 'WARN', 100, 0);
 
 -- Dumping structure for table water-monitoring-system-db.parameter_threshold_actions
 CREATE TABLE IF NOT EXISTS `parameter_threshold_actions` (
-  `action` char(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `action` char(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`action`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -180,7 +173,7 @@ INSERT INTO `parameter_threshold_actions` (`action`) VALUES
 
 -- Dumping structure for table water-monitoring-system-db.parameter_threshold_types
 CREATE TABLE IF NOT EXISTS `parameter_threshold_types` (
-  `type` char(2) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -194,13 +187,13 @@ INSERT INTO `parameter_threshold_types` (`type`) VALUES
 -- Dumping structure for table water-monitoring-system-db.ponds
 CREATE TABLE IF NOT EXISTS `ponds` (
   `pond_id` int NOT NULL AUTO_INCREMENT,
-  `device_id` char(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `device_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `farm_id` int DEFAULT NULL,
-  `name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'My Pond',
+  `name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'My Pond',
   `width` double DEFAULT '0',
   `length` double DEFAULT '0',
   `depth` double DEFAULT '0',
-  `method` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT 'NONE',
+  `method` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'NONE',
   `latitude` decimal(10,8) DEFAULT NULL,
   `longitude` decimal(11,8) DEFAULT NULL,
   PRIMARY KEY (`pond_id`) USING BTREE,
@@ -212,15 +205,14 @@ CREATE TABLE IF NOT EXISTS `ponds` (
   CONSTRAINT `pond_method` FOREIGN KEY (`method`) REFERENCES `pond_methods` (`method`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='INTENSIVE\r\nSEMI-INTENSIVE\r\nTRADITIONAL';
 
--- Dumping data for table water-monitoring-system-db.ponds: ~2 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.ponds: ~1 rows (approximately)
 DELETE FROM `ponds`;
 INSERT INTO `ponds` (`pond_id`, `device_id`, `farm_id`, `name`, `width`, `length`, `depth`, `method`, `latitude`, `longitude`) VALUES
-	(36, 'a507f4f4-4089-4b44-a2d9-671d27f52666', 15, 'Pond 1', 0, 0, 0, 'SEMI-INTENSIVE', 5.95941617, 125.10555717),
-	(38, NULL, 17, 'Pond 3', 0, 0, 0, 'SEMI-INTENSIVE', 5.95949891, 125.10586622);
+	(36, NULL, 15, 'Pond 1', 0, 0, 0, 'SEMI-INTENSIVE', 5.95941617, 125.10555717);
 
 -- Dumping structure for table water-monitoring-system-db.pond_methods
 CREATE TABLE IF NOT EXISTS `pond_methods` (
-  `method` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `method` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`method`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -258,7 +250,7 @@ DELETE FROM `pond_reading_notifications`;
 CREATE TABLE IF NOT EXISTS `pond_water_quality_notifications` (
   `notification_id` int NOT NULL AUTO_INCREMENT,
   `pond_id` int DEFAULT NULL,
-  `water_quality` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'FAIR',
+  `water_quality` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'FAIR',
   `is_resolved` tinyint NOT NULL DEFAULT (0),
   `date_resolved` timestamp NULL DEFAULT NULL,
   `date_issued` timestamp NOT NULL DEFAULT (now()),
@@ -268,11 +260,18 @@ CREATE TABLE IF NOT EXISTS `pond_water_quality_notifications` (
   CONSTRAINT `notification_pond_id` FOREIGN KEY (`pond_id`) REFERENCES `ponds` (`pond_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.pond_water_quality_notifications: ~2 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.pond_water_quality_notifications: ~9 rows (approximately)
 DELETE FROM `pond_water_quality_notifications`;
 INSERT INTO `pond_water_quality_notifications` (`notification_id`, `pond_id`, `water_quality`, `is_resolved`, `date_resolved`, `date_issued`, `date_modified`) VALUES
-	(13, 36, 'Poor', 1, '2024-05-13 23:29:13', '2024-05-13 23:26:16', '2024-05-13 23:29:13'),
-	(14, 36, 'Poor', 0, NULL, '2024-05-13 23:30:41', NULL);
+	(2, 36, 'POOR', 1, '2024-04-22 04:27:10', '2024-04-22 04:19:15', '2024-05-23 00:13:42'),
+	(3, 36, 'POOR', 1, '2024-04-22 04:53:01', '2024-04-22 04:36:15', '2024-05-23 00:35:32'),
+	(4, 36, 'POOR', 1, '2024-04-22 05:26:16', '2024-04-22 04:56:15', '2024-05-23 00:39:10'),
+	(5, 36, 'POOR', 1, '2024-04-22 07:03:34', '2024-04-22 05:53:21', '2024-05-23 00:40:49'),
+	(6, 36, 'POOR', 1, '2024-04-23 05:03:14', '2024-04-22 07:10:35', '2024-05-23 00:42:59'),
+	(7, 36, 'POOR', 1, '2024-04-23 05:24:28', '2024-04-23 05:16:16', NULL),
+	(8, 36, 'POOR', 1, '2024-04-23 05:50:54', '2024-04-23 05:26:29', '2024-05-23 00:44:55'),
+	(9, 36, 'POOR', 1, '2024-04-23 06:48:05', '2024-04-23 05:54:55', '2024-05-23 00:46:15'),
+	(10, 36, 'POOR', 0, NULL, '2024-04-23 06:54:06', '2024-05-23 00:46:42');
 
 -- Dumping structure for table water-monitoring-system-db.readings
 CREATE TABLE IF NOT EXISTS `readings` (
@@ -3112,11 +3111,11 @@ INSERT INTO `readings` (`reading_id`, `parameter_id`, `value`, `recorded_at`, `m
 -- Dumping structure for table water-monitoring-system-db.users
 CREATE TABLE IF NOT EXISTS `users` (
   `user_id` int NOT NULL AUTO_INCREMENT,
-  `firstname` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `middlename` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `lastname` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `password` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `firstname` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `middlename` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `lastname` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `email` (`email`),
   KEY `password` (`password`)
@@ -3127,15 +3126,14 @@ DELETE FROM `users`;
 INSERT INTO `users` (`user_id`, `firstname`, `middlename`, `lastname`, `email`, `password`) VALUES
 	(1, 'Reinhart', 'Ferrer', 'Logronio', 'reinhart.logronio@msugensan.edu.ph', '$2a$12$97pPAfoi/KcoKNeaUwYJAOqTV4fKMU6WpGBETtmswdHeiGppnlDpK'),
 	(2, 'Nielmer', '', 'Camintoy', 'nielmer.camintoy@msugensan.edu.ph', '$2a$12$97pPAfoi/KcoKNeaUwYJAOqTV4fKMU6WpGBETtmswdHeiGppnlDpK'),
-	(3, 'John Rey', NULL, 'Vilbar', 'johnrey.vilbar@msugensan.edu.ph', '$2a$12$97pPAfoi/KcoKNeaUwYJAOqTV4fKMU6WpGBETtmswdHeiGppnlDpK'),
-	(4, 'Nielmer', 'Malait', 'Camintoy', 'nielmercamintoy0@gmail.com', '$2b$10$3Aw8UdZTQroSV8IUXCOEWuNPM2Kw0NdH4zPmTMG6vdPjR0MpQsVnC');
+	(3, 'John Rey', NULL, 'Vilbar', 'johnrey.vilbar@msugensan.edu.ph', '$2a$12$97pPAfoi/KcoKNeaUwYJAOqTV4fKMU6WpGBETtmswdHeiGppnlDpK');
 
 -- Dumping structure for table water-monitoring-system-db.user_notifications
 CREATE TABLE IF NOT EXISTS `user_notifications` (
   `notification_id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
-  `action` char(4) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `message` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'No Message',
+  `action` char(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `message` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'No Message',
   `issued_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `isRead` tinyint DEFAULT '0',
   `read_at` datetime DEFAULT NULL,
@@ -3159,12 +3157,35 @@ CREATE TABLE `view_dashboard_ponds_monitored` (
 
 -- Dumping structure for view water-monitoring-system-db.view_farmer_farm
 -- Creating temporary table to overcome VIEW dependency errors
-CREATE TABLE `view_farmer_farm` 
+CREATE TABLE `view_farmer_farm` (
+	`role` CHAR(5) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+	`user_id` INT(10) NOT NULL,
+	`latitude` DECIMAL(10,8) NULL,
+	`longitude` DECIMAL(11,8) NULL,
+	`farm_id` INT(10) NOT NULL,
+	`name` VARCHAR(128) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+	`address_street` VARCHAR(128) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+	`address_city` VARCHAR(128) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+	`address_province` VARCHAR(128) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+	`is_approved` TINYINT(3) NOT NULL
 ) ENGINE=MyISAM;
 
 -- Dumping structure for view water-monitoring-system-db.view_farmer_ponds
 -- Creating temporary table to overcome VIEW dependency errors
-CREATE TABLE `view_farmer_ponds` 
+CREATE TABLE `view_farmer_ponds` (
+	`user_id` INT(10) NOT NULL,
+	`farm_id` INT(10) NOT NULL,
+	`pond_id` INT(10) NOT NULL,
+	`latitude` DECIMAL(10,8) NULL,
+	`longitude` DECIMAL(11,8) NULL,
+	`device_id` CHAR(36) NULL COLLATE 'utf8mb4_unicode_ci',
+	`status` VARCHAR(8) NULL COLLATE 'utf8mb4_unicode_ci',
+	`last_established_connection` TIMESTAMP NULL,
+	`name` VARCHAR(32) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+	`width` DOUBLE NULL,
+	`length` DOUBLE NULL,
+	`depth` DOUBLE NULL,
+	`method` VARCHAR(50) NULL COLLATE 'utf8mb4_unicode_ci'
 ) ENGINE=MyISAM;
 
 -- Dumping structure for view water-monitoring-system-db.view_farm_farmers
@@ -3187,6 +3208,17 @@ CREATE TABLE `view_farm_farmers` (
 CREATE TABLE `view_farm_reading_count` (
 	`farm_id` INT(10) NULL,
 	`count` BIGINT(19) NOT NULL
+) ENGINE=MyISAM;
+
+-- Dumping structure for view water-monitoring-system-db.view_pond_hourly_readings
+-- Creating temporary table to overcome VIEW dependency errors
+CREATE TABLE `view_pond_hourly_readings` (
+	`pond_id` INT(10) NOT NULL,
+	`temperature` DOUBLE NULL,
+	`ph` DOUBLE NULL,
+	`ammonia` DOUBLE NULL,
+	`tds` DOUBLE NULL,
+	`recorded_at_start` VARCHAR(24) NULL COLLATE 'utf8mb4_0900_ai_ci'
 ) ENGINE=MyISAM;
 
 -- Dumping structure for view water-monitoring-system-db.view_pond_parameters
@@ -3266,7 +3298,20 @@ CREATE TABLE `view_user_notifications_count` (
 
 -- Dumping structure for view water-monitoring-system-db.view_user_water_quality_notifications
 -- Creating temporary table to overcome VIEW dependency errors
-CREATE TABLE `view_user_water_quality_notifications` 
+CREATE TABLE `view_user_water_quality_notifications` (
+	`user_id` INT(10) NULL,
+	`farm_id` INT(10) NULL,
+	`name` VARCHAR(32) NULL COLLATE 'utf8mb4_unicode_ci',
+	`latitude` DECIMAL(10,8) NULL,
+	`longitude` DECIMAL(11,8) NULL,
+	`status` VARCHAR(8) NULL COLLATE 'utf8mb4_unicode_ci',
+	`notification_id` INT(10) NOT NULL,
+	`pond_id` INT(10) NULL,
+	`water_quality` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+	`is_resolved` TINYINT(3) NOT NULL,
+	`date_resolved` TIMESTAMP NULL,
+	`date_issued` TIMESTAMP NOT NULL,
+	`date_modified` TIMESTAMP NULL
 ) ENGINE=MyISAM;
 
 -- Dumping structure for table water-monitoring-system-db.water_change_schedules
@@ -3274,7 +3319,7 @@ CREATE TABLE IF NOT EXISTS `water_change_schedules` (
   `water_change_schedule_id` int NOT NULL AUTO_INCREMENT,
   `water_change_schedule` timestamp NOT NULL,
   `duration` int NOT NULL DEFAULT (1),
-  `duration_unit` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'day',
+  `duration_unit` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'day',
   `date_created` timestamp NOT NULL DEFAULT (now()),
   PRIMARY KEY (`water_change_schedule_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -3301,11 +3346,11 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_dashboard_ponds_monit
 
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `view_farmer_farm`;
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_farmer_farm` AS select `farm_farmer`.`role` AS `role`,`farm_farmer`.`farmer_id` AS `user_id`,`farms`.`latitude` AS `latitude`,`farms`.`longitude` AS `longitude`,`farms`.`map_timestamp` AS `map_timestamp`,`farms`.`farm_id` AS `farm_id`,`farms`.`name` AS `name`,`farms`.`address_street` AS `address_street`,`farms`.`address_city` AS `address_city`,`farms`.`address_province` AS `address_province`,`farm_farmer`.`is_approved` AS `is_approved` from (`farm_farmer` join `farms` on((`farm_farmer`.`farm_id` = `farms`.`farm_id`)));
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_farmer_farm` AS select `farm_farmer`.`role` AS `role`,`farm_farmer`.`farmer_id` AS `user_id`,`farms`.`latitude` AS `latitude`,`farms`.`longitude` AS `longitude`,`farms`.`farm_id` AS `farm_id`,`farms`.`name` AS `name`,`farms`.`address_street` AS `address_street`,`farms`.`address_city` AS `address_city`,`farms`.`address_province` AS `address_province`,`farm_farmer`.`is_approved` AS `is_approved` from (`farm_farmer` join `farms` on((`farm_farmer`.`farm_id` = `farms`.`farm_id`)));
 
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `view_farmer_ponds`;
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_farmer_ponds` AS select `farm_farmer`.`farmer_id` AS `user_id`,`farms`.`farm_id` AS `farm_id`,`ponds`.`pond_id` AS `pond_id`,`ponds`.`latitude` AS `latitude`,`ponds`.`longitude` AS `longitude`,`ponds`.`map_timestamp` AS `map_timestamp`,`ponds`.`device_id` AS `device_id`,`devices`.`status` AS `status`,`devices`.`last_established_connection` AS `last_established_connection`,`ponds`.`name` AS `name`,`ponds`.`width` AS `width`,`ponds`.`length` AS `length`,`ponds`.`depth` AS `depth`,`ponds`.`method` AS `method` from (((`ponds` left join `devices` on((`ponds`.`device_id` = `devices`.`device_id`))) join `farms` on((`ponds`.`farm_id` = `farms`.`farm_id`))) join `farm_farmer` on((`farm_farmer`.`farm_id` = `farms`.`farm_id`)));
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_farmer_ponds` AS select `farm_farmer`.`farmer_id` AS `user_id`,`farms`.`farm_id` AS `farm_id`,`ponds`.`pond_id` AS `pond_id`,`ponds`.`latitude` AS `latitude`,`ponds`.`longitude` AS `longitude`,`ponds`.`device_id` AS `device_id`,`devices`.`status` AS `status`,`devices`.`last_established_connection` AS `last_established_connection`,`ponds`.`name` AS `name`,`ponds`.`width` AS `width`,`ponds`.`length` AS `length`,`ponds`.`depth` AS `depth`,`ponds`.`method` AS `method` from (((`ponds` left join `devices` on((`ponds`.`device_id` = `devices`.`device_id`))) join `farms` on((`ponds`.`farm_id` = `farms`.`farm_id`))) join `farm_farmer` on((`farm_farmer`.`farm_id` = `farms`.`farm_id`)));
 
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `view_farm_farmers`;
@@ -3314,6 +3359,10 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_farm_farmers` AS sele
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `view_farm_reading_count`;
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_farm_reading_count` AS select `farms`.`farm_id` AS `farm_id`,count(`view_pond_parameter_readings`.`reading_id`) AS `count` from ((`view_pond_parameter_readings` left join `ponds` on((`view_pond_parameter_readings`.`pond_id` = `ponds`.`pond_id`))) left join `farms` on((`ponds`.`farm_id` = `farms`.`farm_id`))) group by `farms`.`farm_id`;
+
+-- Removing temporary table and create final VIEW structure
+DROP TABLE IF EXISTS `view_pond_hourly_readings`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_pond_hourly_readings` AS select `view_pond_readings`.`pond_id` AS `pond_id`,round(avg(`view_pond_readings`.`temperature`),2) AS `temperature`,round(avg(`view_pond_readings`.`ph`),2) AS `ph`,round(avg(`view_pond_readings`.`ammonia`),2) AS `ammonia`,round(avg(`view_pond_readings`.`tds`),2) AS `tds`,date_format(`view_pond_readings`.`recorded_at`,'%Y-%m-%d %H:00:00') AS `recorded_at_start` from `view_pond_readings` group by `view_pond_readings`.`pond_id`,`recorded_at_start`;
 
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `view_pond_parameters`;
