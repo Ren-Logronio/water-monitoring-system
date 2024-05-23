@@ -65,8 +65,8 @@ export default function NotificationLogs(){
                 {/* <SelectItem value="light">Light</SelectItem> */}
             </SelectContent>
         </Select>
-        <div className="flex flex-row space-x-2 max-w-[800px] items-center">
-            <span className="text-[12px]">Water Quality Range:</span>
+            {/* <div className="flex flex-row space-x-2 max-w-[800px] items-center">
+                <span className="text-[12px]">Water Quality Range:</span>
                     <div className="flex flex-col flex-1 min-w-[400px]">
                         <div className="flex flex-row relative justify-between text-[11px]">
                             <span className="w-[25%] text-center">Very Poor</span>
@@ -106,10 +106,10 @@ export default function NotificationLogs(){
                             </div>
                         </div>
                     </div>
-                    </div>
-            </div>
+            </div> */}
+        </div>
         <div className="flex flex-col">
-            <p className="m-0 font-semibold text-[16px] text-center">Water Quality</p>
+            <p className="m-0 font-semibold text-[16px] text-center">Water Quality (%)</p>
             <ResponsiveContainer width="100%" height="25%" className="p-3 min-h-[300px]">
                 <LineChart data={waterQualityReadings.map(
                     (reading: any) => ({ date: moment(reading.timestamp).format("MMM DD, yyyy - hh:mm a"), ["Water Quality Index"]: roundToSecondDecimal(reading.wqi * 100) })
