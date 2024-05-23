@@ -100,6 +100,7 @@ export default function NavigationBar({ children }: NavigationBarProps): React.R
                     <NavigationButton disabled={navBarLoading || farm.none || !selectedFarm.is_approved} path="/dashboard" imagePath="/dashboard.png" text="Dashboard" />
                     <NavigationButton disabled={navBarLoading || farm.none || !selectedFarm.is_approved} path="/farm" imagePath="/farm.png" text="Farm" />
                     <NavigationButton disabled={navBarLoading || farm.none || !selectedFarm.is_approved} path="/staff" imagePath="/staff.png" text="Staff" />
+                    <NavigationButton disabled={navBarLoading || farm.none || !selectedFarm.is_approved} path="/notifications" text="Notifications" />
                 </div>
 
                 <Separator className="bg-indigo-100" />

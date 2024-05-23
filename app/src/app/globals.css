@@ -4,9 +4,9 @@
 @tailwind components;
 @tailwind utilities;
 
-nextjs-portal {
+/* nextjs-portal {
   display: none;
-}
+} */
 
 @layer base {
 

@@ -120,7 +120,7 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
                 {!!unresolvedUserNotifications.length && <div>
                     <span className="text-[14px] font-medium ml-3">Unresolved Notifications</span>
                     {unresolvedUserNotifications.map((notification: any) => <>
-                        <Link href={`/water-quality`} className="flex flex-row justify-start space-x-2 items-center p-1 hover:bg-gray-200">
+                        <Link href={`/notifications?pond_id=${notification.pond_id}&notification_id=${notification.notification_id}`} className="flex flex-row justify-start space-x-2 items-center p-1 hover:bg-gray-200">
                             <div className="flex justify-center items-center">
                                 {
                                     notification?.water_quality === "Poor" &&
@@ -161,7 +161,7 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
                         </div>
                         <div className="flex flex-col">
                             {showResolvedNotifications && resolvedUserNotifications.map((notification: any) => <>
-                                <Link href={``} className="flex flex-row justify-start space-x-2 items-center p-1 hover:bg-gray-200">
+                                <Link href={`/notifications?pond_id=${notification.pond_id}&notification_id=${notification.notification_id}`} className="flex flex-row justify-start space-x-2 items-center p-1 hover:bg-gray-200">
                                     <div className="flex justify-center items-center text-green-800">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />

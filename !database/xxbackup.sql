@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `farms` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.farms: ~1 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.farms: ~0 rows (approximately)
 DELETE FROM `farms`;
 INSERT INTO `farms` (`farm_id`, `name`, `address_street`, `address_city`, `address_province`, `latitude`, `longitude`) VALUES
 	(15, 'MSU College of Fisheries Research Station', 'Siguel Road', 'General Santos City', 'South Cotabato', 5.95996127, 125.10584247);
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS `farm_farmer` (
   CONSTRAINT `farmer_farm_id` FOREIGN KEY (`farm_id`) REFERENCES `farms` (`farm_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.farm_farmer: ~1 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.farm_farmer: ~0 rows (approximately)
 DELETE FROM `farm_farmer`;
 INSERT INTO `farm_farmer` (`farm_id`, `farmer_id`, `role`, `is_approved`) VALUES
 	(15, 1, 'OWNER', 1);
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `parameters` (
   CONSTRAINT `parameter_pond_id` FOREIGN KEY (`pond_id`) REFERENCES `ponds` (`pond_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.parameters: ~4 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.parameters: ~8 rows (approximately)
 DELETE FROM `parameters`;
 INSERT INTO `parameters` (`parameter_id`, `pond_id`, `parameter`) VALUES
 	(141, 36, 'TMP'),
@@ -147,7 +147,7 @@ CREATE TABLE IF NOT EXISTS `parameter_thresholds` (
   CONSTRAINT `default_threshold_type` FOREIGN KEY (`type`) REFERENCES `parameter_threshold_types` (`type`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.parameter_thresholds: ~7 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.parameter_thresholds: ~6 rows (approximately)
 DELETE FROM `parameter_thresholds`;
 INSERT INTO `parameter_thresholds` (`threshold_id`, `parameter`, `type`, `action`, `target`, `error`) VALUES
 	(1, 'TMP', 'GT', 'WARN', 30, 0.5),
@@ -205,7 +205,7 @@ CREATE TABLE IF NOT EXISTS `ponds` (
   CONSTRAINT `pond_method` FOREIGN KEY (`method`) REFERENCES `pond_methods` (`method`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='INTENSIVE\r\nSEMI-INTENSIVE\r\nTRADITIONAL';
 
--- Dumping data for table water-monitoring-system-db.ponds: ~1 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.ponds: ~2 rows (approximately)
 DELETE FROM `ponds`;
 INSERT INTO `ponds` (`pond_id`, `device_id`, `farm_id`, `name`, `width`, `length`, `depth`, `method`, `latitude`, `longitude`) VALUES
 	(36, NULL, 15, 'Pond 1', 0, 0, 0, 'SEMI-INTENSIVE', 5.95941617, 125.10555717);
@@ -260,7 +260,7 @@ CREATE TABLE IF NOT EXISTS `pond_water_quality_notifications` (
   CONSTRAINT `notification_pond_id` FOREIGN KEY (`pond_id`) REFERENCES `ponds` (`pond_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table water-monitoring-system-db.pond_water_quality_notifications: ~9 rows (approximately)
+-- Dumping data for table water-monitoring-system-db.pond_water_quality_notifications: ~0 rows (approximately)
 DELETE FROM `pond_water_quality_notifications`;
 INSERT INTO `pond_water_quality_notifications` (`notification_id`, `pond_id`, `water_quality`, `is_resolved`, `date_resolved`, `date_issued`, `date_modified`) VALUES
 	(2, 36, 'POOR', 1, '2024-04-22 04:27:10', '2024-04-22 04:19:15', '2024-05-23 00:13:42'),
