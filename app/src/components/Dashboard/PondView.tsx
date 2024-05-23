@@ -164,7 +164,15 @@ export default function PondView({ pond_id }: { pond_id?: string }) {
 
                                     <div className="flex flex-col space-y-2 h-full w-[30%] align-middle justify-center">
                                         <p className="text-lg">Water Quality:</p>
-                                        <p className="font-bold text-2xl">{currentReadings[currentReadings.length - 1]?.classification.toString().toUpperCase()}</p>
+                                        {/**
+                                         * 
+    "Excellent": "#00FF00",
+    "Good": "#00A86B",
+    "Fair": "#FFD700",
+    "Poor": "#FFA500",
+    "Very Poor": "#FF0000"
+                                         */}
+                                        <p className={`font-bold text-2xl ${currentReadings[currentReadings.length - 1]?.classification.toString() === "Excellent" && "text-[#00FF00]"} ${currentReadings[currentReadings.length - 1]?.classification.toString() === "Good" && "text-[#00A86B]"} ${currentReadings[currentReadings.length - 1]?.classification.toString() === "Fair" && "text-[#FFD700]"} ${currentReadings[currentReadings.length - 1]?.classification.toString() === "Poor" && "text-[#FFA500]"} ${currentReadings[currentReadings.length - 1]?.classification.toString() === "Very Poor" && "text-[#FF0000]"}`}>{currentReadings[currentReadings.length - 1]?.classification.toString().toUpperCase()}</p>
                                     </div>
                                 </>
                             }
