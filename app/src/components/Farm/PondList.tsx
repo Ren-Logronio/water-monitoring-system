@@ -9,6 +9,7 @@ import { addPoints } from "../Openlayers/utils/addPoints";
 import { pointData } from "../Openlayers/utils/dummy/pointData";
 import { removePoints } from "../Openlayers/utils/removePoints";
 import { useRouter } from "next/navigation";
+import moment from "moment";
 
 
 export default function PondList({ farm_id }: { farm_id: number }) {
@@ -93,7 +94,7 @@ export default function PondList({ farm_id }: { farm_id: number }) {
                     return <div key={idx} className="flex flex-col border-2 rounded-xl p-4 h-fit select-none align-middle hover:border-orange-300 transition-all ease-in-out duration-100">
                         <div className="flex flex-row justify-between items-center">
                             <div className="flex flex-row cursor-pointer items-center space-x-2">
-                                <div className={` size-2 rounded-full  ${pond.device_id && pond.status === "ACTIVE" && "bg-green-600"} ${pond.device_id && pond.status === "IDLE" && "bg-orange-500"} ${(!pond.device_id || pond.status === "INACTIVE") && "bg-slate-500"}`}></div>
+                                <div className={` size-2 rounded-full  ${pond.device_id && pond.status === "ACTIVE" && moment(pond.last_established_connection).isBetween(moment().subtract(10, "minute"), moment()) && "bg-green-600"} ${pond.device_id && pond.status === "IDLE" && "bg-orange-500"} ${(!pond.device_id || (pond?.last_established_connection && !moment(pond.last_established_connection).isBetween(moment().subtract(10, "minute"), moment())) || pond.status === "INACTIVE") && "bg-slate-500"}`}></div>
                                 <p className=" font-medium">{pond.name}</p>
                             </div>
 
@@ -107,12 +108,12 @@ export default function PondList({ farm_id }: { farm_id: number }) {
                             {/* Badges */}
                             <div className="flex flex-row mt-4 space-x-2">
                                 {/* Farm plot */}
-                                <Badge key={pond} variant={"default"} className="m-0 w-fit">
-                                    Pond plot: {pond.device_id || "No Device"}
-                                </Badge>
+                                {pond.device_id && <Badge key={pond} variant={"default"} className="m-0 w-fit">
+                                    Device: {pond.device_id}
+                                </Badge>}
 
-                                <Badge key={pond} variant={"default"} className="m-0 w-fit">
-                                    Status: {pond.status || "No Device"}
+                                <Badge key={pond} variant={"default"} className={`m-0 w-fit ${pond.status === "ACTIVE" && `${moment(pond.last_established_connection).isBetween(moment().subtract(10, "minute"), moment()) ? "text-green-600 border-green-600" : ""}`}`}>
+                                    Status: {(pond.status === "ACTIVE" && `${moment(pond.last_established_connection).isBetween(moment().subtract(10, "minute"), moment()) ? "Online" : `Offline (${moment(pond.last_established_connection).from(moment())})` }`) || "No Device"}
                                 </Badge>
                             </div>
 
