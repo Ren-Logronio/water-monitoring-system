@@ -36,6 +36,7 @@ export default function Parameter({ parameter, hideCallback }: { parameter: any,
     const [loading, setLoading] = useState(true);
     const [thresholds, setThresholds] = useState<any[]>([]);
     const containingDiv = createRef<HTMLDivElement>();
+    const [readingsInterval, setReadingsInterval] = useState<any>(null);
     const [aggregation, setAggregation] = useState<"minutes" | "hour" | "day" | "week" | "month">("hour");
     const [action, setAction] = useState<"ALRT" | "WARN" | "INFO" | "NONE">("NONE");
     const router = useRouter();
@@ -56,23 +57,29 @@ export default function Parameter({ parameter, hideCallback }: { parameter: any,
         }).catch((error) => {
             console.error(error);
         });
-        const readingsInterval = setInterval(() => {
+        readingsInterval && clearInterval(readingsInterval);
+        setReadingsInterval(
+            setInterval(() => {
             axios.get(`/api/reading?parameter_id=${parameter.parameter_id}`).then((response) => {
-                if (response.data.results && response.data.results.length > 0) {
-                    setReadings(response.data.results.sort((a: any, b: any) => moment(a.recorded_at).diff(b.recorded_at)));
-                }
-                axios.get(`/api/threshold?parameter=${parameter.parameter}`).then((response) => {
-                    setThresholds(response.data.results);
+                    if (response.data.results && response.data.results.length > 0) {
+                        setReadings(response.data.results.sort((a: any, b: any) => moment(a.recorded_at).diff(b.recorded_at)));
+                    }
+                    axios.get(`/api/threshold?parameter=${parameter.parameter}`).then((response) => {
+                        setThresholds(response.data.results);
+                    }).catch((error) => {
+                        console.log(error);
+                    }).finally(() => {
+                        setLoading(false);
+                    });
                 }).catch((error) => {
-                    console.log(error);
-                }).finally(() => {
-                    setLoading(false);
+                    console.error(error);
                 });
-            }).catch((error) => {
-                console.error(error);
-            });
-        }, 10000);
-        return () => clearInterval(readingsInterval);
+            }, 10000)
+        );
+        return () => {
+            readingsInterval && clearInterval(readingsInterval)
+            setReadingsInterval(null);
+        };
     }, [parameter]);
 
     useEffect(() => {

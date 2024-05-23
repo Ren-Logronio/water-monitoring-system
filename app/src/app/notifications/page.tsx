@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import useFarm from "@/hooks/useFarm";
 import roundToSecondDecimal from "@/utils/RoundToNDecimals";
-import { calculateMembership, temperatureThresholds } from "@/utils/SimpleFuzzyLogicWaterQuality";
+import { ammoniaThresholds, calculateMembership, phThresholds, tdsThresholds, temperatureThresholds } from "@/utils/SimpleFuzzyLogicWaterQuality";
 import axios from "axios";
 import { set } from "date-fns";
 import moment from "moment";
@@ -51,6 +51,21 @@ export default function NotificationLogs(){
             });
         }).catch(console.error);
     }, [selectedFarm])
+
+    const calculateLogarithmicOpacity = (membershipValue: number) => {
+        // Ensure the membership value is within the expected range
+        const clampedValue = Math.max(0.01, membershipValue); // Avoid log(0) which is undefined
+
+        // Calculate logarithmic value and map to opacity range
+        const logValue = Math.log(clampedValue); // This will be negative for values between 0 and 1
+        const scaledLogValue = logValue / Math.log(0.01); // Scale to a range between 0 and 1
+        const opacity = 1 - 0.3 * scaledLogValue; // Map to desired opacity range
+
+        // invert the opacity value
+        const inversion = 1 - opacity;
+
+        return inversion;
+    };
 
     return <div className="flex flex-col p-4 w-full space-y-3">
         {!loading && currentPond && Object.keys(currentPond).length && <><div className="flex flex-row justify-start space-x-3">
@@ -117,7 +132,7 @@ export default function NotificationLogs(){
                     (reading: any) => ({ date: moment(reading.timestamp).format("MMM DD - hh:mm a"), ["Water Quality Index"]: roundToSecondDecimal(reading.wqi * 100) })
                 )}
                     margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
-                    <XAxis dataKey="date" />
+                    <XAxis dataKey="date" angle={0.25} />
                     <YAxis dataKey="Water Quality Index" min={0} max={100} />
                     <CartesianGrid strokeDasharray="15 9" />
                     <Tooltip />
@@ -167,22 +182,22 @@ export default function NotificationLogs(){
                             <TableCell>{moment(notification.date_issued).format("MMM DD, yyyy")}</TableCell>
                             <TableCell>{moment(notification.date_issued).format("hh:mm A")}</TableCell>
                             <TableCell style={{
-                                backgroundColor: concerningReading?.temperature && `rgba(255, 0, 0, ${0.2 - calculateMembership(concerningReading.temperature, temperatureThresholds)})`
+                                backgroundColor: concerningReading?.temperature && `rgba(255, 150, 150, ${calculateLogarithmicOpacity(calculateMembership(concerningReading.temperature, temperatureThresholds))})`
                             }}>
                                 {concerningReading?.temperature ? `${roundToSecondDecimal(concerningReading.temperature)} °C` : "N/A"}
                             </TableCell>
                             <TableCell style={{
-                                backgroundColor: concerningReading?.ammonia && `rgba(255, 0, 0, ${0.2 - calculateMembership(concerningReading.ammonia, [150, 300])})`
+                                backgroundColor: concerningReading?.ammonia && `rgba(255, 150, 150, ${calculateLogarithmicOpacity(calculateMembership(concerningReading.ammonia, ammoniaThresholds))})`
                             }}>
                                 {concerningReading?.ammonia ? `${roundToSecondDecimal(concerningReading.ammonia)} ppm` : "N/A"}
                             </TableCell>
                             <TableCell style={{
-                                backgroundColor: concerningReading?.tds && `rgba(255, 0, 0, ${0.2 - calculateMembership(concerningReading.tds, [1000, 2000])})`
+                                backgroundColor: concerningReading?.tds && `rgba(255, 150, 150, ${calculateLogarithmicOpacity(calculateMembership(concerningReading.tds, tdsThresholds))})`
                             }}>
                                 {concerningReading?.tds ? `${roundToSecondDecimal(concerningReading.tds)} ppm` : "N/A"}
                             </TableCell>
                             <TableCell style={{
-                                backgroundColor: concerningReading?.ph && `rgba(255, 0, 0, ${0.2 - calculateMembership(concerningReading.ph, [6.5, 7.5, 8.5])})`
+                                backgroundColor: concerningReading?.ph && `rgba(255, 150, 150, ${calculateLogarithmicOpacity(calculateMembership(concerningReading.ph, phThresholds))})`
                             }}>
                                 {concerningReading?.ph ? roundToSecondDecimal(concerningReading.ph) : "N/A"}
                             </TableCell>

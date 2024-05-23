@@ -1,5 +1,5 @@
 import getMySQLConnection from "@/db/mysql";
-import { calculateWQI } from "@/utils/SimpleFuzzyLogicWaterQuality";
+import { calculateWQI, classifyWQI } from "@/utils/SimpleFuzzyLogicWaterQuality";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -13,6 +13,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({
             results: pond_readings.map((reading: any) => ({...reading, 
                 wqi: calculateWQI({temperature: reading.temperature, ph: reading.ph, tds: reading.tds, ammonia: reading.ammonia,}),
+                classification: classifyWQI(calculateWQI({temperature: reading.temperature, ph: reading.ph, tds: reading.tds, ammonia: reading.ammonia,})),
                 timestamp: reading.recorded_at}
             )),
         }, {
