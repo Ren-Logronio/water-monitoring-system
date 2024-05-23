@@ -1,16 +1,20 @@
 import getMySQLConnection from "@/db/mysql";
+import { calculateWQI } from "@/utils/SimpleFuzzyLogicWaterQuality";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
     const pond_id = request.nextUrl.searchParams.get("pond_id");
     const connection = await getMySQLConnection();
-    const [pond_readings] = await connection.query(
+    const [pond_readings]: any = await connection.query(
         "SELECT * FROM `view_pond_readings` WHERE `pond_id` = ? ORDER BY `recorded_at` DESC",
         [pond_id]
     );
     try {
         return NextResponse.json({
-            results: pond_readings,
+            results: pond_readings.map((reading: any) => ({...reading, 
+                wqi: calculateWQI({temperature: reading.temperature, ph: reading.ph, tds: reading.tds, ammonia: reading.ammonia,}),
+                timestamp: reading.recorded_at}
+            )),
         }, {
             status: 200,
         });
