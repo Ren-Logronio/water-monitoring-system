@@ -183,10 +183,18 @@ export default function PrintParameter() {
                 <tbody>
                     <tr className="border-0 border-b border-black">
                         <th className="text-[14px] font-medium border-0 border-r border-black">
-                            Range
+                            Min
                         </th>
                         <td className="text-center">
-                            {min} - {max} {rowData[0]?.unit}
+                            {min} {rowData[0]?.unit} ({moment(rowData.find((reading: any) => reading.value === min)?.recorded_at).format("MMM DD, yyyy - hh:mm a")})
+                        </td>
+                    </tr>
+                    <tr className="border-0 border-b border-black">
+                        <th className="text-[14px] font-medium border-0 border-r border-black">
+                            Max
+                        </th>
+                        <td className="text-center">
+                            {max} {rowData[0]?.unit} ({moment(rowData.find((reading: any) => reading.value === max)?.recorded_at).format("MMM DD, yyyy - hh:mm a")})
                         </td>
                     </tr>
                     <tr className="border-0 border-b border-black">
