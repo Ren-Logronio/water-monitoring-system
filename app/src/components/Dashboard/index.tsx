@@ -229,9 +229,6 @@ export default function Dashboard() {
                         <div className="bg-white w-full h-fit rounded-lg border ">
                             {/* Dropdown menu for pond names */}
                             <div className="flex flex-row space-x-2 justify-between xl:justify-start items-center p-3">
-                                <div className="text-[14px] font-regular">
-                                    Pond:
-                                </div>
 
                                 <Select value={selectedPond} onValueChange={handleSelectChange}>
                                     <SelectTrigger className="font-bold text-[#205083] w-[200px] shadow-none border-2 rounded-full border-orange-300 bg-orange-100/40 px-4">
