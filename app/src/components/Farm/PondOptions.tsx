@@ -119,7 +119,7 @@ export default function PondOptions({ pond_id, updateCallback, deleteCallback, p
         console.log(selectedFeature()?.getProperties());
 
         // check if the device_id matches the pattern
-        if (currentPond?.device_id && !/^[\w\d]{8,8}-[\w\d]{4,4}-[\w\d]{4,4}-[\w\d]{4,4}-[\w\d]{12,12}$/i.test(currentPond?.device_id)) {
+        if (currentPond?.device_id && !/^[\d]{4,4}-[\w]{4,4}$/gs.test(currentPond?.device_id)) {
             setCurrentPond({ ...currentPond as Pond, message: "* Invalid Device ID", status: "red" });
             setLoading(false);
             return;

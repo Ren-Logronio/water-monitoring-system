@@ -18,7 +18,7 @@ export const weights = {
 
 export const phThresholds = [6.5, 7.5, 8.5];
 export const tdsThresholds = [100, 350, 600];
-export const ammoniaThresholds = [-999999999, 150, 300];
+export const ammoniaThresholds = [-999999999, 16, 25];
 export const temperatureThresholds = [20, 25, 30];
 
 

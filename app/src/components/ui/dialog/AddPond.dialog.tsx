@@ -90,7 +90,7 @@ export default function AddPondDialog({ farm_id, page }: { farm_id: number, page
 
     const handleSubmit = () => {
 
-        if (pondForm.enter_device_id && !/^[\w\d]{8,8}-[\w\d]{4,4}-[\w\d]{4,4}-[\w\d]{4,4}-[\w\d]{12,12}$/i.test(pondForm.device_id)) {
+        if (pondForm.enter_device_id && !/^[\d]{4,4}-[\w]{4,4}$/gs.test(pondForm.device_id)) {
             setPondForm({ ...pondForm, message: errorInvalidDeviceID, status: "red" });
             return;
         }

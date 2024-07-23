@@ -27,6 +27,12 @@ export async function POST(request: NextRequest) {
             console.log("DEVICE: device is idle");
             return NextResponse.json({ message: "no pond assignment, saving to logs" }, { status: 200 });
         }
+
+        await connection.query(
+            "UPDATE `devices` SET `last_established_connection` = ? WHERE `device_id` = ?",
+            [moment().format(), device_id]
+        )
+
         console.log("Getting Ponds");
 
         const [ponds]: any = await connection.query("SELECT * FROM `ponds` WHERE `device_id` = ?", [device_id]);
@@ -80,7 +86,7 @@ export async function POST(request: NextRequest) {
                 [
                     param.parameter_id,
                     Number(parameters[param.parameter]),
-                    moment(recorded_at).format("YYYY-MM-DD HH:mm:ss"),
+                    moment(recorded_at).format(),
                 ]
             );
         });

@@ -144,7 +144,7 @@ export default function PrintWaterQuality() {
                 <table className="max-w-[200px]">
                     <thead className="border-0 border-b border-black">
                         <tr>
-                            <th className="text-[14px] font-medium">Number of Samples</th>
+                            <th className="text-[14px] font-medium">Number of Recorded Readings</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -161,33 +161,53 @@ export default function PrintWaterQuality() {
                             <th className="text-[14px] font-medium">Parameters</th>
                             <th className="text-[14px] font-medium">Average</th>
                             <th className="text-[14px] font-medium">Min.</th>
+                            <th className="text-[14px] font-medium">Date</th>
+                            <th className="text-[14px] font-medium">Time</th>
                             <th className="text-[14px] font-medium">Max.</th>
+                            <th className="text-[14px] font-medium">Date</th>
+                            <th className="text-[14px] font-medium">Time</th>
                         </tr>
                     </thead>
                     <tbody>
                         { waterQualityReadings?.length > 0 && <><tr>
                             <td className="text-start">Temperature</td>
                             <td className="text-end">{minMaxes.temperature.average}</td>
-                            <td className="text-end">{roundToSecondDecimal(minMaxes.temperature.min)} ({moment(minMaxes.temperature.minTimestamp).format("MMM DD - hh:mm a")})</td>
-                            <td className="text-end">{roundToSecondDecimal(minMaxes.temperature.max)} ({moment(minMaxes.temperature.maxTimestamp).format("MMM DD - hh:mm a")})</td>
+                            <td className="text-end">{roundToSecondDecimal(minMaxes.temperature.min)}</td>
+                            <td className="text-end">{moment(minMaxes.temperature.minTimestamp).format("MMM DD, yyyy")}</td>
+                            <td className="text-end">{moment(minMaxes.temperature.minTimestamp).format("hh:mm a")}</td>
+                            <td className="text-end">{roundToSecondDecimal(minMaxes.temperature.max)}</td>
+                            <td className="text-end">{moment(minMaxes.temperature.maxTimestamp).format("MMM DD, yyyy")}</td>
+                            <td className="text-end">{moment(minMaxes.temperature.minTimestamp).format("hh:mm a")}</td>
                         </tr>
                         <tr>
                             <td className="text-start">pH</td>
                             <td className="text-end">{minMaxes.ph.average}</td>
-                            <td className="text-end">{roundToSecondDecimal(minMaxes.ph.min)} ({moment(minMaxes.ph.minTimestamp).format("MMM DD - hh:mm a")})</td>
-                            <td className="text-end">{roundToSecondDecimal(minMaxes.ph.max)} ({moment(minMaxes.ph.maxTimestamp).format("MMM DD - hh:mm a")})</td>
+                            <td className="text-end">{roundToSecondDecimal(minMaxes.ph.min)}</td>
+                            <td className="text-end">{moment(minMaxes.ph.minTimestamp).format("MMM DD, yyyy")}</td>
+                            <td className="text-end">{moment(minMaxes.ph.minTimestamp).format("hh:mm a")}</td>
+                            <td className="text-end">{roundToSecondDecimal(minMaxes.ph.max)}</td>
+                            <td className="text-end">{moment(minMaxes.ph.maxTimestamp).format("MMM DD, yyyy")}</td>
+                            <td className="text-end">{moment(minMaxes.ph.maxTimestamp).format("hh:mm a")}</td>
                         </tr>
                         <tr>
                             <td className="text-start">Ammonia</td>
                             <td className="text-end">{minMaxes.ammonia.average}</td>
-                            <td className="text-end">{roundToSecondDecimal(minMaxes.ammonia.min)} ({moment(minMaxes.ammonia.minTimestamp).format("MMM DD - hh:mm a")})</td>
-                            <td className="text-end">{roundToSecondDecimal(minMaxes.ammonia.max)} ({moment(minMaxes.ammonia.maxTimestamp).format("MMM DD - hh:mm a")})</td>
+                            <td className="text-end">{roundToSecondDecimal(minMaxes.ammonia.min)}</td>
+                            <td className="text-end">{moment(minMaxes.ammonia.minTimestamp).format("MMM DD, yyyy")}</td>
+                            <td className="text-end">{moment(minMaxes.ammonia.minTimestamp).format("hh:mm a")}</td>
+                            <td className="text-end">{roundToSecondDecimal(minMaxes.ammonia.max)}</td>
+                            <td className="text-end">{moment(minMaxes.ammonia.maxTimestamp).format("MMM DD, yyyy")}</td>
+                            <td className="text-end">{moment(minMaxes.ammonia.maxTimestamp).format("hh:mm a")}</td>
                         </tr>
                         <tr>
                             <td className="text-start">Total Dissolved Solids</td>
                             <td className="text-end">{minMaxes.tds.average}</td>
-                            <td className="text-end">{roundToSecondDecimal(minMaxes.tds.min)} ({moment(minMaxes.tds.minTimestamp).format("MMM DD - hh:mm a")})</td>
-                            <td className="text-end">{roundToSecondDecimal(minMaxes.tds.max)} ({moment(minMaxes.tds.maxTimestamp).format("MMM DD - hh:mm a")})</td>
+                            <td className="text-end">{roundToSecondDecimal(minMaxes.tds.min)}</td>
+                            <td className="text-end">{moment(minMaxes.tds.minTimestamp).format("MMM DD, yyyy")}</td>
+                            <td className="text-end">{moment(minMaxes.tds.minTimestamp).format("hh:mm a")}</td>
+                            <td className="text-end">{roundToSecondDecimal(minMaxes.tds.max)}</td>
+                            <td className="text-end">{moment(minMaxes.tds.maxTimestamp).format("MMM DD, yyyy")}</td>
+                            <td className="text-end">{moment(minMaxes.tds.maxTimestamp).format("hh:mm a")}</td>
                         </tr></>}
                     </tbody>
                 </table>

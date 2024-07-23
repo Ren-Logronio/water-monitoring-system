@@ -183,7 +183,7 @@ export default function PrintParameter() {
                 <tbody>
                     <tr className="border-0 border-b border-black">
                         <th className="text-[14px] font-medium border-0 border-r border-black">
-                            Min
+                            Min (Date - Time)
                         </th>
                         <td className="text-center">
                             {min} {rowData[0]?.unit} ({moment(rowData.find((reading: any) => reading.value === min)?.recorded_at).format("MMM DD, yyyy - hh:mm a")})
@@ -191,7 +191,7 @@ export default function PrintParameter() {
                     </tr>
                     <tr className="border-0 border-b border-black">
                         <th className="text-[14px] font-medium border-0 border-r border-black">
-                            Max
+                            Max (Date - Time)
                         </th>
                         <td className="text-center">
                             {max} {rowData[0]?.unit} ({moment(rowData.find((reading: any) => reading.value === max)?.recorded_at).format("MMM DD, yyyy - hh:mm a")})
@@ -205,14 +205,14 @@ export default function PrintParameter() {
                             {mean}
                         </td>
                     </tr>
-                    <tr className="border-0 border-b border-black">
+                    {/* <tr className="border-0 border-b border-black">
                         <th className="text-[14px] font-medium border-0 border-r border-black">
                             Mean Rate of Change
                         </th>
                         <td className="text-center">
                             {rateOfChange} {rowData[0]?.unit} per hour
                         </td>
-                    </tr>
+                    </tr> */}
                 </tbody>
             </table>
             <table className="">

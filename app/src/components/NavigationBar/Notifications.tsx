@@ -2,7 +2,7 @@
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "../ui/button";
-import { useEffect, useMemo, useState } from "react";
+import { CSSProperties, useEffect, useMemo, useState } from "react";
 import { format, set } from "date-fns";
 import axios from "axios";
 import { usePathname } from "next/navigation";
@@ -12,10 +12,17 @@ import moment from "moment-timezone";
 import Link from "next/link";
 import Image from "next/image";
 import { useToast } from "../ui/use-toast";
+import useAuth from "@/hooks/useAuth";
+
+const toastStyle: CSSProperties = {
+    minHeight: "fit",
+    minWidth: "400px"
+}
 
 export default function Notifications({ disabled = false }: Readonly<{ disabled: boolean }>) {
     const path = usePathname();
     const { toast } = useToast();
+    const { addEventListener, removeEventListener } = useAuth();
     const [notificationCount, setNotificationCount] = useState<number>(0);
     const [open, setOpen] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
@@ -52,6 +59,7 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
                 toast({
                     title: "Notifications",
                     description: `You have ${data.results.filter((result: any) => !result.is_resolved).length} unresolved notification(s)`,
+                    style: toastStyle,
                 });
             };
             setNotificationCount(data.results.filter((result: any) => !result.is_resolved).length);
@@ -68,6 +76,8 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
                         toast({
                             title: "New Notification",
                             description: `You have ${data.results.filter((result: any) => !result.is_resolved).length} new unresolved notification(s)`,
+                            variant: "destructive",
+                            style: toastStyle,
                         });
                     }
                     if (data.results.filter((result: any) => !result.is_resolved).length < prev) {
@@ -75,6 +85,7 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
                         toast({
                             title: "Notification Resolved",
                             description: `You have ${prev - data.results.filter((result: any) => !result.is_resolved).length} resolved notification(s)`,
+                            style: toastStyle,
                         });
                     }
                     return data.results.filter((result: any) => !result.is_resolved).length
@@ -82,7 +93,13 @@ export default function Notifications({ disabled = false }: Readonly<{ disabled:
                 setLoading(false);
             }).catch(console.error);
         }, 5000);
-        return () => clearInterval(setIntervalId);
+        const signoutEvent = addEventListener("signout", () => {
+            clearInterval(setIntervalId);
+        });
+        return () => {
+            removeEventListener(signoutEvent);
+            clearInterval(setIntervalId)
+        };
     }, []);
 
     const handleOpen = (open: boolean) => {
